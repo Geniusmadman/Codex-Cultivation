@@ -1,0 +1,1686 @@
+:root.codex-cultivation {
+  --cultivation-jade: #167a59;
+  --cultivation-gold: #8b6409;
+  --cultivation-blue: #2d6f91;
+  --cultivation-violet: #745690;
+  --cultivation-danger: #a13b3b;
+  --cultivation-art: var(--dream-art);
+  --cultivation-background-strength: .55;
+}
+
+:root.codex-cultivation.dream-theme-light,
+:root.codex-cultivation.dream-theme-dark {
+  --dream-canvas: var(--color-background-surface-under, var(--color-background-surface));
+  --dream-surface: var(--color-background-surface);
+  --dream-surface-raised: var(--color-background-elevated-primary-opaque);
+  --dream-sidebar: var(--color-background-panel);
+  --dream-text: var(--color-text-foreground);
+  --dream-text-muted: var(--color-text-foreground-secondary);
+  --dream-line: var(--color-border-heavy);
+  --dream-line-soft: var(--color-border);
+  --dream-accent-soft: color-mix(in oklab, var(--dream-accent) 12%, var(--dream-surface));
+  --dream-accent-hover: color-mix(in oklab, var(--dream-accent) 18%, var(--dream-surface));
+  --dream-hero-shade: color-mix(in oklab, var(--dream-surface) 90%, transparent);
+  --dream-shadow: 0 16px 42px rgb(0 0 0 / .2);
+  --dream-immersive-edge: color-mix(in oklab, var(--dream-surface) 48%, transparent);
+  --dream-immersive-mid: color-mix(in oklab, var(--dream-surface) 34%, transparent);
+  --dream-immersive-far: color-mix(in oklab, var(--dream-surface) 20%, transparent);
+  --dream-immersive-sidebar: color-mix(in oklab, var(--dream-sidebar) 76%, transparent);
+  --dream-task-immersive-sidebar: color-mix(in oklab, var(--dream-sidebar) 88%, transparent);
+  --dream-immersive-composer: var(--color-background-elevated-primary-opaque);
+  --dream-immersive-line: var(--color-border-heavy);
+  --dream-task-immersive-edge: color-mix(in oklab, var(--dream-surface) 92%, transparent);
+  --dream-task-immersive-mid: color-mix(in oklab, var(--dream-surface) 86%, transparent);
+  --dream-task-immersive-far: color-mix(in oklab, var(--dream-surface) 78%, transparent);
+  --cultivation-panel: color-mix(in oklab, var(--color-background-elevated-primary-opaque) 96%, transparent);
+  --cultivation-panel-strong: var(--color-background-elevated-primary-opaque);
+  --cultivation-line: var(--color-border-heavy);
+  --cultivation-line-soft: var(--color-border);
+  --cultivation-hover: var(--color-background-button-secondary-hover);
+  --cultivation-home-card: var(--color-background-elevated-primary-opaque);
+  --cultivation-home-card-hover: var(--color-background-button-secondary-hover);
+  --cultivation-home-line: var(--color-border-heavy);
+  --cultivation-home-shadow: 0 14px 38px rgb(0 0 0 / .18);
+  --cultivation-sidebar-material: color-mix(in oklab, var(--color-background-panel) 90%, transparent);
+  --cultivation-topbar-material: color-mix(in oklab, var(--color-background-surface) 94%, transparent);
+  --cultivation-hero-veil: color-mix(in oklab, var(--color-background-elevated-primary-opaque) 90%, transparent);
+  --cultivation-rail-card: color-mix(in oklab, var(--color-background-elevated-primary-opaque) 92%, transparent);
+  --cultivation-rail-card-strong: var(--color-background-elevated-primary-opaque);
+  --cultivation-companion-fallback:
+    radial-gradient(circle at 50% 28%, color-mix(in oklab, var(--cultivation-jade) 24%, transparent), transparent 22%),
+    linear-gradient(160deg, color-mix(in oklab, var(--cultivation-jade) 12%, var(--cultivation-panel-strong)), var(--cultivation-panel-strong));
+}
+
+:root.codex-cultivation.dream-theme-light {
+  color-scheme: light;
+  --cultivation-jade: #176c52;
+  --cultivation-gold: #87610a;
+  --cultivation-blue: #356f8b;
+  --cultivation-violet: #70598a;
+  --cultivation-panel: color-mix(in oklab, #fffdf7 96%, transparent);
+  --cultivation-panel-strong: color-mix(in oklab, #fffdf7 98%, var(--color-background-elevated-primary-opaque));
+  --cultivation-home-card: color-mix(in oklab, #fffdf7 94%, var(--color-background-elevated-primary-opaque));
+  --cultivation-home-card-hover: color-mix(in oklab, #e8f3eb 72%, var(--color-background-button-secondary-hover));
+  --cultivation-home-line: color-mix(in oklab, var(--cultivation-gold) 30%, var(--color-border-heavy));
+  --cultivation-home-shadow: 0 12px 34px rgb(91 72 38 / .16);
+  --cultivation-sidebar-material: color-mix(in oklab, #f8f3e6 90%, transparent);
+  --cultivation-topbar-material: color-mix(in oklab, #fffdf7 94%, transparent);
+  --cultivation-hero-veil: color-mix(in oklab, #fffdf7 88%, transparent);
+  --cultivation-rail-card: color-mix(in oklab, #fffdf8 92%, transparent);
+  --cultivation-rail-card-strong: color-mix(in oklab, #fffdf8 98%, var(--color-background-elevated-primary-opaque));
+  --cultivation-companion-fallback:
+    radial-gradient(circle at 50% 28%, rgb(116 176 147 / .2), transparent 22%),
+    linear-gradient(160deg, #edf5ec, #fffaf0);
+  --dream-ambient-opacity: calc(.06 + var(--cultivation-background-strength) * .12);
+}
+
+:root.codex-cultivation.dream-theme-dark {
+  color-scheme: dark;
+  --cultivation-jade: #75e0b3;
+  --cultivation-gold: #f2c66d;
+  --cultivation-blue: #78c8ef;
+  --cultivation-violet: #c2a3f3;
+  --cultivation-danger: #ff8d8d;
+  --cultivation-home-card: color-mix(in oklab, #17211f 88%, var(--color-background-elevated-primary-opaque));
+  --cultivation-home-card-hover: color-mix(in oklab, #20332e 82%, var(--color-background-button-secondary-hover));
+  --cultivation-home-line: color-mix(in oklab, var(--cultivation-jade) 28%, var(--color-border-heavy));
+  --cultivation-home-shadow: 0 16px 42px rgb(0 0 0 / .3);
+  --cultivation-sidebar-material: color-mix(in oklab, #101817 84%, transparent);
+  --cultivation-topbar-material: color-mix(in oklab, #121918 91%, transparent);
+  --cultivation-hero-veil: color-mix(in oklab, #101817 86%, transparent);
+  --cultivation-rail-card: color-mix(in oklab, #101a19 90%, transparent);
+  --cultivation-rail-card-strong: color-mix(in oklab, #101817 96%, var(--color-background-elevated-primary-opaque));
+  --cultivation-companion-fallback:
+    radial-gradient(circle at 50% 28%, rgb(86 224 177 / .2), transparent 22%),
+    linear-gradient(160deg, #142823, #0c1315);
+  --dream-ambient-opacity: calc(.09 + var(--cultivation-background-strength) * .18);
+}
+
+#codex-cultivation-hud {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: calc(100% - 16px);
+  min-width: 0;
+  margin: 8px 8px 6px;
+  overflow: hidden;
+  color: var(--color-text-foreground);
+  border: 1px solid var(--cultivation-line);
+  border-radius: 8px;
+  background:
+    linear-gradient(100deg,
+      var(--cultivation-panel-strong) 0 62%,
+      color-mix(in oklab, var(--cultivation-panel-strong) 90%, transparent) 78%,
+      color-mix(in oklab, var(--cultivation-panel-strong) 72%, transparent) 100%),
+    var(--cultivation-art);
+  background-position: center, 78% center;
+  background-repeat: no-repeat;
+  background-size: cover, auto 110%;
+  box-shadow: 0 6px 20px rgb(0 0 0 / .14), inset 0 1px rgb(255 255 255 / .05);
+}
+
+.cultivation-hud__launcher {
+  display: grid;
+  width: 100%;
+  min-height: 44px;
+  gap: 8px;
+  padding: 12px;
+  color: inherit;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.cultivation-hud__launcher:hover {
+  background: color-mix(in oklab, var(--cultivation-hover) 42%, transparent);
+}
+
+.cultivation-hud__launcher:focus-visible,
+#codex-cultivation-dialog button:focus-visible,
+#codex-cultivation-dialog input:focus-visible,
+#codex-cultivation-dialog select:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: -2px;
+}
+
+.cultivation-hud__eyebrow {
+  color: var(--cultivation-jade);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.cultivation-hud__realm-row,
+.cultivation-hud__progress-head,
+.cultivation-hud__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 8px;
+}
+
+.cultivation-hud__realm {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-text-foreground);
+  font-family: "Noto Serif SC", "Source Han Serif SC", SimSun, serif;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.cultivation-hud__badge {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  color: var(--cultivation-gold);
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid color-mix(in oklab, var(--cultivation-gold) 48%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--cultivation-gold) 10%, transparent);
+}
+
+.cultivation-hud__title,
+.cultivation-hud__stat-label,
+.cultivation-hud__progress-head,
+.cultivation-hud__footer {
+  color: var(--color-text-foreground-secondary);
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.cultivation-hud__progress {
+  display: grid;
+  gap: 5px;
+}
+
+.cultivation-hud__progress-value {
+  color: var(--cultivation-gold);
+  font-family: Consolas, "Microsoft YaHei UI", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.cultivation-hud__meter,
+.cultivation-dialog__meter {
+  display: block;
+  height: 5px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-background-button-secondary);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / .18);
+}
+
+.cultivation-hud__meter > span,
+.cultivation-dialog__meter > span {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--cultivation-jade), var(--cultivation-gold));
+  transition: width 220ms ease-out;
+}
+
+.cultivation-hud__stats {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 8px;
+}
+
+.cultivation-hud__stat {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.cultivation-hud__stat-value {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-foreground);
+  font-family: Consolas, "Microsoft YaHei UI", monospace;
+  font-size: 11px;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#codex-cultivation-hud.is-compact .cultivation-hud__title,
+#codex-cultivation-hud.is-compact .cultivation-hud__stats,
+#codex-cultivation-hud.is-compact .cultivation-hud__footer {
+  display: none;
+}
+
+#codex-cultivation-dialog {
+  position: fixed;
+  z-index: 2147483000;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  color: var(--color-text-foreground);
+}
+
+.cultivation-dialog__scrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(0 0 0 / .56);
+}
+
+.cultivation-dialog__surface {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  width: min(720px, calc(100vw - 48px));
+  max-height: min(760px, calc(100vh - 64px));
+  overflow: hidden;
+  border: 1px solid var(--cultivation-line);
+  border-radius: 8px;
+  background: var(--color-background-elevated-primary-opaque);
+  box-shadow: 0 24px 80px rgb(0 0 0 / .38);
+}
+
+.cultivation-dialog__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 24px 24px 18px;
+  border-bottom: 1px solid var(--cultivation-line-soft);
+  background:
+    linear-gradient(90deg,
+      var(--cultivation-panel-strong) 0 62%,
+      color-mix(in oklab, var(--cultivation-panel-strong) 82%, transparent) 100%),
+    var(--cultivation-art);
+  background-position: center, right center;
+  background-size: cover, auto 190%;
+}
+
+.cultivation-dialog__header > div > span {
+  color: var(--cultivation-jade);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.cultivation-dialog__header h2 {
+  margin: 4px 0 2px;
+  color: var(--color-text-foreground);
+  font-family: "Noto Serif SC", "Source Han Serif SC", SimSun, serif;
+  font-size: 24px;
+  line-height: 1.2;
+  letter-spacing: 0;
+}
+
+.cultivation-dialog__header p,
+.cultivation-dialog__section p,
+.cultivation-setting-note p {
+  margin: 0;
+  color: var(--color-text-foreground-secondary);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.cultivation-dialog__header button,
+.cultivation-dialog__enlightenment button,
+.cultivation-setting-calibration button {
+  min-height: 36px;
+  padding: 0 12px;
+  color: var(--color-text-foreground);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--cultivation-line);
+  border-radius: 6px;
+  background: var(--color-background-button-secondary);
+  cursor: pointer;
+}
+
+.cultivation-dialog__header button:hover,
+.cultivation-dialog__enlightenment button:hover,
+.cultivation-setting-calibration button:hover {
+  background: var(--color-background-button-secondary-hover);
+}
+
+.cultivation-dialog__tabs {
+  display: flex;
+  min-height: 44px;
+  padding: 0 16px;
+  border-bottom: 1px solid var(--cultivation-line-soft);
+}
+
+.cultivation-dialog__tabs button {
+  position: relative;
+  min-width: 72px;
+  min-height: 44px;
+  padding: 0 14px;
+  color: var(--color-text-foreground-secondary);
+  font: inherit;
+  font-size: 13px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.cultivation-dialog__tabs button[aria-selected="true"] {
+  color: var(--color-text-foreground);
+  font-weight: 650;
+}
+
+.cultivation-dialog__tabs button[aria-selected="true"]::after {
+  position: absolute;
+  right: 14px;
+  bottom: 0;
+  left: 14px;
+  height: 2px;
+  content: "";
+  background: var(--cultivation-jade);
+}
+
+.cultivation-dialog__body {
+  min-height: 0;
+  overflow: auto;
+  padding: 0 24px;
+}
+
+.cultivation-dialog__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--cultivation-line-soft);
+}
+
+.cultivation-dialog__stats > div {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+  padding: 20px 16px 20px 0;
+}
+
+.cultivation-dialog__stats span,
+.cultivation-dialog__stats small,
+.cultivation-dialog__checkins span,
+.cultivation-dialog__checkins small,
+.cultivation-setting-row small,
+.cultivation-setting-calibration small {
+  color: var(--color-text-foreground-secondary);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.cultivation-dialog__stats strong {
+  overflow-wrap: anywhere;
+  color: var(--color-text-foreground);
+  font-family: Consolas, "Microsoft YaHei UI", monospace;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cultivation-dialog__section {
+  padding: 20px 0;
+  border-bottom: 1px solid var(--cultivation-line-soft);
+}
+
+.cultivation-dialog__section-head,
+.cultivation-dialog__enlightenment {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.cultivation-dialog__section h3,
+.cultivation-setting-row strong,
+.cultivation-setting-range strong,
+.cultivation-setting-note strong,
+.cultivation-setting-calibration strong {
+  margin: 0 0 4px;
+  color: var(--color-text-foreground);
+  font-size: 13px;
+  font-weight: 650;
+  letter-spacing: 0;
+}
+
+.cultivation-dialog__section-head > strong {
+  flex: 0 0 auto;
+  color: var(--cultivation-gold);
+  font-family: Consolas, monospace;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cultivation-dialog__meter {
+  height: 7px;
+  margin-top: 12px;
+}
+
+.cultivation-dialog__tribulation {
+  border-left: 3px solid var(--cultivation-gold);
+  padding-left: 16px;
+}
+
+.cultivation-dialog__checkins {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 14px;
+  border: 1px solid var(--cultivation-line-soft);
+  border-radius: 6px;
+}
+
+.cultivation-dialog__checkins > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+  padding: 12px;
+  border-right: 1px solid var(--cultivation-line-soft);
+}
+
+.cultivation-dialog__checkins > div:last-child {
+  border-right: 0;
+}
+
+.cultivation-dialog__checkins .is-passed strong {
+  color: var(--cultivation-jade);
+}
+
+.cultivation-dialog__checkins .is-current {
+  background: var(--dream-accent-soft);
+}
+
+.cultivation-dialog__enlightenment {
+  border-left: 3px solid var(--cultivation-jade);
+  padding-left: 16px;
+}
+
+.cultivation-dialog__week {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  height: 130px;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.cultivation-dialog__week > div {
+  display: grid;
+  min-width: 0;
+  justify-items: center;
+  gap: 3px;
+}
+
+.cultivation-dialog__bar {
+  position: relative;
+  display: block;
+  width: 12px;
+  height: 72px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--color-background-button-secondary);
+}
+
+.cultivation-dialog__bar i {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  min-height: 3px;
+  background: var(--cultivation-jade);
+}
+
+.cultivation-dialog__week small,
+.cultivation-dialog__week strong {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--color-text-foreground-secondary);
+  font-size: 9px;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cultivation-dialog__history {
+  padding: 8px 0;
+}
+
+.cultivation-dialog__event {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--cultivation-line-soft);
+}
+
+.cultivation-dialog__event time {
+  color: var(--color-text-foreground-secondary);
+  font-family: Consolas, monospace;
+  font-size: 11px;
+}
+
+.cultivation-dialog__event p {
+  margin: 0;
+  color: var(--color-text-foreground);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.cultivation-dialog__event--success p,
+.cultivation-dialog__event--enlightenment p {
+  color: var(--cultivation-jade);
+}
+
+.cultivation-dialog__event--failure p {
+  color: var(--cultivation-danger);
+}
+
+.cultivation-dialog__settings {
+  padding: 8px 0;
+}
+
+.cultivation-setting-row,
+.cultivation-setting-range,
+.cultivation-setting-note,
+.cultivation-setting-calibration {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--cultivation-line-soft);
+}
+
+.cultivation-setting-row > span,
+.cultivation-setting-range > span,
+.cultivation-setting-calibration > label {
+  display: grid;
+  min-width: 0;
+}
+
+.cultivation-setting-row select,
+.cultivation-setting-calibration input {
+  min-height: 36px;
+  padding: 0 10px;
+  color: var(--color-text-foreground);
+  font: inherit;
+  font-size: 12px;
+  border: 1px solid var(--cultivation-line);
+  border-radius: 6px;
+  background: var(--color-background-elevated-primary-opaque);
+}
+
+.cultivation-setting-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--cultivation-jade);
+}
+
+.cultivation-setting-range {
+  display: grid;
+}
+
+.cultivation-setting-range output {
+  color: var(--cultivation-gold);
+  font-family: Consolas, monospace;
+  font-size: 12px;
+}
+
+.cultivation-setting-range input {
+  width: 100%;
+  accent-color: var(--cultivation-jade);
+}
+
+.cultivation-setting-note {
+  display: block;
+}
+
+.cultivation-setting-calibration {
+  display: grid;
+}
+
+.cultivation-setting-calibration > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.cultivation-dialog__footer {
+  padding: 12px 24px;
+  color: var(--color-text-foreground-secondary);
+  font-size: 10px;
+  line-height: 1.4;
+  border-top: 1px solid var(--cultivation-line-soft);
+}
+
+#codex-cultivation-toast {
+  position: fixed;
+  z-index: 2147483100;
+  right: 24px;
+  bottom: 24px;
+  max-width: min(360px, calc(100vw - 48px));
+  padding: 12px 16px;
+  color: var(--color-text-foreground);
+  font-size: 13px;
+  border: 1px solid var(--cultivation-line);
+  border-radius: 6px;
+  background: var(--color-background-elevated-primary-opaque);
+  box-shadow: 0 12px 36px rgb(0 0 0 / .24);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 180ms ease-out, transform 180ms ease-out;
+}
+
+#codex-cultivation-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+html.codex-cultivation .composer-surface-chrome,
+html.codex-cultivation .dream-home-utility {
+  color: var(--color-text-foreground) !important;
+  border-color: var(--color-border-heavy) !important;
+  background: var(--color-background-elevated-primary-opaque) !important;
+  backdrop-filter: none !important;
+}
+
+html.codex-cultivation .composer-surface-chrome:focus-within,
+html.codex-cultivation .dream-home-utility:focus-within {
+  border-color: var(--color-border-focus) !important;
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-border-focus) 35%, transparent) !important;
+}
+
+html.codex-cultivation main.main-surface > header.app-header-tint {
+  color: var(--color-text-foreground) !important;
+  border-bottom: 1px solid var(--color-border) !important;
+  background: var(--color-background-surface) !important;
+  backdrop-filter: none !important;
+}
+
+/* The home route is a complete cultivation workspace. Native Codex actions stay
+   interactive; the cultivation layer supplies hierarchy, materials and status. */
+html.codex-cultivation .dream-home {
+  display: grid !important;
+  grid-template-columns: 232px minmax(620px, 1fr) 236px;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 12px;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
+  padding: 14px !important;
+  overflow: hidden !important;
+}
+
+.dream-home > .cultivation-home-core {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  container-type: inline-size;
+}
+
+#codex-cultivation-left-rail,
+#codex-cultivation-right-rail {
+  z-index: 5;
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  gap: 12px;
+  overflow: auto;
+  scrollbar-width: none;
+}
+
+#codex-cultivation-left-rail {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+#codex-cultivation-right-rail {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+#codex-cultivation-left-rail::-webkit-scrollbar,
+#codex-cultivation-right-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.cultivation-rail-card {
+  position: relative;
+  box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-foreground);
+  border: 1px solid var(--cultivation-home-line);
+  border-radius: 8px;
+  background: var(--cultivation-rail-card);
+  box-shadow:
+    var(--cultivation-home-shadow),
+    inset 0 0 0 2px color-mix(in oklab, var(--cultivation-gold) 5%, transparent),
+    inset 0 1px rgb(255 255 255 / .06);
+  backdrop-filter: blur(18px) saturate(1.06);
+}
+
+.cultivation-rail-card::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background:
+    linear-gradient(130deg, color-mix(in oklab, var(--cultivation-jade) 7%, transparent), transparent 42%),
+    linear-gradient(315deg, color-mix(in oklab, var(--cultivation-gold) 5%, transparent), transparent 36%);
+  pointer-events: none;
+}
+
+.cultivation-rail-heading {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 28px;
+  gap: 8px;
+  color: var(--color-text-foreground);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.cultivation-rail-heading > span::after {
+  display: inline-block;
+  width: 18px;
+  height: 1px;
+  margin-left: 8px;
+  vertical-align: middle;
+  content: "";
+  background: linear-gradient(90deg, var(--cultivation-jade), transparent);
+}
+
+.cultivation-rail-heading small,
+.cultivation-rail-heading button {
+  color: var(--color-text-foreground-secondary);
+  font: inherit;
+  font-size: 10px;
+  font-weight: 550;
+}
+
+.cultivation-rail-heading button {
+  min-height: 30px;
+  padding: 0 8px;
+  border: 1px solid var(--cultivation-line-soft);
+  border-radius: 6px;
+  background: var(--color-background-button-secondary);
+  cursor: pointer;
+}
+
+.cultivation-rail-heading button:hover {
+  color: var(--color-text-foreground);
+  background: var(--color-background-button-secondary-hover);
+}
+
+.cultivation-rail-heading button:focus-visible {
+  outline: 2px solid var(--color-border-focus);
+  outline-offset: 2px;
+}
+
+.cultivation-rail-overview {
+  flex: 0 0 auto;
+  padding: 16px;
+}
+
+.cultivation-rail-label {
+  position: relative;
+  display: block;
+  margin-top: 12px;
+  color: var(--color-text-foreground-secondary);
+  font-size: 10px;
+}
+
+.cultivation-rail-realm {
+  position: relative;
+  display: grid;
+  gap: 3px;
+  margin: 4px 0 16px;
+}
+
+.cultivation-rail-realm strong {
+  font-family: "Noto Serif SC", "Source Han Serif SC", SimSun, serif;
+  font-size: 22px;
+  letter-spacing: .01em;
+}
+
+.cultivation-rail-realm small,
+.cultivation-rail-progress-head,
+.cultivation-rail-next {
+  color: var(--color-text-foreground-secondary);
+  font-size: 10px;
+}
+
+.cultivation-rail-progress-head,
+.cultivation-rail-next {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cultivation-rail-progress-head strong,
+.cultivation-rail-next strong {
+  color: var(--cultivation-gold);
+  font-family: Consolas, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.cultivation-rail-meter {
+  position: relative;
+  display: block;
+  height: 6px;
+  margin: 7px 0 14px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--color-background-button-secondary);
+  box-shadow: inset 0 1px 2px rgb(0 0 0 / .2);
+}
+
+.cultivation-rail-meter i {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--cultivation-jade), color-mix(in oklab, var(--cultivation-jade) 64%, var(--cultivation-gold)));
+  box-shadow: 0 0 12px color-mix(in oklab, var(--cultivation-jade) 38%, transparent);
+  transition: width 220ms ease-out;
+}
+
+.cultivation-rail-stones {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  margin: 0 -16px 14px;
+  border-top: 1px solid var(--cultivation-line-soft);
+  border-bottom: 1px solid var(--cultivation-line-soft);
+  background: var(--cultivation-line-soft);
+}
+
+.cultivation-rail-stones > span {
+  display: grid;
+  min-width: 0;
+  gap: 4px;
+  padding: 12px 16px;
+  background: var(--cultivation-rail-card-strong);
+}
+
+.cultivation-rail-stones small {
+  color: var(--color-text-foreground-secondary);
+  font-size: 9px;
+}
+
+.cultivation-rail-stones strong {
+  min-width: 0;
+  overflow: hidden;
+  font-family: Consolas, "Microsoft YaHei UI", monospace;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cultivation-rail-methods {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 5px;
+  margin-top: 14px;
+}
+
+.cultivation-rail-methods span {
+  padding: 6px 2px;
+  color: var(--color-text-foreground-secondary);
+  font-size: 10px;
+  text-align: center;
+  border: 1px solid var(--cultivation-line-soft);
+  border-radius: 5px;
+  background: color-mix(in oklab, var(--cultivation-panel-strong) 72%, transparent);
+}
+
+.cultivation-rail-methods span.is-active {
+  color: var(--cultivation-jade);
+  border-color: color-mix(in oklab, var(--cultivation-jade) 48%, var(--cultivation-line-soft));
+  background: color-mix(in oklab, var(--cultivation-jade) 12%, var(--cultivation-panel-strong));
+}
+
+.cultivation-companion-card {
+  display: grid;
+  flex: 1 1 340px;
+  grid-template-rows: auto minmax(220px, 1fr) auto;
+  min-height: 340px;
+  padding: 14px 14px 0;
+}
+
+.cultivation-companion-art {
+  position: relative;
+  min-height: 0;
+  margin: 4px -14px 0;
+  overflow: hidden;
+  background-image: var(--cultivation-companion-art, var(--cultivation-companion-fallback));
+  background-position: center top;
+  background-repeat: no-repeat;
+  background-size: cover;
+  mask-image: linear-gradient(to bottom, #000 0 82%, transparent 100%);
+}
+
+.cultivation-companion-art::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(to bottom, transparent 54%, var(--cultivation-rail-card-strong) 100%);
+  pointer-events: none;
+}
+
+.cultivation-companion-placeholder {
+  position: absolute;
+  top: 42%;
+  left: 50%;
+  color: color-mix(in oklab, var(--cultivation-jade) 54%, var(--color-text-foreground-secondary));
+  font-family: "Noto Serif SC", "Source Han Serif SC", SimSun, serif;
+  font-size: 42px;
+  opacity: .42;
+  transform: translate(-50%, -50%);
+}
+
+:root[style*="--cultivation-companion-art"] .cultivation-companion-placeholder {
+  display: none;
+}
+
+.cultivation-companion-copy {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  gap: 3px;
+  margin: -26px -14px 0;
+  padding: 22px 16px 16px;
+  background: linear-gradient(to bottom, transparent, var(--cultivation-rail-card-strong) 28%);
+}
+
+.cultivation-companion-copy span {
+  color: var(--cultivation-jade);
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.cultivation-companion-copy strong {
+  font-family: "Noto Serif SC", "Source Han Serif SC", SimSun, serif;
+  font-size: 18px;
+}
+
+.cultivation-companion-copy p,
+.cultivation-goal-card p {
+  margin: 0;
+  color: var(--color-text-foreground-secondary);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.cultivation-status-card,
+.cultivation-goal-card,
+.cultivation-week-card,
+.cultivation-events-card {
+  flex: 0 0 auto;
+  padding: 14px;
+}
+
+.cultivation-status-card dl {
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin: 8px 0 0;
+}
+
+.cultivation-status-flow {
+  position: relative;
+  display: grid;
+  gap: 6px;
+  margin: 8px -2px 4px;
+  padding: 10px 8px 6px;
+  border: 1px solid var(--cultivation-line-soft);
+  border-radius: 6px;
+  background: color-mix(in oklab, var(--cultivation-panel-strong) 66%, transparent);
+}
+
+.cultivation-status-flow > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.cultivation-status-flow strong {
+  color: var(--cultivation-jade);
+  font-size: 10px;
+}
+
+.cultivation-status-flow small {
+  color: var(--color-text-foreground-secondary);
+  font-size: 8px;
+}
+
+.cultivation-status-flow svg {
+  width: 100%;
+  height: 66px;
+  overflow: visible;
+}
+
+.cultivation-status-flow .cultivation-flow-area {
+  fill: url(#cultivation-flow-fill);
+}
+
+.cultivation-status-flow .cultivation-flow-line {
+  fill: none;
+  stroke: var(--cultivation-jade);
+  stroke-width: 2;
+  vector-effect: non-scaling-stroke;
+}
+
+.cultivation-status-flow circle {
+  fill: var(--cultivation-rail-card-strong);
+  stroke: var(--cultivation-jade);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.cultivation-status-card dl > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--cultivation-line-soft);
+}
+
+.cultivation-status-card dl > div:last-child {
+  border-bottom: 0;
+}
+
+.cultivation-status-card dt {
+  color: var(--color-text-foreground-secondary);
+  font-size: 10px;
+}
+
+.cultivation-status-card dd {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: var(--color-text-foreground);
+  font-family: Consolas, "Microsoft YaHei UI", monospace;
+  font-size: 10px;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cultivation-goal-value {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  flex-direction: column;
+  margin-top: 0;
+}
+
+.cultivation-goal-value strong {
+  font-family: Consolas, "Microsoft YaHei UI", monospace;
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cultivation-goal-value span {
+  color: var(--color-text-foreground-secondary);
+  font-size: 9px;
+}
+
+.cultivation-goal-visual {
+  position: relative;
+  display: grid;
+  grid-template-columns: 84px minmax(0, 1fr);
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.cultivation-goal-ring {
+  position: relative;
+  display: grid;
+  width: 78px;
+  height: 78px;
+  place-items: center;
+  border-radius: 50%;
+  background: conic-gradient(var(--cultivation-jade) 0 var(--goal-progress), var(--color-background-button-secondary) var(--goal-progress) 360deg);
+  box-shadow: 0 0 22px color-mix(in oklab, var(--cultivation-jade) 12%, transparent);
+}
+
+.cultivation-goal-ring::before {
+  position: absolute;
+  inset: 8px;
+  content: "";
+  border: 1px solid var(--cultivation-line-soft);
+  border-radius: 50%;
+  background: var(--cultivation-rail-card-strong);
+}
+
+.cultivation-goal-ring > span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 1px;
+  text-align: center;
+}
+
+.cultivation-goal-ring strong {
+  font-family: Consolas, monospace;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.cultivation-goal-ring small {
+  color: var(--color-text-foreground-secondary);
+  font-size: 8px;
+}
+
+.cultivation-week-card {
+  min-height: 142px;
+}
+
+.cultivation-rail-week {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  align-items: end;
+  height: 84px;
+  gap: 5px;
+  margin-top: 8px;
+}
+
+.cultivation-rail-week > span {
+  display: grid;
+  height: 100%;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 4px;
+}
+
+.cultivation-rail-week i {
+  display: block;
+  min-height: 4px;
+  border-radius: 999px 999px 2px 2px;
+  background: linear-gradient(to top, var(--cultivation-jade), color-mix(in oklab, var(--cultivation-jade) 62%, var(--cultivation-gold)));
+  opacity: .82;
+}
+
+.cultivation-rail-week small {
+  color: var(--color-text-foreground-secondary);
+  font-size: 8px;
+  text-align: center;
+}
+
+.cultivation-events-card {
+  flex: 1 1 150px;
+}
+
+.cultivation-rail-events {
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin-top: 6px;
+}
+
+.cultivation-rail-events > div {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr);
+  gap: 8px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--cultivation-line-soft);
+}
+
+.cultivation-rail-events > div:last-child {
+  border-bottom: 0;
+}
+
+.cultivation-rail-events time {
+  color: var(--cultivation-jade);
+  font-family: Consolas, monospace;
+  font-size: 9px;
+}
+
+.cultivation-rail-events p {
+  margin: 0;
+  color: var(--color-text-foreground-secondary);
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+html.codex-cultivation:has(main.main-surface.dream-home-shell) #codex-cultivation-hud {
+  display: none;
+}
+
+html.codex-cultivation:has(main.main-surface.dream-home-shell) aside.app-shell-left-panel {
+  border-right: 1px solid var(--cultivation-home-line) !important;
+  background: var(--cultivation-sidebar-material) !important;
+  box-shadow: inset -12px 0 32px color-mix(in oklab, var(--cultivation-jade) 4%, transparent);
+  backdrop-filter: blur(18px) saturate(1.04);
+}
+
+html.codex-cultivation main.main-surface.dream-home-shell > header.cultivation-home-header {
+  color: var(--color-text-foreground) !important;
+  border-bottom: 1px solid var(--cultivation-home-line) !important;
+  background: var(--cultivation-topbar-material) !important;
+  box-shadow: 0 8px 24px rgb(0 0 0 / .1);
+  backdrop-filter: blur(16px) saturate(1.05) !important;
+}
+
+html.codex-cultivation main.main-surface.dream-home-shell > header.cultivation-home-header::after {
+  position: absolute;
+  top: 50%;
+  left: 18px;
+  max-width: min(52vw, 520px);
+  overflow: hidden;
+  color: var(--cultivation-jade);
+  content: attr(data-cultivation-title);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transform: translateY(-50%);
+}
+
+html.codex-cultivation .dream-home > div:first-child > div:first-child > div:first-child {
+  overflow: visible !important;
+  border-color: var(--cultivation-home-line) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--cultivation-home-shadow) !important;
+}
+
+html.codex-cultivation .dream-home > div:first-child > div:first-child > div:first-child::before {
+  border-radius: 8px;
+  background: linear-gradient(90deg,
+    var(--cultivation-hero-veil) 0 38%,
+    color-mix(in oklab, var(--cultivation-hero-veil) 58%, transparent) 58%,
+    transparent 82%);
+}
+
+html.codex-cultivation.dream-safe-right .dream-home > div:first-child > div:first-child > div:first-child::before {
+  background: linear-gradient(270deg,
+    var(--cultivation-hero-veil) 0 38%,
+    color-mix(in oklab, var(--cultivation-hero-veil) 58%, transparent) 58%,
+    transparent 82%);
+}
+
+.dream-home .cultivation-home-native-title {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+#codex-cultivation-home-hero {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 28px 40px;
+  color: var(--color-text-foreground);
+  border-radius: 8px;
+  pointer-events: none;
+}
+
+.cultivation-home-hero__content {
+  display: grid;
+  width: min(100%, 620px);
+  min-width: 0;
+  gap: 9px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+html.codex-cultivation.dream-safe-right .cultivation-home-hero__content {
+  margin: 0 auto;
+  text-align: center;
+}
+
+.cultivation-home-hero__eyebrow {
+  color: var(--cultivation-jade);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: .04em;
+}
+
+.cultivation-home-hero__content h1 {
+  margin: 0;
+  color: var(--color-text-foreground);
+  font-family: "Noto Serif SC", "Source Han Serif SC", SimSun, serif;
+  font-size: clamp(32px, 5cqw, 48px);
+  font-weight: 750;
+  letter-spacing: -.02em;
+  line-height: 1.2;
+  text-shadow: 0 2px 20px var(--color-background-surface);
+}
+
+.cultivation-home-hero__content > p {
+  margin: 0;
+  color: var(--color-text-foreground-secondary);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.cultivation-home-hero__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 8px;
+  overflow: hidden;
+  border: 1px solid var(--cultivation-home-line);
+  border-radius: 6px;
+  background: var(--cultivation-home-line);
+  box-shadow: 0 8px 24px rgb(0 0 0 / .12);
+}
+
+.cultivation-home-hero__metrics > span {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  padding: 10px 12px;
+  background: var(--cultivation-panel-strong);
+}
+
+.cultivation-home-hero__metrics small {
+  color: var(--color-text-foreground-secondary);
+  font-size: 9px;
+}
+
+.cultivation-home-hero__metrics strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--color-text-foreground);
+  font-family: Consolas, "Microsoft YaHei UI", monospace;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.cultivation-home-hero__event {
+  justify-self: center;
+  margin-top: 2px;
+  padding: 3px 8px;
+  color: var(--cultivation-gold);
+  font-size: 10px;
+  font-weight: 700;
+  border: 1px solid color-mix(in oklab, var(--cultivation-gold) 42%, transparent);
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--cultivation-gold) 10%, transparent);
+}
+
+html.codex-cultivation.dream-safe-right .cultivation-home-hero__event {
+  justify-self: center;
+}
+
+.dream-home .cultivation-home-suggestions-slot {
+  z-index: 4 !important;
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label] {
+  --cultivation-card-accent: var(--cultivation-jade);
+  position: relative;
+  display: flex !important;
+  min-height: 310px !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  overflow: hidden;
+  padding: 24px 18px 20px !important;
+  color: var(--color-text-foreground) !important;
+  text-align: center !important;
+  border: 1px solid var(--cultivation-home-line) !important;
+  border-radius: 8px !important;
+  background: var(--cultivation-home-card) !important;
+  box-shadow: var(--cultivation-home-shadow) !important;
+  backdrop-filter: blur(16px) saturate(1.04);
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-kind="break-array"] {
+  --cultivation-card-accent: var(--cultivation-blue);
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-kind="retreat"] {
+  --cultivation-card-accent: var(--cultivation-violet);
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-kind="contemplate"] {
+  --cultivation-card-accent: var(--cultivation-gold);
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label]::before {
+  display: block;
+  margin-bottom: 18px;
+  color: var(--cultivation-card-accent);
+  content: attr(data-cultivation-card-label);
+  font-family: "Noto Serif SC", "Source Han Serif SC", SimSun, serif;
+  font-size: 20px;
+  font-weight: 750;
+  letter-spacing: .02em;
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label]::after {
+  position: absolute;
+  top: 58px;
+  left: 50%;
+  width: 132px;
+  height: 132px;
+  content: "";
+  border: 1px solid color-mix(in oklab, var(--cultivation-card-accent) 18%, transparent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 12px color-mix(in oklab, var(--cultivation-card-accent) 4%, transparent),
+    0 0 0 28px color-mix(in oklab, var(--cultivation-gold) 3%, transparent),
+    inset 0 0 28px color-mix(in oklab, var(--cultivation-card-accent) 8%, transparent);
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label] > * {
+  position: relative;
+  z-index: 1;
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label]:hover {
+  border-color: color-mix(in oklab, var(--cultivation-jade) 55%, var(--cultivation-home-line)) !important;
+  background: var(--cultivation-home-card-hover) !important;
+  transform: translateY(-2px) !important;
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label]:focus-visible {
+  outline: 2px solid var(--color-border-focus) !important;
+  outline-offset: 2px !important;
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label] > span:first-child > span:first-child {
+  width: 56px !important;
+  height: 56px !important;
+  margin: 10px auto 54px !important;
+  border-radius: 6px !important;
+  color: var(--dream-accent-ink) !important;
+  background: var(--dream-accent) !important;
+  box-shadow: 0 0 0 5px color-mix(in oklab, var(--dream-accent) 12%, transparent) !important;
+}
+
+.dream-home .group\/home-suggestions button.has-cultivation-card-art > span:first-child > span:first-child {
+  width: 104px !important;
+  height: 104px !important;
+  margin-top: -4px !important;
+  margin-bottom: 24px !important;
+  border: 1px solid color-mix(in oklab, var(--cultivation-card-accent) 34%, transparent) !important;
+  border-radius: 50% !important;
+  background-color: transparent !important;
+  background-image: var(--cultivation-card-art) !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+  background-size: cover !important;
+}
+
+.dream-home .group\/home-suggestions button.has-cultivation-card-art > span:first-child > span:first-child svg {
+  opacity: 0 !important;
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label] svg {
+  width: 26px !important;
+  height: 26px !important;
+}
+
+.dream-home .group\/home-suggestions button[data-cultivation-card-label] > .cultivation-card-native-copy {
+  margin-top: auto !important;
+  margin-bottom: 38px !important;
+  color: var(--color-text-foreground-secondary) !important;
+  line-height: 1.55 !important;
+}
+
+.dream-home .cultivation-card-arrow {
+  position: absolute !important;
+  bottom: 14px;
+  left: 50%;
+  display: grid !important;
+  width: 28px !important;
+  height: 28px !important;
+  flex: 0 0 28px !important;
+  place-items: center;
+  margin: 0 !important;
+  color: var(--cultivation-card-accent) !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  border: 1px solid color-mix(in oklab, var(--cultivation-card-accent) 44%, transparent);
+  border-radius: 50%;
+  background: color-mix(in oklab, var(--cultivation-card-accent) 7%, var(--cultivation-panel-strong));
+  transform: translateX(-50%);
+}
+
+.dream-home .cultivation-home-project-bar {
+  position: relative;
+  z-index: 2;
+  color: var(--color-text-foreground) !important;
+  border: 1px solid var(--cultivation-home-line) !important;
+  border-bottom: 0 !important;
+  border-radius: 8px 8px 0 0 !important;
+  background: var(--cultivation-topbar-material) !important;
+  box-shadow: 0 -8px 26px rgb(0 0 0 / .12);
+  backdrop-filter: blur(16px) saturate(1.04);
+}
+
+.dream-home .cultivation-home-project-bar::after {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  color: var(--cultivation-jade);
+  content: "静心法坛";
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+html.codex-cultivation .dream-home .composer-surface-chrome {
+  border-color: var(--cultivation-home-line) !important;
+  border-radius: 0 0 8px 8px !important;
+  background: var(--cultivation-home-card) !important;
+  box-shadow: 0 16px 44px rgb(0 0 0 / .24) !important;
+  backdrop-filter: blur(18px) saturate(1.04) !important;
+}
+
+:root.dream-theme-light .dream-home .cultivation-home-project-bar,
+:root.dream-theme-light .dream-home .composer-surface-chrome {
+  box-shadow: 0 14px 36px rgb(91 72 38 / .14) !important;
+}
+
+:root.cultivation-motion-off *,
+:root.cultivation-motion-off *::before,
+:root.cultivation-motion-off *::after {
+  transition-duration: .001ms !important;
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+@media (max-width: 1450px) {
+  html.codex-cultivation .dream-home {
+    grid-template-columns: 244px minmax(620px, 1fr);
+  }
+
+  #codex-cultivation-right-rail {
+    display: none;
+  }
+}
+
+@media (max-width: 1120px) {
+  html.codex-cultivation .dream-home {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 10px !important;
+  }
+
+  .dream-home > .cultivation-home-core {
+    grid-column: 1;
+  }
+
+  #codex-cultivation-left-rail {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  #codex-cultivation-dialog {
+    padding: 16px;
+  }
+
+  .cultivation-dialog__surface {
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+  }
+
+  .cultivation-dialog__header,
+  .cultivation-dialog__body {
+    padding-right: 16px;
+    padding-left: 16px;
+  }
+
+  .cultivation-dialog__stats {
+    grid-template-columns: 1fr;
+  }
+
+  .cultivation-dialog__stats > div {
+    padding: 12px 0;
+    border-bottom: 1px solid var(--cultivation-line-soft);
+  }
+
+  .cultivation-dialog__checkins {
+    grid-template-columns: 1fr;
+  }
+
+  .cultivation-dialog__checkins > div {
+    border-right: 0;
+    border-bottom: 1px solid var(--cultivation-line-soft);
+  }
+
+  .cultivation-dialog__checkins > div:last-child {
+    border-bottom: 0;
+  }
+
+  .cultivation-setting-row,
+  .cultivation-setting-calibration {
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cultivation-hud__meter > span,
+  .cultivation-dialog__meter > span,
+  .cultivation-rail-meter i,
+  #codex-cultivation-toast {
+    transition: none;
+  }
+}
