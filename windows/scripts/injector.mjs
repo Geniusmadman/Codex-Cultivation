@@ -411,6 +411,17 @@ async function loadPayload(themeDir = path.join(root, "assets"), candidateTheme 
     cardBreakArray: "card-break-array.png",
     cardRetreat: "card-retreat.png",
     cardContemplate: "card-contemplate.png",
+    cardFrameForge: "card-frame-forge.png",
+    cardFrameBreakArray: "card-frame-break-array.png",
+    cardFrameRetreat: "card-frame-retreat.png",
+    cardFrameContemplate: "card-frame-contemplate.png",
+    panelFrame: "panel-frame.png",
+    heroSigil: "hero-sigil.png",
+    realmOrbit: "realm-orbit.png",
+    spiritStoneLower: "spirit-stone-lower.png",
+    spiritStoneMiddle: "spirit-stone-middle.png",
+    spiritStoneUpper: "spirit-stone-upper.png",
+    spiritStoneSupreme: "spirit-stone-supreme.png",
   };
   const [css, cultivationCss, template, ...cultivationImages] = await Promise.all([
     fs.readFile(path.join(root, "assets", "cultivation-base.css"), "utf8"),

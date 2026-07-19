@@ -11,9 +11,10 @@ import {
 } from "../scripts/image-metadata.mjs";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const windowsRoot = path.resolve(here, "..");
-const featured = await fs.readFile(path.join(windowsRoot, "assets", "cultivation-default.png"));
-const helper = path.join(windowsRoot, "scripts", "image-metadata.mjs");
+const platformRoot = path.resolve(here, "..");
+const featured = await fs.readFile(path.join(platformRoot, "assets", "cultivation-default.png"));
+const helper = path.join(platformRoot, "scripts", "image-metadata.mjs");
+const cultivationAssetRoot = path.join(platformRoot, "assets", "cultivation");
 
 assert.deepEqual(readImageMetadata(featured, ".png"), {
   width: 2560,
@@ -24,11 +25,75 @@ assert.deepEqual(readImageMetadata(featured, ".png"), {
   taskMode: "ambient",
 });
 
-const cli = spawnSync(process.execPath, [helper, "--check", path.join(windowsRoot, "assets", "cultivation-default.png")], {
+const cli = spawnSync(process.execPath, [helper, "--check", path.join(platformRoot, "assets", "cultivation-default.png")], {
   encoding: "utf8",
 });
 assert.equal(cli.status, 0);
 assert.deepEqual(JSON.parse(cli.stdout), readImageMetadata(featured, ".png"));
+
+const generatedAssets = [
+  "card-forge.png",
+  "card-break-array.png",
+  "card-retreat.png",
+  "card-contemplate.png",
+  "card-frame-forge.png",
+  "card-frame-break-array.png",
+  "card-frame-retreat.png",
+  "card-frame-contemplate.png",
+  "panel-frame.png",
+  ...["female", "male"].flatMap((gender) =>
+    ["qi", "foundation", "golden-core", "nascent-soul", "transformation"]
+      .map((realm) => `companion-${gender}-${realm}.png`)),
+];
+for (const file of generatedAssets) {
+  const bytes = await fs.readFile(path.join(cultivationAssetRoot, file));
+  const metadata = readImageMetadata(bytes, ".png");
+  assert.ok(metadata, `${file} must be a valid bounded PNG asset.`);
+  assert.equal(
+    metadata.aspect,
+    file.startsWith("card-") && !file.startsWith("card-frame-") ? "square" : "portrait",
+    `${file} should preserve its intended UI composition.`,
+  );
+}
+
+for (const file of [
+  "realm-orbit.png",
+  "spirit-stone-lower.png",
+  "spirit-stone-middle.png",
+  "spirit-stone-upper.png",
+  "spirit-stone-supreme.png",
+]) {
+  const metadata = readImageMetadata(await fs.readFile(path.join(cultivationAssetRoot, file)), ".png");
+  assert.ok(metadata, `${file} must be a valid bounded PNG asset.`);
+  assert.equal(metadata.aspect, "square", `${file} should remain square for compact HUD rendering.`);
+}
+
+const backgroundAssets = [
+  "qi-refining-background.png",
+  "qi-refining-background-light.png",
+  "foundation-background.png",
+  "foundation-background-light.png",
+  "golden-core-background.png",
+  "golden-core-background-light.png",
+  "nascent-soul-background.png",
+  "nascent-soul-background-light.png",
+  "transformation-background.png",
+  "transformation-background-light.png",
+];
+assert.equal(backgroundAssets.length, 10, "Five realms must each include dark and light artwork.");
+for (const file of backgroundAssets) {
+  const metadata = readImageMetadata(await fs.readFile(path.join(cultivationAssetRoot, file)), ".png");
+  assert.ok(metadata, `${file} must be a valid bounded PNG asset.`);
+  assert.equal(metadata.aspect, "wide", `${file} must preserve the wide desktop composition.`);
+  assert.ok(metadata.ratio >= 1.7, `${file} must retain a 16:9-class background ratio.`);
+}
+
+const heroSigil = readImageMetadata(
+  await fs.readFile(path.join(cultivationAssetRoot, "hero-sigil.png")),
+  ".png",
+);
+assert.ok(heroSigil, "hero-sigil.png must be a valid bounded PNG asset.");
+assert.equal(heroSigil.aspect, "wide", "hero-sigil.png should preserve its wide hero composition.");
 
 assert.deepEqual(classifyImageDimensions({ width: 800, height: 1200 }), {
   width: 800,
