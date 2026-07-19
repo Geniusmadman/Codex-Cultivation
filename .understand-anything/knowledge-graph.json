@@ -1,0 +1,3217 @@
+{
+  "version": "1.0.0",
+  "project": {
+    "name": "Codex-Cultivation",
+    "languages": [
+      "css",
+      "javascript",
+      "json",
+      "markdown",
+      "powershell",
+      "unknown",
+      "yaml"
+    ],
+    "frameworks": [],
+    "description": "Codex Cultivation transforms Codex Desktop into a local cultivation-themed growth system. The current Windows implementation uses a reversible Chromium DevTools Protocol injection layer without modifying the official application package, signatures, account data, tasks, or plugin data.",
+    "analyzedAt": "2026-07-19T04:00:08.851Z",
+    "gitCommitHash": "c404b34484def7573ee0effb94a8e41a8dfcbf59"
+  },
+  "nodes": [
+    {
+      "id": "file:windows/assets/cultivation-base.css",
+      "type": "file",
+      "name": "cultivation-base.css",
+      "filePath": "windows/assets/cultivation-base.css",
+      "summary": "Defines the foundational Codex Desktop reskin: light and dark design tokens, native shell/sidebar/composer overrides, route-level background art, and responsive readability behavior. It coordinates a single immersive image across home and task surfaces while preserving native interactive controls.",
+      "tags": [
+        "theme-foundation",
+        "desktop-shell",
+        "responsive-design",
+        "background-art",
+        "accessibility"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses modern CSS color-mix/oklch tokens, highly specific selectors targeting Codex shell structure, route-aware art treatments, responsive breakpoints, and reduced-motion fallbacks."
+    },
+    {
+      "id": "file:windows/assets/cultivation-skin.css",
+      "type": "file",
+      "name": "cultivation-skin.css",
+      "filePath": "windows/assets/cultivation-skin.css",
+      "summary": "Builds the cultivation-specific interface layer on top of the base theme, styling the progression HUD, modal tabs and statistics, settings controls, companion and status rail, weekly activity, event history, and the reworked home workspace. It maps cultivation colors and materials onto Codex's native theme tokens for both light and dark modes.",
+      "tags": [
+        "cultivation-ui",
+        "hud",
+        "dashboard",
+        "responsive-design",
+        "theme-skin"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Combines native Codex color tokens with custom cultivation variables, attribute-driven component states, generated visual meters, multiple responsive layouts, and explicit motion-reduction handling."
+    },
+    {
+      "id": "config:windows/assets/theme.json",
+      "type": "config",
+      "name": "theme.json",
+      "filePath": "windows/assets/theme.json",
+      "summary": "Declares the default '炼气云台' cultivation preset, including localized branding copy, project-picker labels, status text, background image, automatic appearance selection, and image focus/safe-area metadata. The art metadata places the focal point to the right and reserves the left side for readable interface content.",
+      "tags": [
+        "configuration",
+        "theme-preset",
+        "localization",
+        "art-direction",
+        "branding"
+      ],
+      "complexity": "simple",
+      "languageNotes": "A versioned JSON preset separates presentation copy and image composition metadata from the CSS implementation."
+    },
+    {
+      "id": "config:windows/references/cultivation-art-prompts.json",
+      "type": "config",
+      "name": "cultivation-art-prompts.json",
+      "filePath": "windows/references/cultivation-art-prompts.json",
+      "summary": "Catalogs reproducible image-generation specifications for realm-specific light and dark wallpapers, persistent male and female companion portraits, and circular function-card artwork. Each asset definition fixes model, dimensions, quality, composition, palette, and strict no-UI/no-text constraints.",
+      "tags": [
+        "configuration",
+        "image-generation",
+        "visual-assets",
+        "design-prompts"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "JSON array entries act as declarative generation recipes keyed by stable asset IDs and output filenames."
+    },
+    {
+      "id": "document:windows/references/cultivation-design-system.md",
+      "type": "document",
+      "name": "cultivation-design-system.md",
+      "filePath": "windows/references/cultivation-design-system.md",
+      "summary": "Defines the cultivation workspace visual hierarchy, three-column responsive layout, light and dark material palettes, interaction requirements, and data-integrity rules. It explicitly preserves Codex theme ownership and native controls while constraining accessibility, motion, and estimated-data labeling.",
+      "tags": [
+        "documentation",
+        "design-system",
+        "accessibility",
+        "responsive-layout",
+        "data-integrity"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:windows/references/cultivation-system.md",
+      "type": "document",
+      "name": "cultivation-system.md",
+      "filePath": "windows/references/cultivation-system.md",
+      "summary": "Specifies the cultivation progression model, including local Token estimation, spirit-stone conversion, realm thresholds, enlightenment rewards, three-day tribulations, theme asset fallback, companion identity rules, and the regression-only debug API. It is the central product-rules reference for renderer state and user-visible progression behavior.",
+      "tags": [
+        "documentation",
+        "business-rules",
+        "progression-system",
+        "local-storage",
+        "debug-interface"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:windows/references/qa-inventory.md",
+      "type": "document",
+      "name": "qa-inventory.md",
+      "filePath": "windows/references/qa-inventory.md",
+      "summary": "Provides the acceptance inventory for user-visible behavior, native-control preservation, reversible injection, configuration safety, theme validation, responsive visuals, hostile runtime scenarios, and automated regression coverage. It separates functional, visual, exploratory, automated, and live-Windows signoff responsibilities.",
+      "tags": [
+        "documentation",
+        "quality-assurance",
+        "acceptance-testing",
+        "security",
+        "regression"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "document:windows/references/runtime-notes.md",
+      "type": "document",
+      "name": "runtime-notes.md",
+      "filePath": "windows/references/runtime-notes.md",
+      "summary": "Documents the hardened Windows runtime contract for discovering and launching the signed Store Codex package, validating loopback CDP identity, supervising reinjection, recording process state, restoring safely, and serializing operations. It also records Node requirements, port selection, image and path defenses, strict TOML handling, and Store-update resilience.",
+      "tags": [
+        "documentation",
+        "runtime",
+        "windows",
+        "security",
+        "cdp"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:windows/scripts/common-windows.ps1",
+      "type": "file",
+      "name": "common-windows.ps1",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "summary": "Shared Windows runtime and safety layer for Codex Cultivation. It validates the official Store package, binds CDP endpoints to the correct Codex process, manages session state, and performs identity-checked shutdowns.",
+      "tags": [
+        "utility",
+        "security",
+        "process-management",
+        "cdp",
+        "state-management"
+      ],
+      "complexity": "complex",
+      "languageNotes": "PowerShell functions use strict path, package, PID, command-line, browser-ID, and loopback-listener checks before mutating processes or state."
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Enter-CultivationOperationLock",
+      "type": "function",
+      "name": "Enter-CultivationOperationLock",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        3,
+        17
+      ],
+      "summary": "Acquires a per-user, non-blocking mutex so install, start, restore, and verification operations cannot overlap.",
+      "tags": [
+        "synchronization",
+        "mutex",
+        "safety"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Test-CultivationPathWithin",
+      "type": "function",
+      "name": "Test-CultivationPathWithin",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        39,
+        49
+      ],
+      "summary": "Checks whether a resolved path is a descendant of a trusted root using ordinal case-insensitive Windows path comparison.",
+      "tags": [
+        "validation",
+        "path-security",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Get-CultivationProcessExecutablePath",
+      "type": "function",
+      "name": "Get-CultivationProcessExecutablePath",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        66,
+        76
+      ],
+      "summary": "Resolves a process executable from CIM metadata or the live process object, returning null when inspection is unavailable.",
+      "tags": [
+        "process-management",
+        "validation",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Get-CultivationNodeRuntime",
+      "type": "function",
+      "name": "Get-CultivationNodeRuntime",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        78,
+        95
+      ],
+      "summary": "Locates Node.js, validates its executable path and version, and enforces the minimum major version required by the injector.",
+      "tags": [
+        "runtime-detection",
+        "validation",
+        "nodejs"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:ConvertTo-CultivationCodexInstall",
+      "type": "function",
+      "name": "ConvertTo-CultivationCodexInstall",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        97,
+        115
+      ],
+      "summary": "Converts an AppX package record into a trusted Codex installation descriptor only when Store identity and executable layout checks pass.",
+      "tags": [
+        "package-validation",
+        "security",
+        "windows-store"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Get-CultivationCodexStatePathCandidate",
+      "type": "function",
+      "name": "Get-CultivationCodexStatePathCandidate",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        133,
+        147
+      ],
+      "summary": "Builds a limited Codex installation candidate from saved state after confirming the recorded executable matches the expected package layout.",
+      "tags": [
+        "state-validation",
+        "path-security",
+        "package-validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Resolve-CultivationCodexInstallFromState",
+      "type": "function",
+      "name": "Resolve-CultivationCodexInstallFromState",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        149,
+        180
+      ],
+      "summary": "Revalidates a saved Codex path and optional package identities against currently registered Store installations before accepting it.",
+      "tags": [
+        "state-validation",
+        "package-validation",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Test-CultivationWebSocketUrl",
+      "type": "function",
+      "name": "Test-CultivationWebSocketUrl",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        188,
+        200
+      ],
+      "summary": "Validates that a CDP WebSocket URL is loopback-only, uses the expected port, and has a constrained DevTools path without credentials or query data.",
+      "tags": [
+        "cdp",
+        "url-validation",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Test-CultivationCdpPageTarget",
+      "type": "function",
+      "name": "Test-CultivationCdpPageTarget",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        202,
+        220
+      ],
+      "summary": "Validates an app:// CDP page target and ensures its target ID matches the path embedded in its WebSocket debugger URL.",
+      "tags": [
+        "cdp",
+        "target-validation",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Get-CultivationCdpTargets",
+      "type": "function",
+      "name": "Get-CultivationCdpTargets",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        222,
+        231
+      ],
+      "summary": "Queries the local CDP target list and returns only page targets that pass the strict Cultivation target validator.",
+      "tags": [
+        "cdp",
+        "discovery",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Get-CultivationCdpBrowserIdentity",
+      "type": "function",
+      "name": "Get-CultivationCdpBrowserIdentity",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        238,
+        258
+      ],
+      "summary": "Queries CDP version metadata and extracts a validated browser ID and loopback WebSocket endpoint.",
+      "tags": [
+        "cdp",
+        "identity-validation",
+        "discovery"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Test-CultivationCodexPortOwner",
+      "type": "function",
+      "name": "Test-CultivationCodexPortOwner",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        273,
+        286
+      ],
+      "summary": "Confirms every listener on a candidate port is loopback-bound and owned by the expected official Codex executable.",
+      "tags": [
+        "port-validation",
+        "process-identity",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Get-CultivationVerifiedCdpIdentity",
+      "type": "function",
+      "name": "Get-CultivationVerifiedCdpIdentity",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        288,
+        302
+      ],
+      "summary": "Combines listener ownership, browser metadata, and page-target checks into a verified CDP session identity.",
+      "tags": [
+        "cdp",
+        "identity-validation",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Read-CultivationState",
+      "type": "function",
+      "name": "Read-CultivationState",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        327,
+        374
+      ],
+      "summary": "Reads and validates persisted session JSON across supported schema versions, rejecting malformed platform, port, PID, and browser identity fields.",
+      "tags": [
+        "state-management",
+        "validation",
+        "serialization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Stop-CultivationRecordedInjector",
+      "type": "function",
+      "name": "Stop-CultivationRecordedInjector",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        401,
+        450
+      ],
+      "summary": "Stops the saved Node injector only after matching its executable, command line, port, browser ID, and process start time to recorded state.",
+      "tags": [
+        "process-management",
+        "identity-validation",
+        "rollback"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/common-windows.ps1:Stop-CultivationCodex",
+      "type": "function",
+      "name": "Stop-CultivationCodex",
+      "filePath": "windows/scripts/common-windows.ps1",
+      "lineRange": [
+        461,
+        487
+      ],
+      "summary": "Gracefully closes the verified Codex process set, optionally escalating to forced termination only after rechecking executable identity.",
+      "tags": [
+        "process-management",
+        "graceful-shutdown",
+        "security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:windows/scripts/config-utf8.ps1",
+      "type": "file",
+      "name": "config-utf8.ps1",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "summary": "Provides strict UTF-8, atomic file-update, and constrained TOML editing primitives for installing and restoring the Codex base theme. It preserves backups, detects concurrent changes, and refuses ambiguous TOML shapes.",
+      "tags": [
+        "configuration",
+        "atomic-write",
+        "toml",
+        "backup",
+        "encoding-safety"
+      ],
+      "complexity": "complex",
+      "languageNotes": "The script deliberately avoids a general TOML serializer: it performs guarded line-level edits to preserve unrelated user configuration and encoding."
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:ConvertFrom-CultivationUtf8Bytes",
+      "type": "function",
+      "name": "ConvertFrom-CultivationUtf8Bytes",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        6,
+        22
+      ],
+      "summary": "Decodes optional-BOM UTF-8 bytes with strict error handling and rejects NUL-bearing content that may be misidentified UTF-16.",
+      "tags": [
+        "encoding",
+        "validation",
+        "utf8"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Test-CultivationBytesEqual",
+      "type": "function",
+      "name": "Test-CultivationBytesEqual",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        24,
+        34
+      ],
+      "summary": "Performs an exact byte-by-byte comparison used for optimistic concurrency checks on configuration files.",
+      "tags": [
+        "utility",
+        "byte-comparison",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Assert-CultivationFileUnchanged",
+      "type": "function",
+      "name": "Assert-CultivationFileUnchanged",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        36,
+        50
+      ],
+      "summary": "Verifies that a target file still matches the bytes observed earlier, preventing overwrite when another writer changed or created it.",
+      "tags": [
+        "concurrency-control",
+        "validation",
+        "atomic-write"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Read-CultivationUtf8File",
+      "type": "function",
+      "name": "Read-CultivationUtf8File",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        58,
+        67
+      ],
+      "summary": "Reads a file as raw bytes and decodes it through the strict Cultivation UTF-8 validator.",
+      "tags": [
+        "file-io",
+        "encoding",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Write-CultivationUtf8FileAtomically",
+      "type": "function",
+      "name": "Write-CultivationUtf8FileAtomically",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        69,
+        89
+      ],
+      "summary": "Encodes text as UTF-8 without BOM and delegates to the atomic byte writer, optionally enforcing expected prior content.",
+      "tags": [
+        "atomic-write",
+        "encoding",
+        "file-io"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Write-CultivationBytesAtomically",
+      "type": "function",
+      "name": "Write-CultivationBytesAtomically",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        91,
+        122
+      ],
+      "summary": "Writes through a temporary file and atomic replacement while supporting compare-before-swap semantics and cleaning temporary artifacts.",
+      "tags": [
+        "atomic-write",
+        "concurrency-control",
+        "file-io"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:ConvertTo-CultivationTomlAsciiEscapeProbe",
+      "type": "function",
+      "name": "ConvertTo-CultivationTomlAsciiEscapeProbe",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        132,
+        143
+      ],
+      "summary": "Normalizes TOML Unicode escapes for ASCII key characters in a probe copy so equivalent escaped keys can be detected safely.",
+      "tags": [
+        "toml",
+        "security",
+        "normalization"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Get-CultivationTomlArrayBracketBalance",
+      "type": "function",
+      "name": "Get-CultivationTomlArrayBracketBalance",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        145,
+        167
+      ],
+      "summary": "Counts TOML array brackets outside quotes and comments to identify unsupported multiline arrays.",
+      "tags": [
+        "toml",
+        "parser",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Assert-CultivationTomlLineEditingSafe",
+      "type": "function",
+      "name": "Assert-CultivationTomlLineEditingSafe",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        169,
+        191
+      ],
+      "summary": "Rejects multiline strings, multiline arrays, and escaped desktop-key aliases that would make line-oriented TOML editing unsafe.",
+      "tags": [
+        "toml",
+        "validation",
+        "configuration-safety"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Assert-CultivationDesktopShapeSupported",
+      "type": "function",
+      "name": "Assert-CultivationDesktopShapeSupported",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        198,
+        236
+      ],
+      "summary": "Ensures the Codex desktop configuration uses one supported table shape and contains no ambiguous dotted, inline, array, or escaped managed keys.",
+      "tags": [
+        "toml",
+        "schema-validation",
+        "configuration-safety"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Get-CultivationDesktopSection",
+      "type": "function",
+      "name": "Get-CultivationDesktopSection",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        238,
+        250
+      ],
+      "summary": "Locates the supported desktop TOML section and returns exact body and section offsets for minimal string replacement.",
+      "tags": [
+        "toml",
+        "parser",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Add-CultivationDesktopSection",
+      "type": "function",
+      "name": "Add-CultivationDesktopSection",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        252,
+        261
+      ],
+      "summary": "Appends a desktop TOML section while preserving the source file's newline convention and spacing.",
+      "tags": [
+        "toml",
+        "configuration",
+        "format-preservation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Set-CultivationSectionSetting",
+      "type": "function",
+      "name": "Set-CultivationSectionSetting",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        263,
+        285
+      ],
+      "summary": "Adds, replaces, or removes one setting in a TOML section while rejecting duplicate keys and preserving newline style.",
+      "tags": [
+        "toml",
+        "configuration",
+        "minimal-edit"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Get-CultivationSectionSettingLine",
+      "type": "function",
+      "name": "Get-CultivationSectionSettingLine",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        287,
+        297
+      ],
+      "summary": "Retrieves a single exact setting line from a TOML section and refuses ambiguous duplicate definitions.",
+      "tags": [
+        "toml",
+        "inspection",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Test-CultivationLegacyManagedLightTrio",
+      "type": "function",
+      "name": "Test-CultivationLegacyManagedLightTrio",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        299,
+        311
+      ],
+      "summary": "Detects the exact legacy three-setting theme signature so older installations can be migrated without overwriting user appearance choices.",
+      "tags": [
+        "migration",
+        "theme",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Read-CultivationAppearanceMarker",
+      "type": "function",
+      "name": "Read-CultivationAppearanceMarker",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        318,
+        333
+      ],
+      "summary": "Loads and validates the sidecar marker that records ownership boundaries for appearance settings.",
+      "tags": [
+        "state-management",
+        "validation",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Write-CultivationAppearanceMarker",
+      "type": "function",
+      "name": "Write-CultivationAppearanceMarker",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        335,
+        346
+      ],
+      "summary": "Writes a versioned appearance ownership marker through the guarded UTF-8 atomic writer.",
+      "tags": [
+        "state-management",
+        "atomic-write",
+        "configuration"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Install-CultivationBaseTheme",
+      "type": "function",
+      "name": "Install-CultivationBaseTheme",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        348,
+        414
+      ],
+      "summary": "Backs up Codex configuration and transactionally injects only the managed light code and chrome theme settings, including legacy migration handling.",
+      "tags": [
+        "installation",
+        "theme",
+        "backup",
+        "transaction"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Restore-CultivationBaseTheme",
+      "type": "function",
+      "name": "Restore-CultivationBaseTheme",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        416,
+        472
+      ],
+      "summary": "Restores managed theme keys from the pre-install backup while preserving unrelated configuration changes made after installation.",
+      "tags": [
+        "restore",
+        "theme",
+        "minimal-edit",
+        "backup"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Restore-CultivationConfigBackup",
+      "type": "function",
+      "name": "Restore-CultivationConfigBackup",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        474,
+        492
+      ],
+      "summary": "Restores the exact pre-install configuration bytes and first preserves the current config as a timestamped recovery backup.",
+      "tags": [
+        "recovery",
+        "backup",
+        "atomic-write"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/config-utf8.ps1:Archive-CultivationConfigBackup",
+      "type": "function",
+      "name": "Archive-CultivationConfigBackup",
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "lineRange": [
+        494,
+        505
+      ],
+      "summary": "Moves a completed pre-install backup to an archive path and removes its appearance ownership marker.",
+      "tags": [
+        "backup",
+        "archive",
+        "cleanup"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:windows/scripts/install-codex-cultivation.ps1",
+      "type": "file",
+      "name": "install-codex-cultivation.ps1",
+      "filePath": "windows/scripts/install-codex-cultivation.ps1",
+      "summary": "Installation entry point that validates prerequisites, initializes the theme store, patches the Codex base theme, and optionally creates desktop and Start Menu shortcuts plus the tray controller.",
+      "tags": [
+        "entry-point",
+        "installation",
+        "shortcuts",
+        "theme",
+        "windows"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:windows/scripts/request-cultivation-art.ps1",
+      "type": "file",
+      "name": "request-cultivation-art.ps1",
+      "filePath": "windows/scripts/request-cultivation-art.ps1",
+      "summary": "Development utility that submits a configured cultivation-art job to an image generation API, downloads the HTTPS result, validates and center-crops it, and atomically promotes a normalized PNG asset.",
+      "tags": [
+        "image-generation",
+        "asset-pipeline",
+        "validation",
+        "http-client",
+        "development"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses .NET HttpClient and System.Drawing with explicit disposal, image dimension limits, and preservation of usable rejected downloads."
+    },
+    {
+      "id": "file:windows/scripts/restore-codex-cultivation.ps1",
+      "type": "file",
+      "name": "restore-codex-cultivation.ps1",
+      "filePath": "windows/scripts/restore-codex-cultivation.ps1",
+      "summary": "Reversible teardown entry point that safely closes the tray, injector, and verified Codex CDP session, selectively restores or fully recovers configuration, removes shortcuts on uninstall, and optionally relaunches Codex.",
+      "tags": [
+        "entry-point",
+        "restore",
+        "uninstall",
+        "rollback",
+        "process-management"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/restore-codex-cultivation.ps1:Stop-CultivationTrayProcess",
+      "type": "function",
+      "name": "Stop-CultivationTrayProcess",
+      "filePath": "windows/scripts/restore-codex-cultivation.ps1",
+      "lineRange": [
+        17,
+        31
+      ],
+      "summary": "Finds PowerShell processes whose command line references the exact tray script path and terminates only those matching tray instances.",
+      "tags": [
+        "process-management",
+        "tray",
+        "cleanup"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:windows/scripts/start-codex-cultivation.ps1",
+      "type": "file",
+      "name": "start-codex-cultivation.ps1",
+      "filePath": "windows/scripts/start-codex-cultivation.ps1",
+      "summary": "Primary launcher that verifies the Store Codex identity, establishes a loopback-only CDP session, starts the Node injector watcher, records schema-versioned state, verifies the live skin, and rolls back failures.",
+      "tags": [
+        "entry-point",
+        "launcher",
+        "cdp",
+        "process-management",
+        "rollback"
+      ],
+      "complexity": "complex",
+      "languageNotes": "The startup transaction preserves cancellation side-effect freedom and revalidates process, port, package, and browser identity before each sensitive action."
+    },
+    {
+      "id": "file:windows/scripts/theme-windows.ps1",
+      "type": "file",
+      "name": "theme-windows.ps1",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "summary": "Secure Windows theme-store implementation for active, saved, generated, and paused theme state. It validates image size and metadata, prevents path traversal and reparse-point escapes, and manages theme JSON plus image copies.",
+      "tags": [
+        "theme",
+        "asset-management",
+        "path-security",
+        "validation",
+        "state-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Assert-CultivationNoReparseComponents",
+      "type": "function",
+      "name": "Assert-CultivationNoReparseComponents",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        7,
+        26
+      ],
+      "summary": "Walks every existing component of a managed path and rejects junctions or symbolic links that could redirect writes outside the state area.",
+      "tags": [
+        "path-security",
+        "validation",
+        "reparse-point"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Ensure-CultivationManagedDirectory",
+      "type": "function",
+      "name": "Ensure-CultivationManagedDirectory",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        28,
+        48
+      ],
+      "summary": "Creates a directory only when it stays within the declared state root and passes reparse-point checks before and after creation.",
+      "tags": [
+        "path-security",
+        "directory-management",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Get-CultivationValidatedImageMetadata",
+      "type": "function",
+      "name": "Get-CultivationValidatedImageMetadata",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        50,
+        67
+      ],
+      "summary": "Runs the Node image metadata helper and validates its JSON result against dimension and pixel-count safety limits.",
+      "tags": [
+        "image-validation",
+        "nodejs",
+        "metadata"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Assert-CultivationImageFile",
+      "type": "function",
+      "name": "Assert-CultivationImageFile",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        69,
+        90
+      ],
+      "summary": "Validates theme image existence, extension, non-empty size, 16 MB limit, and optionally decoded metadata.",
+      "tags": [
+        "image-validation",
+        "security",
+        "asset-management"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Get-CultivationThemePaths",
+      "type": "function",
+      "name": "Get-CultivationThemePaths",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        92,
+        103
+      ],
+      "summary": "Builds the canonical active, saved, image archive, pause marker, and state paths beneath the Cultivation state root.",
+      "tags": [
+        "path-management",
+        "state-management",
+        "utility"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Test-CultivationThemePathWithin",
+      "type": "function",
+      "name": "Test-CultivationThemePathWithin",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        105,
+        134
+      ],
+      "summary": "Confirms a theme path is inside its root and that every existing component is free of reparse points.",
+      "tags": [
+        "path-security",
+        "validation",
+        "theme"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "type": "function",
+      "name": "Read-CultivationTheme",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        136,
+        170
+      ],
+      "summary": "Loads theme metadata, enforces a relative image reference contained in the theme directory, and validates the referenced image.",
+      "tags": [
+        "serialization",
+        "theme",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Write-CultivationTheme",
+      "type": "function",
+      "name": "Write-CultivationTheme",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        172,
+        184
+      ],
+      "summary": "Serializes theme metadata and atomically writes theme.json after reparse-point checks on the directory and target.",
+      "tags": [
+        "serialization",
+        "atomic-write",
+        "theme"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Initialize-CultivationThemeStore",
+      "type": "function",
+      "name": "Initialize-CultivationThemeStore",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        186,
+        234
+      ],
+      "summary": "Creates the managed theme directories, installs default active and preset assets when missing, validates all copied images, and verifies the active theme.",
+      "tags": [
+        "initialization",
+        "theme",
+        "asset-management",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Set-CultivationActiveTheme",
+      "type": "function",
+      "name": "Set-CultivationActiveTheme",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        242,
+        305
+      ],
+      "summary": "Validates and stages a selected image, updates active theme metadata, removes the superseded managed image, and archives the new artwork.",
+      "tags": [
+        "theme",
+        "asset-management",
+        "transaction",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Save-CultivationCurrentTheme",
+      "type": "function",
+      "name": "Save-CultivationCurrentTheme",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        307,
+        336
+      ],
+      "summary": "Copies the active image and cloned metadata into a uniquely named saved-theme directory after validating the user-visible theme name.",
+      "tags": [
+        "theme",
+        "persistence",
+        "asset-management"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Get-CultivationSavedThemes",
+      "type": "function",
+      "name": "Get-CultivationSavedThemes",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        338,
+        359
+      ],
+      "summary": "Enumerates valid saved theme directories, suppresses invalid entries, and returns display metadata sorted by name.",
+      "tags": [
+        "theme",
+        "discovery",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Use-CultivationSavedTheme",
+      "type": "function",
+      "name": "Use-CultivationSavedTheme",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        361,
+        376
+      ],
+      "summary": "Validates that a chosen theme belongs to the saved-theme root, loads it, and promotes a cloned copy to the active theme.",
+      "tags": [
+        "theme",
+        "activation",
+        "path-security"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/theme-windows.ps1:Set-CultivationPaused",
+      "type": "function",
+      "name": "Set-CultivationPaused",
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "lineRange": [
+        378,
+        393
+      ],
+      "summary": "Creates or removes the managed pause marker used by the injector watcher to suspend skin application.",
+      "tags": [
+        "state-management",
+        "pause-control",
+        "atomic-write"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:windows/scripts/tray-codex-cultivation.ps1",
+      "type": "file",
+      "name": "tray-codex-cultivation.ps1",
+      "filePath": "windows/scripts/tray-codex-cultivation.ps1",
+      "summary": "Single-instance Windows Forms tray controller that displays live Cultivation status, applies or pauses the skin, selects and saves themes, opens assets, and launches restore workflows.",
+      "tags": [
+        "entry-point",
+        "tray",
+        "windows-forms",
+        "theme",
+        "event-handler"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/tray-codex-cultivation.ps1:Add-CultivationTrayItem",
+      "type": "function",
+      "name": "Add-CultivationTrayItem",
+      "filePath": "windows/scripts/tray-codex-cultivation.ps1",
+      "lineRange": [
+        51,
+        67
+      ],
+      "summary": "Creates a tray menu item, binds a closure-safe click handler, and routes action failures to the tray error dialog.",
+      "tags": [
+        "ui-helper",
+        "event-handler",
+        "tray"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/tray-codex-cultivation.ps1:Rebuild-CultivationTrayMenu",
+      "type": "function",
+      "name": "Rebuild-CultivationTrayMenu",
+      "filePath": "windows/scripts/tray-codex-cultivation.ps1",
+      "lineRange": [
+        69,
+        151
+      ],
+      "summary": "Reconstructs the dynamic tray menu from current pause, state, active-theme, and saved-theme data and binds all control actions.",
+      "tags": [
+        "tray",
+        "event-handler",
+        "theme",
+        "state-management"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:windows/scripts/verify-codex-cultivation.ps1",
+      "type": "file",
+      "name": "verify-codex-cultivation.ps1",
+      "filePath": "windows/scripts/verify-codex-cultivation.ps1",
+      "summary": "Verification entry point that resolves the active or saved Codex package identity, validates the loopback CDP browser against session state, and delegates visual/runtime verification to the Node injector.",
+      "tags": [
+        "entry-point",
+        "verification",
+        "cdp",
+        "identity-validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:.understand-anything/.understandignore",
+      "type": "file",
+      "name": ".understandignore",
+      "filePath": ".understand-anything/.understandignore",
+      "summary": "Defines the project-local exclusion patterns used by Understand Anything scanning; the current file keeps suggested exclusions commented so the full repository remains analyzable.",
+      "tags": [
+        "configuration",
+        "analysis-scope",
+        "ignore-rules"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:NOTICE.md",
+      "type": "document",
+      "name": "NOTICE.md",
+      "filePath": "NOTICE.md",
+      "summary": "Records project independence, attribution to the reversible injection ideas derived from Codex Dream Skin, licensing limitations, asset-rights responsibilities, and trademark notices.",
+      "tags": [
+        "documentation",
+        "provenance",
+        "licensing",
+        "legal"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "document:README.md",
+      "type": "document",
+      "name": "README.md",
+      "filePath": "README.md",
+      "summary": "Introduces Codex Cultivation as a reversible Windows-first Codex Desktop customization, covering features, installation, verification, restoration, local data semantics, art generation, security boundaries, and tests.",
+      "tags": [
+        "documentation",
+        "entry-point",
+        "installation",
+        "security",
+        "usage"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "config:windows/agents/openai.yaml",
+      "type": "config",
+      "name": "openai.yaml",
+      "filePath": "windows/agents/openai.yaml",
+      "summary": "Defines the Codex skill interface metadata, including its display name, short description, and default prompt for invoking the cultivation workflow.",
+      "tags": [
+        "configuration",
+        "skill-interface",
+        "agent-metadata"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:windows/assets/renderer-inject.js",
+      "type": "file",
+      "name": "renderer-inject.js",
+      "filePath": "windows/assets/renderer-inject.js",
+      "summary": "Implements the renderer-side cultivation experience: adaptive artwork analysis, local cultivation progression and persistence, responsive DOM augmentation, native Codex action binding, event handling, cleanup, and a verification debug API.",
+      "tags": [
+        "ui-injection",
+        "state-machine",
+        "dom-integration",
+        "local-storage",
+        "event-handler",
+        "tested"
+      ],
+      "complexity": "complex",
+      "languageNotes": "A large browser-side JavaScript IIFE uses placeholder substitution to embed CSS, theme metadata, and image data before CDP evaluation."
+    },
+    {
+      "id": "document:windows/CHANGELOG.md",
+      "type": "document",
+      "name": "CHANGELOG.md",
+      "filePath": "windows/CHANGELOG.md",
+      "summary": "Summarizes the 1.8.0 release, including the responsive cultivation home, progression mechanics, charts, paired themes, companion assets, image workflow, and retained CDP safety controls.",
+      "tags": [
+        "documentation",
+        "changelog",
+        "release-notes",
+        "versioning"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:windows/scripts/image-metadata.mjs",
+      "type": "file",
+      "name": "image-metadata.mjs",
+      "filePath": "windows/scripts/image-metadata.mjs",
+      "summary": "Parses PNG, JPEG, and WebP headers without decoding pixels, validates strict dimension and pixel-count limits, classifies aspect behavior, and exposes a read-only CLI used by theme safety checks.",
+      "tags": [
+        "utility",
+        "image-validation",
+        "security",
+        "cli",
+        "tested"
+      ],
+      "complexity": "moderate",
+      "languageNotes": "Uses bounded binary-header parsing for three image formats and rejects unsafe dimensions before payload construction."
+    },
+    {
+      "id": "file:windows/scripts/injector.mjs",
+      "type": "file",
+      "name": "injector.mjs",
+      "filePath": "windows/scripts/injector.mjs",
+      "summary": "Builds validated theme payloads and manages reversible Codex renderer injection over loopback CDP, with browser identity checks, early-document bootstrap, watch and one-shot modes, verification, screenshots, and cleanup.",
+      "tags": [
+        "entry-point",
+        "cdp-client",
+        "security",
+        "payload-builder",
+        "service",
+        "tested"
+      ],
+      "complexity": "complex",
+      "languageNotes": "Uses ESM, WebSocket CDP sessions, SHA-256 theme fingerprints, strict filesystem containment checks, and top-level await in its CLI dispatch."
+    },
+    {
+      "id": "document:windows/SKILL.md",
+      "type": "document",
+      "name": "SKILL.md",
+      "filePath": "windows/SKILL.md",
+      "summary": "Defines the codex-cultivation skill workflow, guardrails, and important implementation files for safe installation, verification, updating, and restoration on Windows.",
+      "tags": [
+        "documentation",
+        "skill",
+        "workflow",
+        "guardrails"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "file:windows/tests/image-metadata.test.mjs",
+      "type": "file",
+      "name": "image-metadata.test.mjs",
+      "filePath": "windows/tests/image-metadata.test.mjs",
+      "summary": "Regression tests image header parsing, CLI output, aspect classification, dimension limits, and malformed or oversized image rejection.",
+      "tags": [
+        "test",
+        "image-validation",
+        "security",
+        "regression"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:windows/tests/injector-bootstrap.test.mjs",
+      "type": "file",
+      "name": "injector-bootstrap.test.mjs",
+      "filePath": "windows/tests/injector-bootstrap.test.mjs",
+      "summary": "Exercises the early injection bootstrap in a VM fixture, verifying Codex shell guards, generation replacement, registration ordering, fallback scoping, and cleanup of new-document scripts.",
+      "tags": [
+        "test",
+        "bootstrap",
+        "cdp-client",
+        "regression"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:windows/tests/injector-one-shot.test.mjs",
+      "type": "file",
+      "name": "injector-one-shot.test.mjs",
+      "filePath": "windows/tests/injector-one-shot.test.mjs",
+      "summary": "Runs the injector against a local fake CDP endpoint to ensure one-shot, verify, and remove modes validate Browser ID through the version endpoint before timing out safely.",
+      "tags": [
+        "test",
+        "integration-test",
+        "browser-identity",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "file:windows/tests/renderer-inject.test.mjs",
+      "type": "file",
+      "name": "renderer-inject.test.mjs",
+      "filePath": "windows/tests/renderer-inject.test.mjs",
+      "summary": "Provides a comprehensive VM-based DOM fixture that verifies adaptive renderer installation and cleanup, auxiliary-window safety, theme and artwork classification, reinjection behavior, and cultivation state transitions.",
+      "tags": [
+        "test",
+        "dom-fixture",
+        "state-machine",
+        "regression",
+        "ui-injection"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "file:windows/tests/run-tests.ps1",
+      "type": "file",
+      "name": "run-tests.ps1",
+      "filePath": "windows/tests/run-tests.ps1",
+      "summary": "Orchestrates the Windows regression suite for UTF-8 config transactions, scoped restoration, CDP and Store identity validation, theme-store containment, image limits, tray/startup behavior, payload checks, and JavaScript tests.",
+      "tags": [
+        "test",
+        "test-runner",
+        "powershell",
+        "security",
+        "integration-test"
+      ],
+      "complexity": "complex",
+      "languageNotes": "A procedural PowerShell test harness dot-sources production scripts and validates both behavior and required safety invariants."
+    },
+    {
+      "id": "function:windows/scripts/image-metadata.mjs:jpegDimensions",
+      "type": "function",
+      "name": "jpegDimensions",
+      "filePath": "windows/scripts/image-metadata.mjs",
+      "lineRange": [
+        47,
+        70
+      ],
+      "summary": "Walks JPEG markers until a supported start-of-frame segment is found, then returns validated positive width and height values.",
+      "tags": [
+        "utility",
+        "image-parser",
+        "jpeg",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/image-metadata.mjs:webpDimensions",
+      "type": "function",
+      "name": "webpDimensions",
+      "filePath": "windows/scripts/image-metadata.mjs",
+      "lineRange": [
+        72,
+        103
+      ],
+      "summary": "Parses RIFF WebP containers and extracts dimensions from VP8X, VP8L, or VP8 payload variants while respecting declared chunk bounds and padding.",
+      "tags": [
+        "utility",
+        "image-parser",
+        "webp",
+        "validation"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/image-metadata.mjs:classifyImageDimensions",
+      "type": "function",
+      "name": "classifyImageDimensions",
+      "filePath": "windows/scripts/image-metadata.mjs",
+      "lineRange": [
+        105,
+        124
+      ],
+      "summary": "Rejects non-integer, oversized, or excessive-pixel dimensions and maps safe aspect ratios to layout categories and task artwork modes.",
+      "tags": [
+        "validation",
+        "image-metadata",
+        "classification",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/image-metadata.mjs:readImageMetadata",
+      "type": "function",
+      "name": "readImageMetadata",
+      "filePath": "windows/scripts/image-metadata.mjs",
+      "lineRange": [
+        126,
+        135
+      ],
+      "summary": "Selects the appropriate PNG, JPEG, or WebP header parser from extension or magic bytes and returns only safely classified metadata.",
+      "tags": [
+        "utility",
+        "image-metadata",
+        "format-detection",
+        "validation"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "class:windows/scripts/injector.mjs:CdpSession",
+      "type": "class",
+      "name": "CdpSession",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        92,
+        196
+      ],
+      "summary": "Encapsulates a validated CDP WebSocket connection, request correlation, event dispatch, JavaScript evaluation, timeouts, and deterministic socket cleanup.",
+      "tags": [
+        "cdp-client",
+        "websocket",
+        "service",
+        "resource-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "class:windows/scripts/injector.mjs:BrowserIdentityAnchor",
+      "type": "class",
+      "name": "BrowserIdentityAnchor",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        198,
+        235
+      ],
+      "summary": "Maintains a browser-level CDP connection that detects closure and anchors the injector to the expected browser identity during watch mode.",
+      "tags": [
+        "cdp-client",
+        "browser-identity",
+        "websocket",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:parseArgs",
+      "type": "function",
+      "name": "parseArgs",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        18,
+        59
+      ],
+      "summary": "Parses injector CLI modes and paths, then enforces safe port, timeout, Browser ID, and mode-specific argument constraints.",
+      "tags": [
+        "cli",
+        "validation",
+        "configuration",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:isValidCdpPageTarget",
+      "type": "function",
+      "name": "isValidCdpPageTarget",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        81,
+        90
+      ],
+      "summary": "Accepts only app-protocol page targets whose ID and loopback debugger path exactly correspond.",
+      "tags": [
+        "validation",
+        "cdp-client",
+        "security",
+        "browser-target"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:fetchCdpJson",
+      "type": "function",
+      "name": "fetchCdpJson",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        237,
+        250
+      ],
+      "summary": "Fetches a loopback CDP JSON resource with timeout handling and validates successful JSON responses.",
+      "tags": [
+        "cdp-client",
+        "http-client",
+        "validation",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:listAppTargets",
+      "type": "function",
+      "name": "listAppTargets",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        252,
+        265
+      ],
+      "summary": "Validates the live browser identity from the CDP version endpoint and returns only acceptable Codex app page targets.",
+      "tags": [
+        "cdp-client",
+        "browser-identity",
+        "target-discovery",
+        "security"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:connectBrowserIdentityAnchor",
+      "type": "function",
+      "name": "connectBrowserIdentityAnchor",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        267,
+        276
+      ],
+      "summary": "Opens and validates the browser-level identity anchor used to fail closed when the watched Codex browser instance changes.",
+      "tags": [
+        "cdp-client",
+        "browser-identity",
+        "security",
+        "connection"
+      ],
+      "complexity": "simple"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:loadTheme",
+      "type": "function",
+      "name": "loadTheme",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        307,
+        382
+      ],
+      "summary": "Loads theme metadata and artwork through real paths, enforces containment, format, size, color, and dimension rules, and computes a fingerprint and source stamp.",
+      "tags": [
+        "payload-builder",
+        "theme-loader",
+        "filesystem-security",
+        "image-validation",
+        "validation"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:loadPayload",
+      "type": "function",
+      "name": "loadPayload",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        384,
+        450
+      ],
+      "summary": "Combines base and cultivation CSS, renderer code, validated theme art, and optional realm, companion, and card assets into a self-contained renderer payload.",
+      "tags": [
+        "payload-builder",
+        "serialization",
+        "asset-loader",
+        "ui-injection"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:probeSession",
+      "type": "function",
+      "name": "probeSession",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        470,
+        483
+      ],
+      "summary": "Evaluates stable shell markers in a renderer and identifies whether the target is a usable Codex surface.",
+      "tags": [
+        "cdp-client",
+        "validation",
+        "dom-probe",
+        "browser-target"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:waitForCodexProbe",
+      "type": "function",
+      "name": "waitForCodexProbe",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        485,
+        498
+      ],
+      "summary": "Polls a renderer through document transitions until Codex shell markers appear or the short bootstrap timeout expires.",
+      "tags": [
+        "cdp-client",
+        "polling",
+        "dom-probe",
+        "bootstrap"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:connectCodexTargets",
+      "type": "function",
+      "name": "connectCodexTargets",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        504,
+        532
+      ],
+      "summary": "Repeatedly discovers targets, opens sessions, rejects non-Codex surfaces, and returns verified renderer connections within a bounded timeout.",
+      "tags": [
+        "cdp-client",
+        "target-discovery",
+        "validation",
+        "connection"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:earlyPayloadFor",
+      "type": "function",
+      "name": "earlyPayloadFor",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        538,
+        571
+      ],
+      "summary": "Generates a generation-scoped new-document bootstrap that waits for the main Codex shell before installing the payload and self-terminates after ten seconds.",
+      "tags": [
+        "bootstrap",
+        "payload-builder",
+        "dom-probe",
+        "ui-injection"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:removeFromSession",
+      "type": "function",
+      "name": "removeFromSession",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        585,
+        609
+      ],
+      "summary": "Disables cultivation injection and removes state, classes, CSS variables, route markers, and injected style or chrome nodes from a renderer.",
+      "tags": [
+        "cleanup",
+        "cdp-client",
+        "ui-injection",
+        "resource-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:verifyRemovedSession",
+      "type": "function",
+      "name": "verifyRemovedSession",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        611,
+        622
+      ],
+      "summary": "Confirms that cultivation state, DOM markers, styles, and injected nodes are absent after restoration.",
+      "tags": [
+        "validation",
+        "cleanup",
+        "cdp-client",
+        "regression"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:verifySession",
+      "type": "function",
+      "name": "verifySession",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        624,
+        660
+      ],
+      "summary": "Collects installation, version, DOM geometry, pointer-event, card-count, and overflow evidence and determines whether the renderer is safely usable.",
+      "tags": [
+        "validation",
+        "cdp-client",
+        "ui-verification",
+        "diagnostics"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:waitForVerifiedSession",
+      "type": "function",
+      "name": "waitForVerifiedSession",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        662,
+        678
+      ],
+      "summary": "Polls renderer verification until it passes or a bounded timeout returns the latest diagnostic result.",
+      "tags": [
+        "validation",
+        "polling",
+        "cdp-client",
+        "diagnostics"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:capture",
+      "type": "function",
+      "name": "capture",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        680,
+        698
+      ],
+      "summary": "Prepares the renderer by dismissing overlays and moving the pointer, captures a viewport PNG through CDP, and writes it to the requested path.",
+      "tags": [
+        "screenshot",
+        "cdp-client",
+        "filesystem",
+        "verification"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:runOneShot",
+      "type": "function",
+      "name": "runOneShot",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        700,
+        741
+      ],
+      "summary": "Executes once, verify, remove, reload, or screenshot operations across all verified Codex renderers and reports per-target results with failure exit status.",
+      "tags": [
+        "entry-point",
+        "orchestration",
+        "cdp-client",
+        "verification",
+        "cleanup"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/scripts/injector.mjs:runWatch",
+      "type": "function",
+      "name": "runWatch",
+      "filePath": "windows/scripts/injector.mjs",
+      "lineRange": [
+        743,
+        976
+      ],
+      "summary": "Continuously audits theme changes and Codex targets, manages early injection and load fallbacks, reapplies revisions, handles pause and identity failures, and cleans all sessions on exit.",
+      "tags": [
+        "service",
+        "watch-loop",
+        "cdp-client",
+        "hot-reload",
+        "resource-management"
+      ],
+      "complexity": "complex"
+    },
+    {
+      "id": "function:windows/tests/injector-bootstrap.test.mjs:createFixture",
+      "type": "function",
+      "name": "createFixture",
+      "filePath": "windows/tests/injector-bootstrap.test.mjs",
+      "lineRange": [
+        12,
+        45
+      ],
+      "summary": "Builds a minimal VM window, document, mutation observer, and timer fixture for deterministic early-bootstrap testing.",
+      "tags": [
+        "test-fixture",
+        "bootstrap",
+        "dom-mock",
+        "utility"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/tests/injector-one-shot.test.mjs:runMode",
+      "type": "function",
+      "name": "runMode",
+      "filePath": "windows/tests/injector-one-shot.test.mjs",
+      "lineRange": [
+        35,
+        51
+      ],
+      "summary": "Spawns the injector in a selected one-shot mode, captures output, and resolves with its exit code and combined diagnostics.",
+      "tags": [
+        "test-helper",
+        "process-control",
+        "integration-test",
+        "cli"
+      ],
+      "complexity": "moderate"
+    },
+    {
+      "id": "function:windows/tests/renderer-inject.test.mjs:createFixture",
+      "type": "function",
+      "name": "createFixture",
+      "filePath": "windows/tests/renderer-inject.test.mjs",
+      "lineRange": [
+        17,
+        231
+      ],
+      "summary": "Constructs an extensive VM DOM and browser API fixture with class mutation tracking, route nodes, local storage, images, timers, and observers for renderer regression tests.",
+      "tags": [
+        "test-fixture",
+        "dom-mock",
+        "browser-api",
+        "ui-injection"
+      ],
+      "complexity": "complex"
+    }
+  ],
+  "edges": [
+    {
+      "source": "file:windows/assets/cultivation-skin.css",
+      "target": "file:windows/assets/cultivation-base.css",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "config:windows/assets/theme.json",
+      "target": "file:windows/assets/cultivation-base.css",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:windows/assets/theme.json",
+      "target": "file:windows/assets/cultivation-skin.css",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:windows/references/cultivation-art-prompts.json",
+      "target": "document:windows/references/cultivation-design-system.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:windows/references/cultivation-art-prompts.json",
+      "target": "document:windows/references/cultivation-system.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/references/cultivation-design-system.md",
+      "target": "document:windows/references/cultivation-system.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/references/qa-inventory.md",
+      "target": "document:windows/references/cultivation-design-system.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/references/qa-inventory.md",
+      "target": "document:windows/references/cultivation-system.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/references/qa-inventory.md",
+      "target": "document:windows/references/runtime-notes.md",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/references/runtime-notes.md",
+      "target": "document:windows/references/cultivation-system.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Enter-CultivationOperationLock",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Test-CultivationPathWithin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationProcessExecutablePath",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationNodeRuntime",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:ConvertTo-CultivationCodexInstall",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationCodexStatePathCandidate",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Resolve-CultivationCodexInstallFromState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Test-CultivationWebSocketUrl",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Test-CultivationCdpPageTarget",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationCdpTargets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationCdpBrowserIdentity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Test-CultivationCodexPortOwner",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationVerifiedCdpIdentity",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Read-CultivationState",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Stop-CultivationRecordedInjector",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "function:windows/scripts/common-windows.ps1:Stop-CultivationCodex",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:ConvertFrom-CultivationUtf8Bytes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Test-CultivationBytesEqual",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Assert-CultivationFileUnchanged",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Read-CultivationUtf8File",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Write-CultivationUtf8FileAtomically",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Write-CultivationBytesAtomically",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:ConvertTo-CultivationTomlAsciiEscapeProbe",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Get-CultivationTomlArrayBracketBalance",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Assert-CultivationTomlLineEditingSafe",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Assert-CultivationDesktopShapeSupported",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Get-CultivationDesktopSection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Add-CultivationDesktopSection",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Set-CultivationSectionSetting",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Get-CultivationSectionSettingLine",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Test-CultivationLegacyManagedLightTrio",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Read-CultivationAppearanceMarker",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Write-CultivationAppearanceMarker",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Install-CultivationBaseTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Restore-CultivationBaseTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Restore-CultivationConfigBackup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/config-utf8.ps1",
+      "target": "function:windows/scripts/config-utf8.ps1:Archive-CultivationConfigBackup",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/restore-codex-cultivation.ps1",
+      "target": "function:windows/scripts/restore-codex-cultivation.ps1:Stop-CultivationTrayProcess",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/common-windows.ps1",
+      "target": "file:windows/scripts/config-utf8.ps1",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:windows/scripts/install-codex-cultivation.ps1",
+      "target": "file:windows/scripts/common-windows.ps1",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:windows/scripts/restore-codex-cultivation.ps1",
+      "target": "file:windows/scripts/common-windows.ps1",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:windows/scripts/common-windows.ps1:Resolve-CultivationCodexInstallFromState",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationCodexStatePathCandidate",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/common-windows.ps1:Test-CultivationCdpPageTarget",
+      "target": "function:windows/scripts/common-windows.ps1:Test-CultivationWebSocketUrl",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/common-windows.ps1:Get-CultivationCdpTargets",
+      "target": "function:windows/scripts/common-windows.ps1:Test-CultivationCdpPageTarget",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/common-windows.ps1:Get-CultivationVerifiedCdpIdentity",
+      "target": "function:windows/scripts/common-windows.ps1:Test-CultivationCodexPortOwner",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/common-windows.ps1:Get-CultivationVerifiedCdpIdentity",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationCdpBrowserIdentity",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/common-windows.ps1:Get-CultivationVerifiedCdpIdentity",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationCdpTargets",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/common-windows.ps1:Stop-CultivationRecordedInjector",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationProcessExecutablePath",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/common-windows.ps1:Stop-CultivationCodex",
+      "target": "function:windows/scripts/common-windows.ps1:Get-CultivationProcessExecutablePath",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Read-CultivationUtf8File",
+      "target": "function:windows/scripts/config-utf8.ps1:ConvertFrom-CultivationUtf8Bytes",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Write-CultivationUtf8FileAtomically",
+      "target": "function:windows/scripts/config-utf8.ps1:Write-CultivationBytesAtomically",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Write-CultivationBytesAtomically",
+      "target": "function:windows/scripts/config-utf8.ps1:Assert-CultivationFileUnchanged",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Assert-CultivationTomlLineEditingSafe",
+      "target": "function:windows/scripts/config-utf8.ps1:ConvertTo-CultivationTomlAsciiEscapeProbe",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Assert-CultivationTomlLineEditingSafe",
+      "target": "function:windows/scripts/config-utf8.ps1:Get-CultivationTomlArrayBracketBalance",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Assert-CultivationDesktopShapeSupported",
+      "target": "function:windows/scripts/config-utf8.ps1:Assert-CultivationTomlLineEditingSafe",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Assert-CultivationDesktopShapeSupported",
+      "target": "function:windows/scripts/config-utf8.ps1:Get-CultivationDesktopSection",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Test-CultivationLegacyManagedLightTrio",
+      "target": "function:windows/scripts/config-utf8.ps1:Get-CultivationDesktopSection",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Test-CultivationLegacyManagedLightTrio",
+      "target": "function:windows/scripts/config-utf8.ps1:Get-CultivationSectionSettingLine",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Read-CultivationAppearanceMarker",
+      "target": "function:windows/scripts/config-utf8.ps1:Read-CultivationUtf8File",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Write-CultivationAppearanceMarker",
+      "target": "function:windows/scripts/config-utf8.ps1:Write-CultivationUtf8FileAtomically",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Install-CultivationBaseTheme",
+      "target": "function:windows/scripts/config-utf8.ps1:Assert-CultivationDesktopShapeSupported",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Install-CultivationBaseTheme",
+      "target": "function:windows/scripts/config-utf8.ps1:Set-CultivationSectionSetting",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Install-CultivationBaseTheme",
+      "target": "function:windows/scripts/config-utf8.ps1:Write-CultivationUtf8FileAtomically",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Restore-CultivationBaseTheme",
+      "target": "function:windows/scripts/config-utf8.ps1:Assert-CultivationDesktopShapeSupported",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Restore-CultivationBaseTheme",
+      "target": "function:windows/scripts/config-utf8.ps1:Set-CultivationSectionSetting",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Restore-CultivationBaseTheme",
+      "target": "function:windows/scripts/config-utf8.ps1:Write-CultivationUtf8FileAtomically",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/config-utf8.ps1:Restore-CultivationConfigBackup",
+      "target": "function:windows/scripts/config-utf8.ps1:Write-CultivationBytesAtomically",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Assert-CultivationNoReparseComponents",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Ensure-CultivationManagedDirectory",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Get-CultivationValidatedImageMetadata",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Assert-CultivationImageFile",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Get-CultivationThemePaths",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Test-CultivationThemePathWithin",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Write-CultivationTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Initialize-CultivationThemeStore",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Set-CultivationActiveTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Save-CultivationCurrentTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Get-CultivationSavedThemes",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Use-CultivationSavedTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/theme-windows.ps1",
+      "target": "function:windows/scripts/theme-windows.ps1:Set-CultivationPaused",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/tray-codex-cultivation.ps1",
+      "target": "function:windows/scripts/tray-codex-cultivation.ps1:Add-CultivationTrayItem",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/tray-codex-cultivation.ps1",
+      "target": "function:windows/scripts/tray-codex-cultivation.ps1:Rebuild-CultivationTrayMenu",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/start-codex-cultivation.ps1",
+      "target": "file:windows/scripts/theme-windows.ps1",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:windows/scripts/tray-codex-cultivation.ps1",
+      "target": "file:windows/scripts/theme-windows.ps1",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "file:windows/scripts/tray-codex-cultivation.ps1",
+      "target": "file:windows/scripts/start-codex-cultivation.ps1",
+      "type": "depends_on",
+      "direction": "forward",
+      "weight": 0.6
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Ensure-CultivationManagedDirectory",
+      "target": "function:windows/scripts/theme-windows.ps1:Assert-CultivationNoReparseComponents",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Assert-CultivationImageFile",
+      "target": "function:windows/scripts/theme-windows.ps1:Get-CultivationValidatedImageMetadata",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Assert-CultivationNoReparseComponents",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Test-CultivationThemePathWithin",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Assert-CultivationImageFile",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Write-CultivationTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Assert-CultivationNoReparseComponents",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Initialize-CultivationThemeStore",
+      "target": "function:windows/scripts/theme-windows.ps1:Ensure-CultivationManagedDirectory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Initialize-CultivationThemeStore",
+      "target": "function:windows/scripts/theme-windows.ps1:Assert-CultivationImageFile",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Initialize-CultivationThemeStore",
+      "target": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Set-CultivationActiveTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Ensure-CultivationManagedDirectory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Set-CultivationActiveTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Assert-CultivationImageFile",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Set-CultivationActiveTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Write-CultivationTheme",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Set-CultivationActiveTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Save-CultivationCurrentTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Save-CultivationCurrentTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Write-CultivationTheme",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Get-CultivationSavedThemes",
+      "target": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Use-CultivationSavedTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Test-CultivationThemePathWithin",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Use-CultivationSavedTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Read-CultivationTheme",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Use-CultivationSavedTheme",
+      "target": "function:windows/scripts/theme-windows.ps1:Set-CultivationActiveTheme",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/theme-windows.ps1:Set-CultivationPaused",
+      "target": "function:windows/scripts/theme-windows.ps1:Ensure-CultivationManagedDirectory",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "function:windows/scripts/tray-codex-cultivation.ps1:Rebuild-CultivationTrayMenu",
+      "target": "function:windows/scripts/tray-codex-cultivation.ps1:Add-CultivationTrayItem",
+      "type": "calls",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:windows/scripts/image-metadata.mjs",
+      "target": "function:windows/scripts/image-metadata.mjs:jpegDimensions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/image-metadata.mjs",
+      "target": "function:windows/scripts/image-metadata.mjs:webpDimensions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/image-metadata.mjs",
+      "target": "function:windows/scripts/image-metadata.mjs:classifyImageDimensions",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/image-metadata.mjs",
+      "target": "function:windows/scripts/image-metadata.mjs:readImageMetadata",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "class:windows/scripts/injector.mjs:CdpSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "class:windows/scripts/injector.mjs:BrowserIdentityAnchor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:parseArgs",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:isValidCdpPageTarget",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:fetchCdpJson",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:listAppTargets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:connectBrowserIdentityAnchor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:loadTheme",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:loadPayload",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:probeSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:waitForCodexProbe",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:connectCodexTargets",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:earlyPayloadFor",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:removeFromSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:verifyRemovedSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:verifySession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:waitForVerifiedSession",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:capture",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:runOneShot",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:runWatch",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/tests/injector-bootstrap.test.mjs",
+      "target": "function:windows/tests/injector-bootstrap.test.mjs:createFixture",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/tests/injector-one-shot.test.mjs",
+      "target": "function:windows/tests/injector-one-shot.test.mjs:runMode",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/tests/renderer-inject.test.mjs",
+      "target": "function:windows/tests/renderer-inject.test.mjs:createFixture",
+      "type": "contains",
+      "direction": "forward",
+      "weight": 1
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "file:windows/scripts/image-metadata.mjs",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:windows/tests/image-metadata.test.mjs",
+      "target": "file:windows/scripts/image-metadata.mjs",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:windows/tests/injector-bootstrap.test.mjs",
+      "target": "file:windows/scripts/injector.mjs",
+      "type": "imports",
+      "direction": "forward",
+      "weight": 0.7
+    },
+    {
+      "source": "file:windows/scripts/image-metadata.mjs",
+      "target": "function:windows/scripts/image-metadata.mjs:classifyImageDimensions",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:windows/scripts/image-metadata.mjs",
+      "target": "function:windows/scripts/image-metadata.mjs:readImageMetadata",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "function:windows/scripts/injector.mjs:earlyPayloadFor",
+      "type": "exports",
+      "direction": "forward",
+      "weight": 0.8
+    },
+    {
+      "source": "file:windows/scripts/image-metadata.mjs",
+      "target": "file:windows/tests/image-metadata.test.mjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "file:windows/tests/injector-bootstrap.test.mjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:windows/scripts/injector.mjs",
+      "target": "file:windows/tests/injector-one-shot.test.mjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "file:windows/assets/renderer-inject.js",
+      "target": "file:windows/tests/renderer-inject.test.mjs",
+      "type": "tested_by",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:windows/scripts/injector.mjs",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:windows/assets/renderer-inject.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:windows/tests/run-tests.ps1",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:README.md",
+      "target": "file:windows/scripts/image-metadata.mjs",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/SKILL.md",
+      "target": "file:windows/scripts/injector.mjs",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/SKILL.md",
+      "target": "file:windows/assets/renderer-inject.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/CHANGELOG.md",
+      "target": "file:windows/scripts/injector.mjs",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:windows/CHANGELOG.md",
+      "target": "file:windows/assets/renderer-inject.js",
+      "type": "documents",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "document:NOTICE.md",
+      "target": "document:README.md",
+      "type": "related",
+      "direction": "forward",
+      "weight": 0.5
+    },
+    {
+      "source": "config:windows/agents/openai.yaml",
+      "target": "document:windows/SKILL.md",
+      "type": "configures",
+      "direction": "forward",
+      "weight": 0.6
+    }
+  ],
+  "layers": [
+    {
+      "id": "layer:renderer-experience",
+      "name": "Renderer Experience",
+      "description": "The injected renderer, design-token foundation, and cultivation skin that augment Codex Desktop with responsive progression UI while retaining native controls.",
+      "nodeIds": [
+        "file:windows/assets/cultivation-base.css",
+        "file:windows/assets/cultivation-skin.css",
+        "file:windows/assets/renderer-inject.js"
+      ]
+    },
+    {
+      "id": "layer:windows-runtime",
+      "name": "Windows Runtime and Lifecycle",
+      "description": "PowerShell lifecycle entry points and the Node CDP service that install, launch, supervise, verify, configure, and reversibly remove the Codex Cultivation session.",
+      "nodeIds": [
+        "file:windows/scripts/common-windows.ps1",
+        "file:windows/scripts/config-utf8.ps1",
+        "file:windows/scripts/install-codex-cultivation.ps1",
+        "file:windows/scripts/restore-codex-cultivation.ps1",
+        "file:windows/scripts/start-codex-cultivation.ps1",
+        "file:windows/scripts/theme-windows.ps1",
+        "file:windows/scripts/tray-codex-cultivation.ps1",
+        "file:windows/scripts/verify-codex-cultivation.ps1",
+        "file:windows/scripts/injector.mjs"
+      ]
+    },
+    {
+      "id": "layer:theme-assets",
+      "name": "Theme and Asset Pipeline",
+      "description": "Theme presets, reproducible art specifications, image generation, and bounded image metadata validation used to produce safe cultivation artwork payloads.",
+      "nodeIds": [
+        "config:windows/assets/theme.json",
+        "config:windows/references/cultivation-art-prompts.json",
+        "file:windows/scripts/request-cultivation-art.ps1",
+        "file:windows/scripts/image-metadata.mjs"
+      ]
+    },
+    {
+      "id": "layer:test",
+      "name": "Regression and Integration Tests",
+      "description": "VM fixtures, fake-CDP integration checks, image parser tests, and the PowerShell suite runner that protect injection, identity, state, and rollback behavior.",
+      "nodeIds": [
+        "file:windows/tests/image-metadata.test.mjs",
+        "file:windows/tests/injector-bootstrap.test.mjs",
+        "file:windows/tests/injector-one-shot.test.mjs",
+        "file:windows/tests/renderer-inject.test.mjs",
+        "file:windows/tests/run-tests.ps1"
+      ]
+    },
+    {
+      "id": "layer:system-documentation",
+      "name": "System and Quality Documentation",
+      "description": "Authoritative references for progression rules, visual design, hardened Windows runtime behavior, and acceptance coverage across the cultivation experience.",
+      "nodeIds": [
+        "document:windows/references/cultivation-design-system.md",
+        "document:windows/references/cultivation-system.md",
+        "document:windows/references/qa-inventory.md",
+        "document:windows/references/runtime-notes.md"
+      ]
+    },
+    {
+      "id": "layer:project-interface",
+      "name": "Project and Skill Interface",
+      "description": "User-facing project guidance, release and legal records, Codex skill invocation metadata, workflow guardrails, and local analysis-scope configuration.",
+      "nodeIds": [
+        "document:README.md",
+        "document:NOTICE.md",
+        "document:windows/CHANGELOG.md",
+        "document:windows/SKILL.md",
+        "config:windows/agents/openai.yaml",
+        "file:.understand-anything/.understandignore"
+      ]
+    }
+  ],
+  "tour": [
+    {
+      "order": 1,
+      "title": "Project Overview",
+      "description": "Start with the README to understand Codex Cultivation as a reversible, Windows-first customization of Codex Desktop rather than a modified application build. It introduces the feature set, installation path, local-state model, security boundary, verification workflow, and full restoration promise that frame every later step.",
+      "nodeIds": [
+        "document:README.md"
+      ]
+    },
+    {
+      "order": 2,
+      "title": "Progression Rules",
+      "description": "With the project goal established, read the central product specification that defines how local Token estimates become spirit stones, realms, enlightenment rewards, and tribulation events. These rules explain what the renderer must persist and display, while also documenting fallback behavior, companion identity, and the regression-only debug surface.",
+      "nodeIds": [
+        "document:windows/references/cultivation-system.md"
+      ]
+    },
+    {
+      "order": 3,
+      "title": "Safe Session Startup",
+      "description": "The user-facing start script turns the product model into a live session: it verifies the official Store Codex identity, opens a loopback-only CDP endpoint, launches the injector, records state, and rolls back failed starts. Its shared Windows module supplies the safety primitives for package discovery, process-to-endpoint binding, session state, and identity-checked shutdown, so the launcher never treats an arbitrary Chromium process as Codex.",
+      "nodeIds": [
+        "file:windows/scripts/start-codex-cultivation.ps1",
+        "file:windows/scripts/common-windows.ps1"
+      ],
+      "languageLesson": "PowerShell scripts can share functions through dot-sourcing, but lifecycle automation still needs explicit process identity checks and structured state because process names and ports alone are not trustworthy identifiers."
+    },
+    {
+      "order": 4,
+      "title": "CDP Injection Runtime",
+      "description": "The Node injector is the architectural hub and the broadest-scope module in the graph. Building on the verified session from Step 3, it validates theme inputs, connects through loopback Chromium DevTools Protocol, installs an early-document bootstrap, supports watch and one-shot modes, verifies the result, and cleans up reversibly.",
+      "nodeIds": [
+        "file:windows/scripts/injector.mjs"
+      ],
+      "languageLesson": "An ES module runtime can use CDP as a remote-control protocol for an existing Chromium renderer; early-document scripts are registered before page code runs so reinjection survives navigation and renderer recreation."
+    },
+    {
+      "order": 5,
+      "title": "Renderer Experience",
+      "description": "Once the injector reaches a Codex renderer, this payload creates the actual cultivation experience inside the page. It analyzes artwork, maintains local progression state, augments the DOM responsively, binds new controls back to native Codex actions, handles events and cleanup, and exposes a narrow verification API for tests.",
+      "nodeIds": [
+        "file:windows/assets/renderer-inject.js"
+      ],
+      "languageLesson": "DOM augmentation against an application you do not own should be idempotent: injected elements, listeners, and observers need stable markers and cleanup paths so repeated injection does not duplicate behavior."
+    },
+    {
+      "order": 6,
+      "title": "Theme Composition",
+      "description": "The visual layer is split between a base reskin that adapts Codex's native shell and a cultivation skin that styles progression-specific HUDs, dialogs, statistics, companions, and activity views. The versioned theme preset keeps localized copy, appearance selection, background choice, focal point, and safe-area metadata outside the CSS and renderer logic, making visual variants configurable without changing the runtime architecture.",
+      "nodeIds": [
+        "file:windows/assets/cultivation-base.css",
+        "file:windows/assets/cultivation-skin.css",
+        "config:windows/assets/theme.json"
+      ],
+      "languageLesson": "CSS custom properties and JSON presets form a useful separation of concerns: CSS defines reusable rendering rules, while data-driven presets select copy, assets, colors, and composition metadata."
+    },
+    {
+      "order": 7,
+      "title": "Control and Verification",
+      "description": "The tray controller provides the ongoing user interface for inspecting status, applying or pausing the skin, selecting themes, opening assets, and initiating restoration. The verification entry point independently revalidates the saved package and loopback CDP identity before asking the injector to check the live renderer, so a visible-looking result is not accepted without runtime evidence.",
+      "nodeIds": [
+        "file:windows/scripts/tray-codex-cultivation.ps1",
+        "file:windows/scripts/verify-codex-cultivation.ps1"
+      ]
+    },
+    {
+      "order": 8,
+      "title": "Reversible Teardown",
+      "description": "Restoration is a first-class lifecycle path rather than an afterthought: the restore script closes only the verified tray, injector, and Codex CDP session, recovers configuration at the requested scope, and can remove shortcuts or relaunch Codex. The runtime contract documents the invariants behind this behavior, including signed Store-package discovery, loopback identity, serialized operations, strict TOML updates, bounded paths and images, and resilience to Store updates.",
+      "nodeIds": [
+        "file:windows/scripts/restore-codex-cultivation.ps1",
+        "document:windows/references/runtime-notes.md"
+      ]
+    },
+    {
+      "order": 9,
+      "title": "Regression Safety Net",
+      "description": "The PowerShell suite runner exercises the failure-prone boundaries introduced in Steps 3-8: atomic UTF-8 configuration changes, scoped restoration, Store and CDP identity, theme containment, image limits, startup and tray behavior, renderer payloads, and JavaScript integration tests. The QA inventory then separates automated coverage from functional, visual, exploratory, hostile-runtime, and live-Windows signoff, showing where human acceptance is still required.",
+      "nodeIds": [
+        "file:windows/tests/run-tests.ps1",
+        "document:windows/references/qa-inventory.md"
+      ]
+    },
+    {
+      "order": 10,
+      "title": "Skill Workflow",
+      "description": "Finish with the skill-facing documentation that turns the implementation into a repeatable Codex workflow. It identifies the important files and guardrails for installation, verification, updates, and restoration, providing an operational map back across the launcher, injector, renderer, theme, and safety mechanisms covered in the tour.",
+      "nodeIds": [
+        "document:windows/SKILL.md"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,930 @@
+{
+  "version": "1.0.0",
+  "gitCommitHash": "c404b34484def7573ee0effb94a8e41a8dfcbf59",
+  "generatedAt": "2026-07-19T04:00:45.149Z",
+  "files": {
+    ".understand-anything/.understandignore": {
+      "filePath": ".understand-anything/.understandignore",
+      "contentHash": "d2e0aebcd0defb2f61fa96406cce8f220e6483eacbd2f6938c97c011207fe2e6",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 32,
+      "hasStructuralAnalysis": false
+    },
+    "NOTICE.md": {
+      "filePath": "NOTICE.md",
+      "contentHash": "fddf8dbfc3a76644fb90c1316420f065f043d3595475ce87bce0a2c8b383ddd0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 12,
+      "hasStructuralAnalysis": true
+    },
+    "README.md": {
+      "filePath": "README.md",
+      "contentHash": "c01cc78bbfc260167f89757db59debdd3e60f27835c32007bfb02fb19d4c4b65",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 101,
+      "hasStructuralAnalysis": true
+    },
+    "windows/agents/openai.yaml": {
+      "filePath": "windows/agents/openai.yaml",
+      "contentHash": "a6701404f5bf338ad7b60a4c59979a33819c1917f751db0310384c6fe4876e2c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 5,
+      "hasStructuralAnalysis": true
+    },
+    "windows/assets/cultivation-base.css": {
+      "filePath": "windows/assets/cultivation-base.css",
+      "contentHash": "1c21659d9a92ff84b1b9599559ff6299fb27d8b72a7ecc911cf9cd8575f27393",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 628,
+      "hasStructuralAnalysis": false
+    },
+    "windows/assets/cultivation-skin.css": {
+      "filePath": "windows/assets/cultivation-skin.css",
+      "contentHash": "a8c4363fd51c4cf58eddee58a901885c2e5abc00df63db0a60bca4f90cbdc819",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1687,
+      "hasStructuralAnalysis": false
+    },
+    "windows/assets/renderer-inject.js": {
+      "filePath": "windows/assets/renderer-inject.js",
+      "contentHash": "27bd4d2e7027894927548d8c9ad72acf1ceddb0e5348203b6cc9e5d38c8c4aab",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 1407,
+      "hasStructuralAnalysis": true
+    },
+    "windows/assets/theme.json": {
+      "filePath": "windows/assets/theme.json",
+      "contentHash": "c2da8696bd8e498840ebf8865267f04f117367650276d79501547221421e09f8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 20,
+      "hasStructuralAnalysis": true
+    },
+    "windows/CHANGELOG.md": {
+      "filePath": "windows/CHANGELOG.md",
+      "contentHash": "7495c9c82f1695e68ecfd164560de276a11e775478a0c7cc0d5de609a8fdf57c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 13,
+      "hasStructuralAnalysis": true
+    },
+    "windows/references/cultivation-art-prompts.json": {
+      "filePath": "windows/references/cultivation-art-prompts.json",
+      "contentHash": "34a2e118f72010afa5efb47dcd5f3898679e307b9c4bf8ff7cf88c7a659e6fc0",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 115,
+      "hasStructuralAnalysis": true
+    },
+    "windows/references/cultivation-design-system.md": {
+      "filePath": "windows/references/cultivation-design-system.md",
+      "contentHash": "84c33bad3c2b80a091c98f6e47d4426c0ec6cac366df0630241f1cb3cf2b8d72",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 43,
+      "hasStructuralAnalysis": true
+    },
+    "windows/references/cultivation-system.md": {
+      "filePath": "windows/references/cultivation-system.md",
+      "contentHash": "99e93ea243a64d6227d6bbfb72cdde56ee1d3909ce844dbbcc7d7794849f8b6c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 89,
+      "hasStructuralAnalysis": true
+    },
+    "windows/references/qa-inventory.md": {
+      "filePath": "windows/references/qa-inventory.md",
+      "contentHash": "65d2761b60c2471bc2c4c020a4e9a639a80431b92b947dc3b30946ba9995b8c7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 51,
+      "hasStructuralAnalysis": true
+    },
+    "windows/references/runtime-notes.md": {
+      "filePath": "windows/references/runtime-notes.md",
+      "contentHash": "89950cf9c8429a4bd3d8e038aba77259997d54d01f97108fcb1d762b14898aaa",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 17,
+      "hasStructuralAnalysis": true
+    },
+    "windows/scripts/common-windows.ps1": {
+      "filePath": "windows/scripts/common-windows.ps1",
+      "contentHash": "6b48d074f54a142f777b68a2401a6f579b03aafab4cf4651f76792c313bae28c",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 494,
+      "hasStructuralAnalysis": false
+    },
+    "windows/scripts/config-utf8.ps1": {
+      "filePath": "windows/scripts/config-utf8.ps1",
+      "contentHash": "5c00d2df53bd1529a3e0c9475917d78d0f8746dd9d26b72a2e3944d1a3d10195",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 506,
+      "hasStructuralAnalysis": false
+    },
+    "windows/scripts/image-metadata.mjs": {
+      "filePath": "windows/scripts/image-metadata.mjs",
+      "contentHash": "5db49cac97f513888e1697ca8361c8096413a8834df2c1b5286e9e8af51ad344",
+      "functions": [
+        {
+          "name": "uint16be",
+          "params": [
+            "bytes",
+            "offset"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "uint16le",
+          "params": [
+            "bytes",
+            "offset"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "uint24le",
+          "params": [
+            "bytes",
+            "offset"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "uint32be",
+          "params": [
+            "bytes",
+            "offset"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "uint32le",
+          "params": [
+            "bytes",
+            "offset"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "ascii",
+          "params": [
+            "bytes",
+            "offset",
+            "length"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "pngDimensions",
+          "params": [
+            "bytes"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "jpegDimensions",
+          "params": [
+            "bytes"
+          ],
+          "exported": false,
+          "lineCount": 24
+        },
+        {
+          "name": "webpDimensions",
+          "params": [
+            "bytes"
+          ],
+          "exported": false,
+          "lineCount": 32
+        },
+        {
+          "name": "classifyImageDimensions",
+          "params": [],
+          "exported": true,
+          "lineCount": 20
+        },
+        {
+          "name": "readImageMetadata",
+          "params": [
+            "value"
+          ],
+          "exported": true,
+          "lineCount": 10
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        }
+      ],
+      "exports": [
+        "MAX_IMAGE_DIMENSION",
+        "MAX_IMAGE_PIXELS",
+        "classifyImageDimensions",
+        "readImageMetadata"
+      ],
+      "totalLines": 158,
+      "hasStructuralAnalysis": true
+    },
+    "windows/scripts/injector.mjs": {
+      "filePath": "windows/scripts/injector.mjs",
+      "contentHash": "1c9d04dc8d7b4240ff2cbe6c2860d7a50d7d9415aa842b4f94f4928ec07c4ddd",
+      "functions": [
+        {
+          "name": "parseArgs",
+          "params": [
+            "argv"
+          ],
+          "exported": false,
+          "lineCount": 42
+        },
+        {
+          "name": "validatedDebuggerUrl",
+          "params": [
+            "target",
+            "port"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "browserIdFromVersion",
+          "params": [
+            "version",
+            "port"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "isValidCdpPageTarget",
+          "params": [
+            "item",
+            "port"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "fetchCdpJson",
+          "params": [
+            "port",
+            "resource"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "listAppTargets",
+          "params": [
+            "port"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "connectBrowserIdentityAnchor",
+          "params": [
+            "port",
+            "expectedBrowserId"
+          ],
+          "exported": false,
+          "lineCount": 10
+        },
+        {
+          "name": "normalizedUnit",
+          "params": [
+            "value",
+            "name"
+          ],
+          "exported": false,
+          "lineCount": 8
+        },
+        {
+          "name": "normalizedChoice",
+          "params": [
+            "value",
+            "name",
+            "choices",
+            "fallback"
+          ],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "normalizedText",
+          "params": [
+            "value",
+            "name",
+            "fallback"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "loadTheme",
+          "params": [
+            "themeDir"
+          ],
+          "exported": false,
+          "lineCount": 76
+        },
+        {
+          "name": "loadPayload",
+          "params": [],
+          "exported": false,
+          "lineCount": 67
+        },
+        {
+          "name": "fileExists",
+          "params": [
+            "filePath"
+          ],
+          "exported": false,
+          "lineCount": 9
+        },
+        {
+          "name": "readThemeSourceStamp",
+          "params": [
+            "loadedTheme"
+          ],
+          "exported": false,
+          "lineCount": 7
+        },
+        {
+          "name": "probeSession",
+          "params": [
+            "session"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "waitForCodexProbe",
+          "params": [
+            "session"
+          ],
+          "exported": false,
+          "lineCount": 14
+        },
+        {
+          "name": "connectTarget",
+          "params": [
+            "target",
+            "port"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "connectCodexTargets",
+          "params": [
+            "port",
+            "timeoutMs",
+            "expectedBrowserId"
+          ],
+          "exported": false,
+          "lineCount": 29
+        },
+        {
+          "name": "applyToSession",
+          "params": [
+            "session",
+            "payload"
+          ],
+          "exported": false,
+          "lineCount": 3
+        },
+        {
+          "name": "earlyPayloadFor",
+          "params": [
+            "payload",
+            "revision"
+          ],
+          "exported": true,
+          "lineCount": 34
+        },
+        {
+          "name": "registerEarlyPayload",
+          "params": [
+            "session",
+            "payload",
+            "revision"
+          ],
+          "exported": false,
+          "lineCount": 6
+        },
+        {
+          "name": "removeEarlyPayload",
+          "params": [
+            "session",
+            "identifier"
+          ],
+          "exported": false,
+          "lineCount": 4
+        },
+        {
+          "name": "removeFromSession",
+          "params": [
+            "session"
+          ],
+          "exported": false,
+          "lineCount": 25
+        },
+        {
+          "name": "verifyRemovedSession",
+          "params": [
+            "session"
+          ],
+          "exported": false,
+          "lineCount": 12
+        },
+        {
+          "name": "verifySession",
+          "params": [
+            "session"
+          ],
+          "exported": false,
+          "lineCount": 37
+        },
+        {
+          "name": "waitForVerifiedSession",
+          "params": [
+            "session",
+            "timeoutMs"
+          ],
+          "exported": false,
+          "lineCount": 17
+        },
+        {
+          "name": "capture",
+          "params": [
+            "session",
+            "outputPath"
+          ],
+          "exported": false,
+          "lineCount": 19
+        },
+        {
+          "name": "runOneShot",
+          "params": [
+            "options"
+          ],
+          "exported": false,
+          "lineCount": 42
+        },
+        {
+          "name": "runWatch",
+          "params": [
+            "options"
+          ],
+          "exported": false,
+          "lineCount": 234
+        }
+      ],
+      "classes": [
+        {
+          "name": "CdpIdentityMismatchError",
+          "methods": [],
+          "properties": [],
+          "exported": false,
+          "lineCount": 1
+        },
+        {
+          "name": "CdpSession",
+          "methods": [
+            "constructor",
+            "open",
+            "onMessage",
+            "on",
+            "send",
+            "evaluate",
+            "close"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 105
+        },
+        {
+          "name": "BrowserIdentityAnchor",
+          "methods": [
+            "constructor",
+            "open",
+            "close"
+          ],
+          "properties": [],
+          "exported": false,
+          "lineCount": 38
+        }
+      ],
+      "imports": [
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:crypto",
+          "specifiers": [
+            "createHash"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        },
+        {
+          "source": "./image-metadata.mjs",
+          "specifiers": [
+            "readImageMetadata"
+          ]
+        }
+      ],
+      "exports": [
+        "earlyPayloadFor"
+      ],
+      "totalLines": 1044,
+      "hasStructuralAnalysis": true
+    },
+    "windows/scripts/install-codex-cultivation.ps1": {
+      "filePath": "windows/scripts/install-codex-cultivation.ps1",
+      "contentHash": "f468762cbea10bb38d52ac5806837ed2cce04afcb60ee97a65ac59d910a8e847",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 90,
+      "hasStructuralAnalysis": false
+    },
+    "windows/scripts/request-cultivation-art.ps1": {
+      "filePath": "windows/scripts/request-cultivation-art.ps1",
+      "contentHash": "7f7673530beb7ee3a623a0f6ac8e51362a106db2a49ef50e74c3229bef5d36d7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 171,
+      "hasStructuralAnalysis": false
+    },
+    "windows/scripts/restore-codex-cultivation.ps1": {
+      "filePath": "windows/scripts/restore-codex-cultivation.ps1",
+      "contentHash": "db25a23c60bcc13ab6627e30a10e2d6aa01c6a53b0832e62051077db5e68cbdf",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 184,
+      "hasStructuralAnalysis": false
+    },
+    "windows/scripts/start-codex-cultivation.ps1": {
+      "filePath": "windows/scripts/start-codex-cultivation.ps1",
+      "contentHash": "daf35a3a56a6057b370b798f6dbfd4e07d92a009c5ffd9fcdc3ddf0211c6d975",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 288,
+      "hasStructuralAnalysis": false
+    },
+    "windows/scripts/theme-windows.ps1": {
+      "filePath": "windows/scripts/theme-windows.ps1",
+      "contentHash": "a8bbe15c4dcc50c7601692a2dbe77e24aee0c0c45e3ef5c30e83be2fc66ee5b7",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 399,
+      "hasStructuralAnalysis": false
+    },
+    "windows/scripts/tray-codex-cultivation.ps1": {
+      "filePath": "windows/scripts/tray-codex-cultivation.ps1",
+      "contentHash": "3870731780345e4647744c93ffa52da0b8dc6e630f267f351175776b630b357e",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 168,
+      "hasStructuralAnalysis": false
+    },
+    "windows/scripts/verify-codex-cultivation.ps1": {
+      "filePath": "windows/scripts/verify-codex-cultivation.ps1",
+      "contentHash": "e70755da1ebff6b92a0edc88566fe5627cf1c4fabee8e5f33849d526d73f9880",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 50,
+      "hasStructuralAnalysis": false
+    },
+    "windows/SKILL.md": {
+      "filePath": "windows/SKILL.md",
+      "contentHash": "1ee2601779f0805532be2aaab9b42b58498f2bde2c22a43e44cc58b55d4083f8",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 38,
+      "hasStructuralAnalysis": true
+    },
+    "windows/tests/image-metadata.test.mjs": {
+      "filePath": "windows/tests/image-metadata.test.mjs",
+      "contentHash": "76e6e208c8cb864a6a57329d9319250906b0400ea8cc476776c6d560e57c40ac",
+      "functions": [],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:child_process",
+          "specifiers": [
+            "spawnSync"
+          ]
+        },
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        },
+        {
+          "source": "../scripts/image-metadata.mjs",
+          "specifiers": [
+            "MAX_IMAGE_DIMENSION",
+            "MAX_IMAGE_PIXELS",
+            "classifyImageDimensions",
+            "readImageMetadata"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 60,
+      "hasStructuralAnalysis": true
+    },
+    "windows/tests/injector-bootstrap.test.mjs": {
+      "filePath": "windows/tests/injector-bootstrap.test.mjs",
+      "contentHash": "a4a2f830f00ec844725ba4fdc12c6db78772ba35a3227fba8502a43be03f68b0",
+      "functions": [
+        {
+          "name": "createFixture",
+          "params": [],
+          "exported": false,
+          "lineCount": 34
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:vm",
+          "specifiers": [
+            "vm"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        },
+        {
+          "source": "../scripts/injector.mjs",
+          "specifiers": [
+            "earlyPayloadFor"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 83,
+      "hasStructuralAnalysis": true
+    },
+    "windows/tests/injector-one-shot.test.mjs": {
+      "filePath": "windows/tests/injector-one-shot.test.mjs",
+      "contentHash": "a8e6d69c142974e380f8ed106e1c3f5324b00bcfc8daf195c26b50ffe1ff5c6f",
+      "functions": [
+        {
+          "name": "runMode",
+          "params": [
+            "mode"
+          ],
+          "exported": false,
+          "lineCount": 17
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:child_process",
+          "specifiers": [
+            "spawn"
+          ]
+        },
+        {
+          "source": "node:http",
+          "specifiers": [
+            "http"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 68,
+      "hasStructuralAnalysis": true
+    },
+    "windows/tests/renderer-inject.test.mjs": {
+      "filePath": "windows/tests/renderer-inject.test.mjs",
+      "contentHash": "d8d3c7457f23855df774b95838c2082cec23f47bbb7599fe7531949e4ffd59e9",
+      "functions": [
+        {
+          "name": "buildPayload",
+          "params": [],
+          "exported": false,
+          "lineCount": 5
+        },
+        {
+          "name": "createFixture",
+          "params": [],
+          "exported": false,
+          "lineCount": 215
+        },
+        {
+          "name": "dateAt",
+          "params": [
+            "offset"
+          ],
+          "exported": false,
+          "lineCount": 5
+        }
+      ],
+      "classes": [],
+      "imports": [
+        {
+          "source": "node:assert/strict",
+          "specifiers": [
+            "assert"
+          ]
+        },
+        {
+          "source": "node:fs/promises",
+          "specifiers": [
+            "fs"
+          ]
+        },
+        {
+          "source": "node:path",
+          "specifiers": [
+            "path"
+          ]
+        },
+        {
+          "source": "node:vm",
+          "specifiers": [
+            "vm"
+          ]
+        },
+        {
+          "source": "node:url",
+          "specifiers": [
+            "fileURLToPath"
+          ]
+        }
+      ],
+      "exports": [],
+      "totalLines": 473,
+      "hasStructuralAnalysis": true
+    },
+    "windows/tests/run-tests.ps1": {
+      "filePath": "windows/tests/run-tests.ps1",
+      "contentHash": "393fd5c34d3f2796f6e5c43985b71b9d8787c2ea386c5f44a8f173ffee9c7dca",
+      "functions": [],
+      "classes": [],
+      "imports": [],
+      "exports": [],
+      "totalLines": 537,
+      "hasStructuralAnalysis": false
+    }
+  }
+}
