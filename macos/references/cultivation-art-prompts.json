@@ -1,0 +1,114 @@
+[
+  {
+    "id": "qiLight",
+    "output": "qi-refining-background-light.png",
+    "model": "gpt-image-2",
+    "size": "2560x1440",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: light cultivation desktop background\nPrimary request: a serene Chinese xianxia cultivation terrace at first light, pale jade stone, thin morning mist, distant layered mountains and cloud sea, a modest incense table and bamboo screen on the far right, quiet sense of beginning spiritual practice\nStyle/medium: cinematic realistic fantasy environment concept art, physically credible architecture and atmosphere, refined material detail\nComposition/framing: ultrawide desktop background, left 58 percent is calm low-detail pale mist and soft mountain silhouettes for readable app content, all architectural focal detail on the right\nLighting/mood: bright soft dawn, pearl white sky, pale celadon, cool gray and restrained warm sunlight, luminous but never washed out\nConstraints: environment only; no people; no UI; no frames; no panels; no icons; no letters; no Chinese characters; no calligraphy; no numbers; no signs; no logo; no watermark"
+  },
+  {
+    "id": "foundationDark",
+    "output": "foundation-background.png",
+    "model": "gpt-image-2",
+    "size": "2560x1440",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: dark cultivation desktop background\nPrimary request: a monumental Chinese xianxia foundation-building altar carved into a mountain at night, massive dark stone plinth anchored by glowing jade veins and deep roots, rain-wet steps and ancient pillars on the far right, distant storm clouds and mountain abyss\nStyle/medium: cinematic realistic fantasy environment concept art, physically credible monumental architecture, dense stone and jade textures\nComposition/framing: ultrawide desktop background, left 58 percent is dark quiet fog with low visual detail for readable app content, altar and luminous structural focal point entirely on the right\nLighting/mood: deep teal night, restrained jade glow, distant lightning behind clouds, solemn and grounded rather than flashy\nConstraints: environment only; no people; no UI; no frames; no panels; no icons; no letters; no Chinese characters; no calligraphy; no numbers; no signs; no logo; no watermark"
+  },
+  {
+    "id": "foundationLight",
+    "output": "foundation-background-light.png",
+    "model": "gpt-image-2",
+    "size": "2560x1440",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: light cultivation desktop background\nPrimary request: a monumental Chinese xianxia foundation-building sanctuary above a cloud sea at sunrise, white jade causeway leading to a stable square altar, subtle green mineral veins through the stone, ancient pillars and rooted celestial pines on the far right\nStyle/medium: cinematic realistic fantasy environment concept art, physically credible monumental architecture, polished white jade and stone textures\nComposition/framing: ultrawide desktop background, left 58 percent is pale open cloud and soft distant peaks with low visual detail for readable app content, sanctuary focal detail entirely on the right\nLighting/mood: clear morning light, pearl white, pale celadon, cool gray and restrained gold, airy yet solid\nConstraints: environment only; no people; no UI; no frames; no panels; no icons; no letters; no Chinese characters; no calligraphy; no numbers; no signs; no logo; no watermark"
+  },
+  {
+    "id": "goldenCoreDark",
+    "output": "golden-core-background.png",
+    "model": "gpt-image-2",
+    "size": "2560x1440",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: dark cultivation desktop background\nPrimary request: a vast Chinese xianxia golden-core observatory above a nocturnal cloud sea, a monumental bronze alchemical sphere and precise celestial rings glowing from within on the far right, layered mountain temples below, dark open sky across the left\nStyle/medium: cinematic realistic fantasy environment concept art, physically credible bronze mechanisms and ancient architecture, intricate but controlled detail\nComposition/framing: ultrawide desktop background, left 58 percent is dark low-detail sky and cloud sea for readable app content, all golden mechanical focal detail on the right\nLighting/mood: midnight charcoal and deep blue with concentrated warm gold radiance, high contrast around the core, restrained elsewhere\nConstraints: environment only; no people; no UI; no frames; no panels; no icons; no letters; no Chinese characters; no calligraphy; no numbers; no signs; absolutely no logo; absolutely no watermark"
+  },
+  {
+    "id": "goldenCoreLight",
+    "output": "golden-core-background-light.png",
+    "model": "gpt-image-2",
+    "size": "2560x1440",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: light cultivation desktop background\nPrimary request: a Chinese xianxia golden-core observatory at sunrise above a bright cloud sea, an elegant white-stone and brushed-bronze celestial instrument holding a radiant golden sphere on the far right, distant temple terraces and mountains\nStyle/medium: cinematic realistic fantasy environment concept art, physically credible precision mechanisms, premium white stone and warm metal textures\nComposition/framing: ultrawide desktop background, left 58 percent is open pearl sky and soft cloud layers with low visual detail for readable app content, golden-core focal detail entirely on the right\nLighting/mood: clean morning sunlight, ivory, pearl gray, pale blue and refined warm gold, luminous without glare\nConstraints: environment only; no people; no UI; no frames; no panels; no icons; no letters; no Chinese characters; no calligraphy; no numbers; no signs; no logo; no watermark"
+  },
+  {
+    "id": "nascentSoulDark",
+    "output": "nascent-soul-background.png",
+    "model": "gpt-image-2",
+    "size": "2560x1440",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: dark cultivation desktop background\nPrimary request: a moonlit Chinese xianxia spirit sanctuary over a black mirror lake, a translucent jade lotus prism sheltering a small abstract humanoid spirit silhouette made only of light on the far right, ancient pavilion columns and drifting soul-fire motes, vast misty water to the left\nStyle/medium: cinematic realistic fantasy environment concept art, ethereal but physically credible water reflections, carved jade and stone architecture\nComposition/framing: ultrawide desktop background, left 58 percent is quiet dark lake and fog with low visual detail for readable app content, spirit sanctuary focal detail entirely on the right\nLighting/mood: silver moonlight, deep indigo, muted cyan and soft violet, mysterious and contemplative\nConstraints: the spirit is abstract light, not a baby and not a portrait; no other people; no UI; no frames; no panels; no icons; no letters; no Chinese characters; no calligraphy; no numbers; no signs; no logo; no watermark"
+  },
+  {
+    "id": "nascentSoulLight",
+    "output": "nascent-soul-background-light.png",
+    "model": "gpt-image-2",
+    "size": "2560x1440",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: light cultivation desktop background\nPrimary request: a bright Chinese xianxia nascent-spirit sanctuary floating above a tranquil cloud lake, a pearlescent jade lotus chamber holding a small abstract humanoid spirit silhouette made only of light on the far right, white stone pavilion and translucent silk banners\nStyle/medium: cinematic realistic fantasy environment concept art, ethereal yet physically credible reflections, carved white jade and mother-of-pearl textures\nComposition/framing: ultrawide desktop background, left 58 percent is pale tranquil cloud water and mist with low visual detail for readable app content, spirit sanctuary focal detail entirely on the right\nLighting/mood: soft overcast celestial daylight, pearl white, pale aqua, lavender-gray and restrained rose-gold highlights\nConstraints: the spirit is abstract light, not a baby and not a portrait; no other people; no UI; no frames; no panels; no icons; no letters; no Chinese characters; no calligraphy; no numbers; no signs; no logo; no watermark"
+  },
+  {
+    "id": "transformationLight",
+    "output": "transformation-background-light.png",
+    "model": "gpt-image-2",
+    "size": "2560x1440",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: light cultivation desktop background\nPrimary request: a transcendent Chinese xianxia celestial hall opening onto an infinite daytime sky, a vast circular portal of crystalline blue-white light and suspended geometric stone rings on the far right, polished pale jade floor reflecting clouds, distant heavenly mountains\nStyle/medium: cinematic realistic fantasy environment concept art, monumental sacred architecture, physically credible reflections and atmospheric depth\nComposition/framing: ultrawide desktop background, left 58 percent is open pale sky and soft cloud horizon with low visual detail for readable app content, celestial portal and architecture entirely on the right\nLighting/mood: high clear celestial daylight, white jade, pale cyan, cool silver and restrained prismatic highlights, serene divine scale without overexposure\nConstraints: environment only; no people; no UI; no frames; no panels; no icons; no letters; no Chinese characters; no calligraphy; no numbers; no signs; no logo; no watermark"
+  },
+  {
+    "id": "companionFemaleQi",
+    "output": "companion-female-qi.png",
+    "model": "gpt-image-2",
+    "size": "1024x1536",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: persistent female cultivation-attendant identity anchor for a desktop side panel\nPrimary request: one adult Chinese xianxia female attendant, calm intelligent expression, distinctive natural face, dark hair in a restrained half-up style, wearing a simple celadon and ivory outer-disciple robe with practical layered fabric and no ornate rank symbols\nStyle/medium: cinematic realistic fantasy character portrait, refined natural skin and fabric texture, premium game-character key art without looking like a game screenshot\nComposition/framing: vertical portrait, three-quarter body visible from head to below knees, centered neutral standing pose, hands relaxed and visible, direct three-quarter gaze, generous margin around hair and sleeves; this exact face, hair, body proportions, age, pose and camera must serve as the immutable identity anchor for all later outfit edits\nScene/backdrop: quiet desaturated jade-gray mist with a subtle stone floor, deliberately low detail and evenly lit so the portrait blends into both light and dark translucent UI panels\nLighting/mood: soft neutral key light, restrained jade rim light, serene and dependable\nConstraints: exactly one person; adult; no nameplate; no text; no calligraphy; no UI; no frame; no logo; no watermark; no weapon; no pet; no revealing clothing; no exaggerated anatomy"
+  },
+  {
+    "id": "companionMaleQi",
+    "output": "companion-male-qi.png",
+    "model": "gpt-image-2",
+    "size": "1024x1536",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: persistent male cultivation-attendant identity anchor for a desktop side panel\nPrimary request: one adult Chinese xianxia male attendant, calm intelligent expression, distinctive natural face, long dark hair in a restrained tied-back style, wearing a simple celadon and ivory outer-disciple robe with practical layered fabric and no ornate rank symbols\nStyle/medium: cinematic realistic fantasy character portrait, refined natural skin and fabric texture, premium game-character key art without looking like a game screenshot\nComposition/framing: vertical portrait, three-quarter body visible from head to below knees, centered neutral standing pose, hands relaxed and visible, direct three-quarter gaze, generous margin around hair and sleeves; this exact face, hair, body proportions, age, pose and camera must serve as the immutable identity anchor for all later outfit edits\nScene/backdrop: quiet desaturated jade-gray mist with a subtle stone floor, deliberately low detail and evenly lit so the portrait blends into both light and dark translucent UI panels\nLighting/mood: soft neutral key light, restrained jade rim light, serene and dependable\nConstraints: exactly one person; adult; no nameplate; no text; no calligraphy; no UI; no frame; no logo; no watermark; no weapon; no pet; no revealing clothing; no exaggerated anatomy"
+  },
+  {
+    "id": "cardForge",
+    "output": "card-forge.png",
+    "model": "gpt-image-2",
+    "size": "1024x1024",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: circular cultivation function-card artwork\nPrimary request: one elegant ancient Chinese alchemy cauldron representing building software and tools, brushed bronze and pale jade, restrained teal spiritual energy flowing upward\nStyle/medium: premium cinematic xianxia artifact illustration, physically credible metal and jade, precise symmetrical silhouette\nComposition/framing: single artifact centered inside a circular aura, generous padding, square canvas designed to be clipped into a circle\nScene/backdrop: soft neutral pearl-gray mist fading evenly toward all outer edges\nLighting/mood: luminous celadon and restrained warm gold, clean and refined\nConstraints: no people; no UI; no frame; no letters; no Chinese characters; no runes that resemble writing; no logo; no watermark"
+  },
+  {
+    "id": "cardBreakArray",
+    "output": "card-break-array.png",
+    "model": "gpt-image-2",
+    "size": "1024x1024",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: circular cultivation function-card artwork\nPrimary request: one precise floating geometric formation representing analysis and problem solving, crystalline nodes connected by fine blue-white energy lines around a faceted central core\nStyle/medium: premium cinematic xianxia artifact illustration, physically credible crystal, subtle depth and symmetry\nComposition/framing: single formation centered inside a circular aura, generous padding, square canvas designed to be clipped into a circle\nScene/backdrop: soft neutral pearl-gray mist fading evenly toward all outer edges\nLighting/mood: cool cyan, pale blue and restrained silver, clear rather than flashy\nConstraints: no people; no UI; no frame; no letters; no Chinese characters; no readable runes; no logo; no watermark"
+  },
+  {
+    "id": "cardRetreat",
+    "output": "card-retreat.png",
+    "model": "gpt-image-2",
+    "size": "1024x1024",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: circular cultivation function-card artwork\nPrimary request: one abstract faceless meditating silhouette made of soft violet spiritual light, representing deep focused work, seated above a simple lotus-shaped energy base\nStyle/medium: premium cinematic xianxia spiritual illustration, elegant volumetric light with controlled detail\nComposition/framing: single abstract figure centered inside a circular aura, generous padding, square canvas designed to be clipped into a circle\nScene/backdrop: soft neutral pearl-gray mist fading evenly toward all outer edges\nLighting/mood: muted violet, moon-white and restrained jade accents, quiet and contemplative\nConstraints: abstract light silhouette only, not a portrait; no UI; no frame; no letters; no Chinese characters; no readable runes; no logo; no watermark"
+  },
+  {
+    "id": "cardContemplate",
+    "output": "card-contemplate.png",
+    "model": "gpt-image-2",
+    "size": "1024x1024",
+    "quality": "high",
+    "prompt": "Use case: stylized-concept\nAsset type: circular cultivation function-card artwork\nPrimary request: one closed ancient jade-and-bronze scroll representing exploration and understanding, floating above a small warm-gold light pool with delicate orbiting dust\nStyle/medium: premium cinematic xianxia artifact illustration, physically credible stone, silk cord and brushed metal\nComposition/framing: single artifact centered inside a circular aura, generous padding, square canvas designed to be clipped into a circle\nScene/backdrop: soft neutral pearl-gray mist fading evenly toward all outer edges\nLighting/mood: ivory, pale jade and restrained warm gold, wise and serene\nConstraints: scroll surface must be blank; no people; no UI; no frame; no letters; no Chinese characters; no calligraphy; no logo; no watermark"
+  }
+]

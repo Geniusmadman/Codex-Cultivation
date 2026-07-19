@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codex Cultivation"
+  short_description: "Apply and safely restore the Codex cultivation workspace"
+  default_prompt: "Use $codex-cultivation to install, apply, verify, update, or restore the Codex cultivation workspace."

@@ -5,8 +5,9 @@ import vm from "node:vm";
 import { fileURLToPath } from "node:url";
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const windowsRoot = path.resolve(here, "..");
-const template = await fs.readFile(path.join(windowsRoot, "assets", "renderer-inject.js"), "utf8");
+const platformRoot = path.resolve(here, "..");
+const template = await fs.readFile(path.join(platformRoot, "assets", "renderer-inject.js"), "utf8");
+const cultivationCss = await fs.readFile(path.join(platformRoot, "assets", "cultivation-skin.css"), "utf8");
 const buildPayload = (config = {}, cultivationArts = {}) => template
   .replace("__DREAM_CSS_JSON__", JSON.stringify(".fixture { color: blue; }"))
   .replace("__DREAM_ART_JSON__", JSON.stringify("data:image/png;base64,AA=="))
@@ -298,6 +299,39 @@ assert.equal(configured.routeClasses.has("dream-task"), false);
 assert.equal(configured.utilityClasses.has("dream-home-utility"), true);
 assert.equal(configured.nodes.has("codex-cultivation-left-rail"), true);
 assert.equal(configured.nodes.has("codex-cultivation-right-rail"), true);
+const companionMarkup = configured.nodes.get("codex-cultivation-left-rail").innerHTML;
+assert.match(companionMarkup, /cultivation-companion-quote/);
+assert.match(companionMarkup, /今日灵台清明/);
+assert.doesNotMatch(companionMarkup, /随境换装|仙侍辅修|静候差遣/);
+assert.match(companionMarkup, /cultivation-realm-dial/);
+assert.match(companionMarkup, /<canvas class="cultivation-realm-dial__flow"/);
+assert.doesNotMatch(companionMarkup, /data-realm-wisp=/);
+assert.match(template, /const drawStream = \(stream, phase, width, height\) =>/);
+assert.match(template, /const samples = 52;/);
+assert.match(template, /const trailSpan = Math\.PI \* \.78;/);
+assert.match(template, /phase - stream\.direction \* trailSpan \* index/);
+assert.match(template, /globalCompositeOperation = "lighter"/);
+assert.equal((template.match(/direction: 1,/g) || []).length, 2);
+assert.equal((template.match(/direction: -1,/g) || []).length, 2);
+assert.match(cultivationCss, /:root\.dream-theme-light \.cultivation-current-method/);
+assert.match(cultivationCss, /:root\.dream-theme-light \.cultivation-status-flow/);
+assert.match(cultivationCss, /:root\.dream-theme-light \.dream-home \.group\\\/home-suggestions button/);
+assert.match(cultivationCss, /\.cultivation-home-fallback-cards/);
+assert.match(template, /const CULTIVATION_HOME_CARDS_ID = "codex-cultivation-home-cards"/);
+assert.match(template, /nativeSuggestionButtons\.length/);
+assert.match(template, /data-cultivation-fallback-card/);
+assert.match(template, /const seedCultivationPrompt = \(kind\) =>/);
+assert.match(companionMarkup, /cultivation-stone-ledger/);
+assert.match(companionMarkup, /cultivation-current-method/);
+assert.match(template, /cultivation-gender-control/);
+assert.doesNotMatch(template, /仙侍形象|只切换人物身份/);
+assert.match(template, /<h1>今日问道<\/h1>/);
+assert.match(template, /以代码为剑，以逻辑炼心；一问破境，万法归真。/);
+assert.match(
+  template,
+  /const cultivationDialogMarkup = \(state, realm\) => \{[\s\S]*?const maxDay = Math\.max\(1, \.\.\.recent\.map\(\(item\) => item\.tokens\)\);/,
+  "The cultivation dialog must compute its own seven-day chart scale before rendering.",
+);
 assert.equal(configured.context.window.__CODEX_CULTIVATION_STATE__.cleanup(), true);
 assert.equal(configured.utilityClasses.has("dream-home-utility"), false);
 
@@ -383,13 +417,30 @@ vm.runInNewContext(payload, cultivationEngine.context);
 const cultivationDebug = cultivationEngine.context.window.__CODEX_CULTIVATION_DEBUG__;
 assert.ok(cultivationDebug, "Cultivation debug API should expose the pure state transitions for verification.");
 
+const modelMethods = [
+  ["GPT 5.4 mini", "灵犀轻云诀"],
+  ["GPT-5.5", "紫府通玄经"],
+  ["GPT 5.6 Luna", "月华流光诀"],
+  ["GPT-5.6 Terra", "地脉归元经"],
+  ["GPT 5.6 Sol\n中", "大日天衍经"],
+];
+for (const [model, method] of modelMethods) {
+  assert.equal(cultivationDebug.methodForModel(model).method, method, `${model} should select ${method}.`);
+}
+assert.equal(cultivationDebug.methodForModel("Unknown Model").method, "清心诀");
+assert.equal(cultivationDebug.stoneDetails(12_480_000_000).grade, "supreme");
+assert.equal(cultivationDebug.stoneDetails(125_430_000).grade, "upper");
+assert.equal(cultivationDebug.stoneDetails(48_672_000).grade, "middle");
+assert.equal(cultivationDebug.stoneDetails(1_248_000).grade, "middle");
+assert.equal(cultivationDebug.stoneDetails(12_480).grade, "lower");
+
 let cultivation = cultivationDebug.setState({
   schemaVersion: 2,
   totalTokens: 0,
   cultivationTokens: 0,
   realmIndex: 0,
 });
-assert.equal(cultivation.schemaVersion, 3);
+assert.equal(cultivation.schemaVersion, 4);
 assert.equal(cultivation.settings.companionGender, "female");
 cultivation = cultivationDebug.setState({
   schemaVersion: 3,
