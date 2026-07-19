@@ -3,13 +3,15 @@ import { createHash } from "node:crypto";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readImageMetadata } from "./image-metadata.mjs";
+import { readCcSwitchCodexUsage } from "./cc-switch-usage.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const here = path.dirname(scriptPath);
 const root = path.resolve(here, "..");
-const SKIN_VERSION = "1.8.0";
+const SKIN_VERSION = "1.10.0";
 const MAX_ART_BYTES = 16 * 1024 * 1024;
 const STRONG_THEME_AUDIT_MS = 30000;
+const CC_SWITCH_BINDING = "__codexCultivationCcSwitch";
 const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost", "[::1]", "::1"]);
 const BROWSER_ID_PATTERN = /^[A-Za-z0-9._-]{1,200}$/;
 
@@ -451,13 +453,19 @@ async function loadPayload(themeDir = path.join(root, "assets"), candidateTheme 
   for (const entry of optionalCultivationImages) {
     if (entry) cultivationArts[entry[0]] = entry[1];
   }
+  const homeCssMarker = "/* The home route is a complete cultivation workspace.";
+  const homeCssIndex = cultivationCss.indexOf(homeCssMarker);
+  if (homeCssIndex < 0) throw new Error("Cultivation home CSS marker is missing");
+  const cultivationCommonCss = cultivationCss.slice(0, homeCssIndex);
+  const cultivationHomeCss = cultivationCss.slice(homeCssIndex);
   const payload = template
-    .replace("__DREAM_CSS_JSON__", JSON.stringify(`${css}\n${cultivationCss}`))
+    .replace("__DREAM_CSS_JSON__", JSON.stringify(`${css}\n${cultivationCommonCss}`))
+    .replace("__CULTIVATION_HOME_CSS_JSON__", JSON.stringify(cultivationHomeCss))
     .replace("__DREAM_ART_JSON__", JSON.stringify(artDataUrl))
     .replace("__CULTIVATION_ARTS_JSON__", JSON.stringify(cultivationArts))
     .replace("__DREAM_THEME_JSON__", JSON.stringify(loadedTheme.theme));
   const { imageBytes: _imageBytes, ...themeState } = loadedTheme;
-  return { ...themeState, payload };
+  return { ...themeState, payload, revision: `${loadedTheme.fingerprint}:${SKIN_VERSION}` };
 }
 
 async function fileExists(filePath) {
@@ -510,6 +518,33 @@ async function waitForCodexProbe(session, timeoutMs = 1800) {
 
 async function connectTarget(target, port) {
   return new CdpSession(target, port).open();
+}
+
+async function registerCcSwitchBridge(session, targetId) {
+  await session.send("Runtime.addBinding", { name: CC_SWITCH_BINDING });
+  let requestQueue = Promise.resolve();
+  session.on("Runtime.bindingCalled", (params) => {
+    if (params.name !== CC_SWITCH_BINDING) return;
+    requestQueue = requestQueue.then(async () => {
+      let request;
+      try {
+        request = JSON.parse(params.payload);
+      } catch {
+        return;
+      }
+      if (request?.action !== "get-codex-usage" || typeof request.requestId !== "string" ||
+          request.requestId.length > 120) return;
+      const usage = await readCcSwitchCodexUsage();
+      const response = JSON.stringify({ requestId: request.requestId, usage });
+      await session.send("Runtime.evaluate", {
+        expression: `window.__CODEX_CULTIVATION_CC_SWITCH_RESPONSE__?.(${response})`,
+        contextId: params.executionContextId,
+        returnByValue: true,
+      });
+    }).catch((error) => {
+      console.error(`[dream-skin] CC Switch bridge failed for ${targetId}: ${error.message}`);
+    });
+  });
 }
 
 async function connectCodexTargets(port, timeoutMs, expectedBrowserId) {
@@ -872,7 +907,7 @@ async function runWatch(options) {
                 nextEarlyScript = await registerEarlyPayload(
                   session,
                   loadedPayload.payload,
-                  loadedPayload.fingerprint,
+                  loadedPayload.revision,
                 );
                 if (!nextEarlyScript) throw new Error("CDP did not return an early-script identifier");
                 fallbackTargets.set(id, false);
@@ -923,6 +958,7 @@ async function runWatch(options) {
         let earlyScriptId = null;
         try {
           session = await connectTarget(target, options.port);
+          await registerCcSwitchBridge(session, target.id);
           if (identityAnchor.closed) throw new CdpIdentityMismatchError("Original CDP browser identity closed");
           let earlyInjectionFallback = false;
           if (!paused) {
@@ -930,10 +966,10 @@ async function runWatch(options) {
               earlyScriptId = await registerEarlyPayload(
                 session,
                 loadedPayload.payload,
-                loadedPayload.fingerprint,
+                loadedPayload.revision,
               );
               if (!earlyScriptId) throw new Error("CDP did not return an early-script identifier");
-              await session.evaluate(earlyPayloadFor(loadedPayload.payload, loadedPayload.fingerprint));
+              await session.evaluate(earlyPayloadFor(loadedPayload.payload, loadedPayload.revision));
             } catch (error) {
               await removeEarlyPayload(session, earlyScriptId);
               earlyScriptId = null;
@@ -954,7 +990,7 @@ async function runWatch(options) {
           let earlyApplied = false;
           if (!paused && !earlyInjectionFallback) {
             earlyApplied = await session.evaluate(
-              `window.__CODEX_CULTIVATION_EARLY_APPLIED__ === ${JSON.stringify(loadedPayload.fingerprint)}`,
+              `window.__CODEX_CULTIVATION_EARLY_APPLIED__ === ${JSON.stringify(loadedPayload.revision)}`,
             ).catch(() => false);
           }
           if (paused) await removeFromSession(session);
@@ -1035,7 +1071,7 @@ if (path.resolve(process.argv[1] || "") === path.resolve(scriptPath)) {
   console.log(JSON.stringify({ pass: true, version: SKIN_VERSION, test: "loopback-cdp-validation" }));
   } else if (options.mode === "check-payload") {
     const loaded = await loadPayload(options.themeDir);
-    const unresolved = ["__DREAM_CSS_JSON__", "__DREAM_ART_JSON__", "__DREAM_THEME_JSON__"]
+    const unresolved = ["__DREAM_CSS_JSON__", "__CULTIVATION_HOME_CSS_JSON__", "__DREAM_ART_JSON__", "__DREAM_THEME_JSON__"]
       .some((placeholder) => loaded.payload.includes(placeholder));
     if (unresolved) {
       throw new Error("Payload placeholders were not fully replaced");

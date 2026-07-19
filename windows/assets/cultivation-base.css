@@ -378,8 +378,8 @@ html.codex-cultivation article {
 /* A 16:9 or wider image is painted once on the native window. The sidebar,
    title bar and route surface become coordinated readability layers instead
    of repeating or cropping the image inside individual panels. */
-html.codex-cultivation.dream-art-wide:has(main.main-surface.dream-home-shell) body,
-html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner):has(main.main-surface:not(.dream-home-shell)) body {
+html.codex-cultivation.dream-art-wide.cultivation-home-active body,
+html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner):not(.cultivation-home-active) body {
   background-color: var(--dream-canvas) !important;
   background-image: var(--dream-art) !important;
   background-position: var(--dream-art-position) !important;
@@ -388,9 +388,9 @@ html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner
   background-attachment: fixed !important;
 }
 
-html.codex-cultivation.dream-art-wide:has(main.main-surface.dream-home-shell)
+html.codex-cultivation.dream-art-wide.cultivation-home-active
   aside.app-shell-left-panel,
-html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner):has(main.main-surface:not(.dream-home-shell))
+html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner):not(.cultivation-home-active)
   aside.app-shell-left-panel {
   background: linear-gradient(90deg,
     var(--dream-immersive-sidebar),
@@ -401,16 +401,16 @@ html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner
   backdrop-filter: none !important;
 }
 
-html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner):has(main.main-surface:not(.dream-home-shell))
+html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner):not(.cultivation-home-active)
   aside.app-shell-left-panel {
   background: linear-gradient(90deg,
     var(--dream-task-immersive-sidebar),
     var(--dream-task-immersive-edge)) !important;
 }
 
-html.codex-cultivation.dream-art-wide:has(main.main-surface.dream-home-shell)
+html.codex-cultivation.dream-art-wide.cultivation-home-active
   aside.app-shell-left-panel::after,
-html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner):has(main.main-surface:not(.dream-home-shell))
+html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner):not(.cultivation-home-active)
   aside.app-shell-left-panel::after {
   background: transparent !important;
 }
@@ -504,7 +504,7 @@ html.codex-cultivation .dream-home-utility {
   box-shadow: none !important;
 }
 
-html.codex-cultivation .dream-home:has(.dream-home-utility) .composer-surface-chrome {
+html.codex-cultivation.cultivation-home-utility-active .dream-home .composer-surface-chrome {
   border-radius: 0 0 18px 18px !important;
   box-shadow: 0 10px 30px color-mix(in oklab, var(--dream-canvas) 20%, transparent),
     inset 1px 0 var(--dream-immersive-line),
@@ -516,14 +516,14 @@ html.codex-cultivation .dream-home:has(.dream-home-utility) .composer-surface-ch
    Clear only full-window or sticky route chrome, leaving functional cards and
    their hover states intact. */
 html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner)
-  main.main-surface:not(.dream-home-shell) div.sticky:has(input[type="text"]),
+  main.main-surface:not(.dream-home-shell) div.sticky.dream-sticky-input,
 html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner)
-  main.main-surface:not(.dream-home-shell) div.sticky:has(input[type="text"])::after {
+  main.main-surface:not(.dream-home-shell) div.sticky.dream-sticky-input::after {
   background: transparent !important;
 }
 
 html.codex-cultivation.dream-art-wide:is(.dream-task-ambient, .dream-task-banner)
-  main.main-surface:not(.dream-home-shell) div.no-drag:has(> input[type="text"]) {
+  main.main-surface:not(.dream-home-shell) div.no-drag.dream-no-drag-input {
   background: var(--dream-immersive-composer) !important;
   border: 0 !important;
   box-shadow: inset 0 0 0 1px var(--dream-immersive-line) !important;

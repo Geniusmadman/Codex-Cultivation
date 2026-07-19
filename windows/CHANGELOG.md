@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.10.0 — 2026-07-19
+
+- 新增设置页等级说明入口，跳转 GitHub 境界升级规则。
+- 新增只读 CC Switch 校准，同步累计、每日与可用小时 Codex Token 统计。
+- 修复 GPT-5.4 mini、GPT-5.5 紧凑模型名的心法匹配。
+- 修复五大境界深浅背景选择和新版 Codex 会话页背景挂载。
+- 降低 Canvas 与背景材质渲染成本，并同步 macOS 的设置交互修复。
+
 ## 1.8.0 — 2026-07-19
 
 - 建立独立的 Codex Cultivation Windows 项目与全新 Git 历史。

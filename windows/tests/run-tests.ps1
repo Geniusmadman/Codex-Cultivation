@@ -513,6 +513,8 @@ try {
   }
 
   $node = Get-CultivationNodeRuntime
+  & $node.Path (Join-Path $PSScriptRoot 'cc-switch-usage.test.mjs')
+  if ($LASTEXITCODE -ne 0) { throw 'CC Switch usage bridge regression test failed.' }
   & $node.Path (Join-Path $Root 'scripts\injector.mjs') --self-test *> $null
   if ($LASTEXITCODE -ne 0) { throw 'Injector CDP self-test failed.' }
   & $node.Path (Join-Path $Root 'scripts\injector.mjs') --check-payload *> $null
