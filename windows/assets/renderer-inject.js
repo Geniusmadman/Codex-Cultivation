@@ -1,6 +1,7 @@
-((cssText, artDataUrl, rawCultivationArts, rawConfig) => {
+((cssText, homeCssText, artDataUrl, rawCultivationArts, rawConfig) => {
   const STATE_KEY = "__CODEX_CULTIVATION_STATE__";
   const STYLE_ID = "codex-cultivation-style";
+  const HOME_STYLE_ID = "codex-cultivation-home-style";
   const CHROME_ID = "codex-cultivation-chrome";
   const CULTIVATION_HUD_ID = "codex-cultivation-hud";
   const CULTIVATION_DIALOG_ID = "codex-cultivation-dialog";
@@ -10,6 +11,9 @@
   const CULTIVATION_LEFT_RAIL_ID = "codex-cultivation-left-rail";
   const CULTIVATION_RIGHT_RAIL_ID = "codex-cultivation-right-rail";
   const CULTIVATION_STORAGE_KEY = "codex-cultivation-state-v1";
+  const CC_SWITCH_BINDING = "__codexCultivationCcSwitch";
+  const CC_SWITCH_RESPONSE = "__CODEX_CULTIVATION_CC_SWITCH_RESPONSE__";
+  const LEVEL_GUIDE_URL = "https://github.com/Geniusmadman/Codex-Cultivation#境界升级规则";
   const LEGACY_CONTRAST_STYLE_ID = "cultivation-main-contrast";
   const ROOT_CLASSES = [
     "codex-cultivation",
@@ -27,6 +31,8 @@
     "dream-task-ambient",
     "dream-task-banner",
     "dream-task-off",
+    "cultivation-home-active",
+    "cultivation-home-utility-active",
   ];
   const ROOT_PROPERTIES = [
     "--dream-art",
@@ -53,9 +59,21 @@
   let observer = null;
   let artProfiles = {};
   let activeArtKey = "qi";
+  let ccSwitchCalibrationPending = false;
+  const ccSwitchRequests = new Map();
   window.__CODEX_CULTIVATION_DISABLED__ = false;
 
   const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, Number(value)));
+  const setStyleProperty = (node, property, value) => {
+    if (!node?.style) return;
+    if (node.style.getPropertyValue?.(property) === value) return;
+    node.style.setProperty(property, value);
+  };
+  const removeStyleProperty = (node, property) => {
+    if (!node?.style) return;
+    if (node.style.getPropertyValue && !node.style.getPropertyValue(property)) return;
+    node.style.removeProperty(property);
+  };
   const luminance = (red, green, blue) => {
     const linear = [red, green, blue].map((value) => {
       const channel = value / 255;
@@ -125,6 +143,16 @@
   if (previous?.clickListener) document.removeEventListener?.("click", previous.clickListener, true);
   if (previous?.changeListener) document.removeEventListener?.("change", previous.changeListener, true);
   if (previous?.inputSettingListener) document.removeEventListener?.("input", previous.inputSettingListener, true);
+  if (previous?.ccSwitchRequests) {
+    for (const request of previous.ccSwitchRequests.values()) {
+      clearTimeout(request.timeout);
+      request.reject(new Error("修仙台界面已刷新，请重试。"));
+    }
+    previous.ccSwitchRequests.clear();
+  }
+  if (previous?.ccSwitchResponse && window[CC_SWITCH_RESPONSE] === previous.ccSwitchResponse) {
+    delete window[CC_SWITCH_RESPONSE];
+  }
   if (previous?.artUrl) URL.revokeObjectURL(previous.artUrl);
   if (previous?.cultivationArtUrls) {
     Object.values(previous.cultivationArtUrls).forEach((url) => URL.revokeObjectURL(url));
@@ -301,12 +329,14 @@
     [1000000, "中品", "middle"],
     [10000, "下品", "lower"],
   ];
+  const MODEL_SEPARATOR = "[\\s\\-_–—]*";
+  const MODEL_PREFIX = `(?:^|\\s)(?:gpt${MODEL_SEPARATOR})?`;
   const MODEL_METHODS = [
-    { pattern: /gpt[\s-]*5\.4\s*mini/i, model: "GPT-5.4 mini", method: "灵犀轻云诀" },
-    { pattern: /gpt[\s-]*5\.5(?:\s|$)/i, model: "GPT-5.5", method: "紫府通玄经" },
-    { pattern: /gpt[\s-]*5\.6\s*luna/i, model: "GPT-5.6 Luna", method: "月华流光诀" },
-    { pattern: /gpt[\s-]*5\.6\s*terra/i, model: "GPT-5.6 Terra", method: "地脉归元经" },
-    { pattern: /gpt[\s-]*5\.6\s*sol/i, model: "GPT-5.6 Sol", method: "大日天衍经" },
+    { pattern: new RegExp(`${MODEL_PREFIX}5\\.4${MODEL_SEPARATOR}mini`, "i"), model: "GPT-5.4 mini", method: "灵犀轻云诀" },
+    { pattern: new RegExp(`${MODEL_PREFIX}5\\.5(?!\\d)`, "i"), model: "GPT-5.5", method: "紫府通玄经" },
+    { pattern: new RegExp(`${MODEL_PREFIX}5\\.6${MODEL_SEPARATOR}luna`, "i"), model: "GPT-5.6 Luna", method: "月华流光诀" },
+    { pattern: new RegExp(`${MODEL_PREFIX}5\\.6${MODEL_SEPARATOR}terra`, "i"), model: "GPT-5.6 Terra", method: "地脉归元经" },
+    { pattern: new RegExp(`${MODEL_PREFIX}5\\.6${MODEL_SEPARATOR}sol`, "i"), model: "GPT-5.6 Sol", method: "大日天衍经" },
   ];
   const CULTIVATION_REALMS = [
     { id: "qi", name: "炼气", title: "初入道门", start: 0, next: 500000000, art: "qi" },
@@ -661,9 +691,39 @@
     }, "enlightenment", "偶得顿悟机缘，可直进一个小境界");
   };
   let cultivationState = rollCultivationState(readCultivationState());
+  let lastCultivationRollDay = localDay();
   let lastRecordedPrompt = { signature: "", at: 0 };
   let activeCultivationTab = "overview";
   let cultivationDialogOpener = null;
+  const ccSwitchResponse = (response) => {
+    const request = ccSwitchRequests.get(response?.requestId);
+    if (!request) return;
+    ccSwitchRequests.delete(response.requestId);
+    clearTimeout(request.timeout);
+    if (response?.usage?.ok) request.resolve(response.usage);
+    else request.reject(new Error(response?.usage?.message || "CC Switch 未返回可用的 Codex Token 统计。"));
+  };
+  window[CC_SWITCH_RESPONSE] = ccSwitchResponse;
+  const requestCcSwitchUsage = () => new Promise((resolve, reject) => {
+    const bridge = window[CC_SWITCH_BINDING];
+    if (typeof bridge !== "function") {
+      reject(new Error("CC Switch 读取服务未连接，请重新启动修仙台。"));
+      return;
+    }
+    const requestId = `${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    const timeout = setTimeout(() => {
+      ccSwitchRequests.delete(requestId);
+      reject(new Error("读取 CC Switch 超时，请确认 CC Switch 可以正常打开。"));
+    }, 7000);
+    ccSwitchRequests.set(requestId, { resolve, reject, timeout });
+    try {
+      bridge(JSON.stringify({ action: "get-codex-usage", requestId }));
+    } catch (error) {
+      clearTimeout(timeout);
+      ccSwitchRequests.delete(requestId);
+      reject(error);
+    }
+  });
   let realmFlowCanvas = null;
   let realmFlowFrame = null;
 
@@ -686,9 +746,10 @@
     ];
     const motionReduced = () => cultivationState.settings.animations === false ||
       Boolean(window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches);
+    let lastPaintAt = -Infinity;
     const resize = () => {
       const rect = canvas.getBoundingClientRect();
-      const ratio = Math.min(2, Math.max(1, Number(window.devicePixelRatio) || 1));
+      const ratio = Math.min(1.5, Math.max(1, Number(window.devicePixelRatio) || 1));
       const width = Math.max(1, Math.round(rect.width * ratio));
       const height = Math.max(1, Math.round(rect.height * ratio));
       if (canvas.width !== width || canvas.height !== height) {
@@ -712,7 +773,7 @@
       };
     };
     const drawStream = (stream, phase, width, height) => {
-      const samples = 52;
+      const samples = 32;
       const trailSpan = Math.PI * .78;
       const points = Array.from({ length: samples }, (_, index) =>
         pointAt(phase - stream.direction * trailSpan * index / (samples - 1), stream, width, height));
@@ -729,15 +790,15 @@
         context.lineWidth = .35 + life ** 1.7 * 4.2;
         context.strokeStyle = `rgba(${red}, ${green}, ${blue}, ${.015 + life ** 2.1 * .58})`;
         context.shadowColor = `rgba(${red}, ${green}, ${blue}, ${.08 + life * .52})`;
-        context.shadowBlur = 2 + life * 12;
+        context.shadowBlur = life > .48 ? 2 + life * 8 : 0;
         context.stroke();
-        if (life > .54) {
+        if (life > .68) {
           context.beginPath();
           context.moveTo(from.x, from.y);
           context.lineTo(to.x, to.y);
           context.lineWidth = .25 + (life - .54) * 2.15;
           context.strokeStyle = `rgba(232, 252, 255, ${(life - .54) * .92})`;
-          context.shadowBlur = 4 + life * 7;
+          context.shadowBlur = 3 + life * 5;
           context.stroke();
         }
       }
@@ -759,6 +820,11 @@
         stopRealmFlow();
         return;
       }
+      if (!motionReduced() && time - lastPaintAt < 32) {
+        realmFlowFrame = requestAnimationFrame(renderFrame);
+        return;
+      }
+      lastPaintAt = time;
       const { width, height } = resize();
       context.clearRect(0, 0, width, height);
       context.save();
@@ -956,8 +1022,12 @@
         <label class="cultivation-setting-range"><span><strong>背景显现强度</strong><output>${state.settings.backgroundStrength}%</output></span>
           <input type="range" min="20" max="100" step="5" value="${state.settings.backgroundStrength}" data-cultivation-setting="backgroundStrength"></label>
         <div class="cultivation-setting-note"><strong>主题联动</strong><p>修仙层跟随 Codex 当前的浅色或深色主题，并选择同境界的对应背景，不会改写官方外观设置。</p></div>
-        <div class="cultivation-setting-calibration"><label for="cultivation-calibration"><strong>累计 Token 校准</strong><small>Codex 暂不提供官方累计值接口；已知真实累计值时可在此校准。</small></label>
-          <div><input id="cultivation-calibration" data-cultivation-calibration type="number" min="0" step="10000" value="${state.totalTokens}"><button type="button" data-cultivation-action="calibrate">应用校准</button></div></div>
+        <div class="cultivation-setting-guide"><span><strong>等级说明</strong><small>查看境界区间、小境界、顿悟与三日天劫规则</small></span>
+          <button type="button" data-cultivation-action="level-guide">查看说明</button></div>
+        <div class="cultivation-setting-calibration"><label for="cultivation-calibration"><strong>Token 数据校准</strong><small>手动输入只修改累计值；CC Switch 可同步累计、最近 60 天和可用的小时明细。</small></label>
+          <div><input id="cultivation-calibration" data-cultivation-calibration type="number" min="0" step="10000" value="${state.totalTokens}"><button type="button" data-cultivation-action="calibrate">应用校准</button></div>
+          <button class="cultivation-setting-calibration__cc-switch" type="button" data-cultivation-action="calibrate-cc-switch" ${ccSwitchCalibrationPending ? "disabled" : ""}>${ccSwitchCalibrationPending ? "正在读取 CC Switch…" : "通过 CC Switch 校正"}</button>
+        </div>
       </div>`;
     const panel = activeCultivationTab === "history" ? history : activeCultivationTab === "settings" ? settings : overview;
     return `
@@ -1013,9 +1083,10 @@
     const realm = resolveCultivation(cultivationState);
     const appearance = config.appearance === "auto" ? detectShellAppearance() : config.appearance;
     const fallbackArt = CULTIVATION_ART_FALLBACKS[realm.art];
-    const suffix = appearance === "light" ? "Light" : "Dark";
-    const variantKey = `${realm.art}${suffix}`;
-    const fallbackVariantKey = fallbackArt ? `${fallbackArt}${suffix}` : null;
+    const variantKey = appearance === "light" ? `${realm.art}Light` : realm.art;
+    const fallbackVariantKey = fallbackArt
+      ? appearance === "light" ? `${fallbackArt}Light` : fallbackArt
+      : null;
     const sameAppearanceFallback = appearance === "light" ? "qiLight" : "qi";
     activeArtKey = [variantKey, fallbackVariantKey, sameAppearanceFallback, realm.art, fallbackArt]
       .find((key) => key && cultivationArtUrls[key]) || "default";
@@ -1024,8 +1095,12 @@
     return realm;
   };
   const updateCultivationUi = (sidebar, root, realm = selectCultivationProfile()) => {
-    cultivationState = rollCultivationState(cultivationState);
-    writeCultivationState(cultivationState);
+    const today = localDay();
+    if (today !== lastCultivationRollDay) {
+      cultivationState = rollCultivationState(cultivationState, today);
+      lastCultivationRollDay = today;
+      writeCultivationState(cultivationState);
+    }
     const hud = ensureCultivationHud(sidebar);
     const activeRealmArt = cultivationArtUrls[activeArtKey] || artUrl;
     const activeCompanionKey = companionArtKey(cultivationState, realm);
@@ -1033,22 +1108,22 @@
     const panelFrameArt = cultivationArtUrls.panelFrame;
     const heroSigilArt = cultivationArtUrls.heroSigil;
     const realmOrbitArt = cultivationArtUrls.realmOrbit;
-    root.style.setProperty("--cultivation-art", `url("${activeRealmArt}")`);
-    if (activeCompanionArt) root.style.setProperty("--cultivation-companion-art", `url("${activeCompanionArt}")`);
-    else root.style.removeProperty("--cultivation-companion-art");
-    if (panelFrameArt) root.style.setProperty("--cultivation-panel-frame", `url("${panelFrameArt}")`);
-    else root.style.removeProperty("--cultivation-panel-frame");
-    if (heroSigilArt) root.style.setProperty("--cultivation-hero-sigil", `url("${heroSigilArt}")`);
-    else root.style.removeProperty("--cultivation-hero-sigil");
-    if (realmOrbitArt) root.style.setProperty("--cultivation-realm-orbit", `url("${realmOrbitArt}")`);
-    else root.style.removeProperty("--cultivation-realm-orbit");
+    setStyleProperty(root, "--cultivation-art", `url("${activeRealmArt}")`);
+    if (activeCompanionArt) setStyleProperty(root, "--cultivation-companion-art", `url("${activeCompanionArt}")`);
+    else removeStyleProperty(root, "--cultivation-companion-art");
+    if (panelFrameArt) setStyleProperty(root, "--cultivation-panel-frame", `url("${panelFrameArt}")`);
+    else removeStyleProperty(root, "--cultivation-panel-frame");
+    if (heroSigilArt) setStyleProperty(root, "--cultivation-hero-sigil", `url("${heroSigilArt}")`);
+    else removeStyleProperty(root, "--cultivation-hero-sigil");
+    if (realmOrbitArt) setStyleProperty(root, "--cultivation-realm-orbit", `url("${realmOrbitArt}")`);
+    else removeStyleProperty(root, "--cultivation-realm-orbit");
     [["lower", "spiritStoneLower"], ["middle", "spiritStoneMiddle"], ["upper", "spiritStoneUpper"], ["supreme", "spiritStoneSupreme"]]
       .forEach(([grade, key]) => {
         const value = cultivationArtUrls[key];
-        if (value) root.style.setProperty(`--cultivation-stone-${grade}`, `url("${value}")`);
-        else root.style.removeProperty(`--cultivation-stone-${grade}`);
+        if (value) setStyleProperty(root, `--cultivation-stone-${grade}`, `url("${value}")`);
+        else removeStyleProperty(root, `--cultivation-stone-${grade}`);
       });
-    root.style.setProperty("--cultivation-background-strength", String(cultivationState.settings.backgroundStrength / 100));
+    setStyleProperty(root, "--cultivation-background-strength", String(cultivationState.settings.backgroundStrength / 100));
     root.classList.toggle("cultivation-motion-off", !cultivationState.settings.animations);
     if (!hud) return;
     hud.classList.toggle("is-compact", cultivationState.settings.hudMode === "compact");
@@ -1067,7 +1142,6 @@
     const badgeText = cultivationState.tribulation ? "渡劫" : cultivationState.enlightenment.available ? "顿悟" : "";
     badge.textContent = badgeText;
     badge.hidden = !badgeText;
-    renderCultivationDialog();
   };
   const clearCultivationHome = () => {
     stopRealmFlow();
@@ -1391,8 +1465,10 @@
   };
   const persistCultivationState = () => {
     cultivationState = normalizeCultivationState(cultivationState);
+    lastCultivationRollDay = localDay();
     writeCultivationState(cultivationState);
     ensure();
+    renderCultivationDialog();
   };
   const recordPromptEstimate = (event) => {
     if (event.defaultPrevented || event.isComposing || event.key !== "Enter" || event.shiftKey || event.altKey) return;
@@ -1471,7 +1547,28 @@
     editor.scrollIntoView?.({ block: "nearest" });
     showCultivationToast(`${card.label}问道已写入法坛`);
   };
-  const handleCultivationClick = (event) => {
+  const applyCultivationCalibration = (value, eventText, toastText, timeline = null) => {
+    const tokens = clampTokens(value);
+    const synchronized = normalizeCultivationState({
+      ...cultivationState,
+      totalTokens: tokens,
+      cultivationTokens: tokens,
+      overflowTokens: 0,
+      realmIndex: realmIndexForTokens(tokens),
+      daily: timeline?.daily && typeof timeline.daily === "object" ? timeline.daily : cultivationState.daily,
+      hourly: timeline?.hourly && typeof timeline.hourly === "object" ? timeline.hourly : cultivationState.hourly,
+      tribulation: null,
+      ascended: tokens >= CULTIVATION_REALMS.at(-1).next,
+    });
+    cultivationState = appendCultivationEvent(
+      synchronized,
+      "calibration",
+      eventText || `累计 Token 已校准为 ${formatToken(tokens)}`,
+    );
+    persistCultivationState();
+    showCultivationToast(toastText || "累计 Token 已校准");
+  };
+  const handleCultivationClick = async (event) => {
     const fallbackCard = event.target?.closest?.("[data-cultivation-fallback-card]");
     if (fallbackCard) {
       event.preventDefault?.();
@@ -1491,24 +1588,43 @@
       cultivationState = claimEnlightenment(cultivationState);
       showCultivationToast(cultivationState.tribulation ? "顿悟圆满，天劫已开启" : "顿悟完成，修为已进阶");
       persistCultivationState();
+    } else if (action === "level-guide") {
+      const link = document.createElement("a");
+      link.href = LEVEL_GUIDE_URL;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
     } else if (action === "calibrate") {
       const value = clampTokens(document.querySelector?.("[data-cultivation-calibration]")?.value);
-      cultivationState = appendCultivationEvent({
-        ...cultivationState,
-        totalTokens: value,
-        cultivationTokens: value,
-        overflowTokens: 0,
-        realmIndex: realmIndexForTokens(value),
-        tribulation: null,
-        ascended: value >= CULTIVATION_REALMS.at(-1).next,
-      }, "calibration", `累计 Token 已校准为 ${formatToken(value)}`);
-      showCultivationToast("累计 Token 已校准");
-      persistCultivationState();
+      applyCultivationCalibration(value);
+    } else if (action === "calibrate-cc-switch" && !ccSwitchCalibrationPending) {
+      ccSwitchCalibrationPending = true;
+      renderCultivationDialog();
+      try {
+        const usage = await requestCcSwitchUsage();
+        const latest = usage.latestRecordAt ? `，最新记录 ${usage.latestRecordAt}` : "";
+        const dailyCount = Object.keys(usage.daily || {}).length;
+        const hourlyCount = Object.keys(usage.hourly || {}).length;
+        applyCultivationCalibration(
+          usage.realTotalTokens,
+          `已通过 CC Switch 同步 ${dailyCount} 天、${hourlyCount} 小时，累计 ${formatToken(usage.realTotalTokens)} Token${latest}`,
+          `已同步累计、${dailyCount} 天与 ${hourlyCount} 小时数据`,
+          usage,
+        );
+      } catch (error) {
+        showCultivationToast(error?.message || "CC Switch 校正失败");
+      } finally {
+        ccSwitchCalibrationPending = false;
+        renderCultivationDialog();
+      }
     }
   };
   const handleCultivationSetting = (event) => {
     const setting = event.target?.dataset?.cultivationSetting;
     if (!setting) return;
+    if (event.type === "input" && setting !== "backgroundStrength") return;
     if (setting === "hudMode") cultivationState.settings.hudMode = event.target.value === "compact" ? "compact" : "expanded";
     if (setting === "animations") cultivationState.settings.animations = Boolean(event.target.checked);
     if (setting === "companionGender") {
@@ -1516,7 +1632,8 @@
     }
     if (setting === "backgroundStrength") {
       cultivationState.settings.backgroundStrength = Math.round(clamp(event.target.value, 20, 100));
-      document.documentElement?.style.setProperty(
+      setStyleProperty(
+        document.documentElement,
         "--cultivation-background-strength",
         String(cultivationState.settings.backgroundStrength / 100),
       );
@@ -1583,7 +1700,10 @@
     document.querySelectorAll(".dream-task").forEach((node) => node.classList.remove("dream-task"));
     document.querySelectorAll(".dream-home-shell").forEach((node) => node.classList.remove("dream-home-shell"));
     document.querySelectorAll(`.${HOME_UTILITY_CLASS}`).forEach((node) => node.classList.remove(HOME_UTILITY_CLASS));
+    document.querySelectorAll(".dream-sticky-input").forEach((node) => node.classList.remove("dream-sticky-input"));
+    document.querySelectorAll(".dream-no-drag-input").forEach((node) => node.classList.remove("dream-no-drag-input"));
     document.getElementById(STYLE_ID)?.remove();
+    document.getElementById(HOME_STYLE_ID)?.remove();
     document.getElementById(CHROME_ID)?.remove();
     document.getElementById(CULTIVATION_HUD_ID)?.remove();
     document.getElementById(CULTIVATION_DIALOG_ID)?.remove();
@@ -1617,14 +1737,14 @@
       root.classList.toggle(`dream-task-${value}`, taskMode === value);
     }
     const activeArtUrl = cultivationArtUrls[activeArtKey] || artUrl;
-    root.style.setProperty("--dream-art", `url("${activeArtUrl}")`);
-    root.style.setProperty("--dream-art-position", `${Math.round(focusX * 100)}% ${Math.round(focusY * 100)}%`);
-    root.style.setProperty("--dream-focus-x", String(focusX));
-    root.style.setProperty("--dream-focus-y", String(focusY));
-    root.style.setProperty("--dream-accent", accent);
-    root.style.setProperty("--dream-accent-ink", accentInk);
-    root.style.setProperty("--dream-image-luma", profile.luma.toFixed(3));
-    root.style.setProperty("--cultivation-background-strength", String(cultivationState.settings.backgroundStrength / 100));
+    setStyleProperty(root, "--dream-art", `url("${activeArtUrl}")`);
+    setStyleProperty(root, "--dream-art-position", `${Math.round(focusX * 100)}% ${Math.round(focusY * 100)}%`);
+    setStyleProperty(root, "--dream-focus-x", String(focusX));
+    setStyleProperty(root, "--dream-focus-y", String(focusY));
+    setStyleProperty(root, "--dream-accent", accent);
+    setStyleProperty(root, "--dream-accent-ink", accentInk);
+    setStyleProperty(root, "--dream-image-luma", profile.luma.toFixed(3));
+    setStyleProperty(root, "--cultivation-background-strength", String(cultivationState.settings.backgroundStrength / 100));
   };
 
   const ensure = () => {
@@ -1654,16 +1774,55 @@
       style.dataset.dreamVersion = "4";
     }
 
-    const home = document.querySelector('[role="main"]:has([data-testid="home-icon"])');
-    for (const candidate of document.querySelectorAll('[role="main"]')) {
+    const homeCandidate = document.querySelector('[role="main"]:has([data-testid="home-icon"])') ||
+      document.querySelector('[class*="home-main-content"]:has([data-testid="home-icon"])');
+    const home = homeCandidate?.querySelector?.(".thread-scroll-container") ? null : homeCandidate;
+    root.classList.toggle("cultivation-home-active", Boolean(home));
+    let homeStyle = document.getElementById(HOME_STYLE_ID);
+    if (home) {
+      if (!homeStyle) {
+        homeStyle = document.createElement("style");
+        homeStyle.id = HOME_STYLE_ID;
+        (document.head || root).appendChild(homeStyle);
+      }
+      if (homeStyle.dataset.dreamVersion !== "4") {
+        homeStyle.textContent = homeCssText;
+        homeStyle.dataset.dreamVersion = "4";
+      }
+    } else {
+      homeStyle?.remove();
+    }
+    const legacyRoutes = Array.from(document.querySelectorAll('[role="main"]'));
+    const fallbackRoute = shellMain.querySelector?.(".app-shell-main-content-frame");
+    const routeTargets = legacyRoutes.length ? legacyRoutes : fallbackRoute ? [fallbackRoute] : [];
+    const activeRouteTargets = new Set(routeTargets);
+    document.querySelectorAll(".dream-home, .dream-task").forEach((candidate) => {
+      if (!activeRouteTargets.has(candidate)) candidate.classList.remove("dream-home", "dream-task");
+    });
+    for (const candidate of routeTargets) {
       candidate.classList.toggle("dream-home", candidate === home);
       candidate.classList.toggle("dream-task", candidate !== home);
     }
     const utilityBars = new Set(home ? home.querySelectorAll('[class*="_homeUtilityBar_"]') : []);
+    root.classList.toggle("cultivation-home-utility-active", utilityBars.size > 0);
     for (const candidate of document.querySelectorAll(`.${HOME_UTILITY_CLASS}`)) {
       if (!utilityBars.has(candidate)) candidate.classList.remove(HOME_UTILITY_CLASS);
     }
     for (const candidate of utilityBars) candidate.classList.add(HOME_UTILITY_CLASS);
+    const stickyInputHosts = new Set(Array.from(
+      document.querySelectorAll("main.main-surface:not(.dream-home-shell) div.sticky input[type='text']"),
+    ).map((input) => input.closest?.("div.sticky")).filter(Boolean));
+    for (const candidate of document.querySelectorAll(".dream-sticky-input")) {
+      candidate.classList.toggle("dream-sticky-input", stickyInputHosts.has(candidate));
+    }
+    for (const candidate of stickyInputHosts) candidate.classList.add("dream-sticky-input");
+    const noDragInputHosts = new Set(Array.from(
+      document.querySelectorAll("main.main-surface:not(.dream-home-shell) div.no-drag > input[type='text']"),
+    ).map((input) => input.parentElement).filter(Boolean));
+    for (const candidate of document.querySelectorAll(".dream-no-drag-input")) {
+      candidate.classList.toggle("dream-no-drag-input", noDragInputHosts.has(candidate));
+    }
+    for (const candidate of noDragInputHosts) candidate.classList.add("dream-no-drag-input");
     shellMain.classList.toggle("dream-home-shell", Boolean(home));
     ensureCultivationHome(home, shellMain, realm);
 
@@ -1673,8 +1832,10 @@
       chrome = document.createElement("div");
       chrome.id = CHROME_ID;
       chrome.setAttribute("aria-hidden", "true");
+      chrome.style.pointerEvents = "none";
       document.body.appendChild(chrome);
     }
+    chrome.style.pointerEvents = "none";
     chrome.classList.toggle("dream-home-shell", Boolean(home));
     updateCultivationUi(shellSidebar, root, realm);
   };
@@ -1691,6 +1852,16 @@
     if (state?.clickListener) document.removeEventListener?.("click", state.clickListener, true);
     if (state?.changeListener) document.removeEventListener?.("change", state.changeListener, true);
     if (state?.inputSettingListener) document.removeEventListener?.("input", state.inputSettingListener, true);
+    if (state?.ccSwitchRequests) {
+      for (const request of state.ccSwitchRequests.values()) {
+        clearTimeout(request.timeout);
+        request.reject(new Error("修仙台已关闭。"));
+      }
+      state.ccSwitchRequests.clear();
+    }
+    if (state?.ccSwitchResponse && window[CC_SWITCH_RESPONSE] === state.ccSwitchResponse) {
+      delete window[CC_SWITCH_RESPONSE];
+    }
     if (state?.artUrl) URL.revokeObjectURL(state.artUrl);
     if (state?.cultivationArtUrls) {
       Object.values(state.cultivationArtUrls).forEach((url) => URL.revokeObjectURL(url));
@@ -1708,10 +1879,38 @@
     scheduler.timeout = setTimeout(() => {
       scheduler.timeout = null;
       ensure();
-    }, 180);
+    }, 300);
   };
-  observer = new MutationObserver(() => {
+  const cultivationMutationSelector = [
+    `#${CHROME_ID}`,
+    `#${CULTIVATION_HUD_ID}`,
+    `#${CULTIVATION_DIALOG_ID}`,
+    `#${CULTIVATION_TOAST_ID}`,
+    `#${CULTIVATION_HOME_HERO_ID}`,
+    `#${CULTIVATION_HOME_CARDS_ID}`,
+    `#${CULTIVATION_LEFT_RAIL_ID}`,
+    `#${CULTIVATION_RIGHT_RAIL_ID}`,
+  ].join(",");
+  const shellMutationSelector = [
+    "main.main-surface",
+    "aside.app-shell-left-panel",
+    "[role='main']",
+    "[data-testid='home-icon']",
+  ].join(",");
+  const nodeTouchesShell = (node) => node?.nodeType === 1 && (
+    node.matches?.(shellMutationSelector) || node.querySelector?.(shellMutationSelector)
+  );
+  observer = new MutationObserver((records = []) => {
     if (samplingNativeShell) return;
+    const relevant = records.some((record) => {
+      if (record.type === "attributes") {
+        return record.target === document.documentElement || record.target === document.body;
+      }
+      if (record.type !== "childList") return false;
+      if (record.target?.closest?.(cultivationMutationSelector)) return false;
+      return [...record.addedNodes, ...record.removedNodes].some(nodeTouchesShell);
+    });
+    if (!relevant) return;
     scheduleEnsure();
   });
   observer.observe(document.documentElement, {
@@ -1724,7 +1923,7 @@
   document.addEventListener?.("click", handleCultivationClick, true);
   document.addEventListener?.("change", handleCultivationSetting, true);
   document.addEventListener?.("input", handleCultivationSetting, true);
-  const timer = setInterval(ensure, 5000);
+  const timer = setInterval(ensure, 15000);
   const cultivationDebug = {
     getState: () => JSON.parse(JSON.stringify(cultivationState)),
     addTokens: (tokens, day = localDay()) => {
@@ -1756,6 +1955,7 @@
       return cultivationDebug.getState();
     },
     resolve: () => ({ ...resolveCultivation(cultivationState) }),
+    artKey: () => activeArtKey,
     methodForModel: (label) => ({ ...cultivationMethodForModel(label) }),
     stoneDetails: (tokens) => ({ ...stoneDetails(tokens) }),
   };
@@ -1764,7 +1964,7 @@
     ensure, cleanup, observer, timer, scheduler, artUrl, cultivationArtUrls, artProfiles, profile, config,
     inputListener: handleCultivationKeydown, clickListener: handleCultivationClick,
     changeListener: handleCultivationSetting, inputSettingListener: handleCultivationSetting,
-    cultivationDebug, installToken, version: "1.8.0",
+    ccSwitchRequests, ccSwitchResponse, cultivationDebug, installToken, version: "1.10.0",
   };
   ensure();
   const artEntries = Object.entries({ default: artUrl, ...cultivationArtUrls })
@@ -1779,5 +1979,5 @@
     state.activeRealm = realm.id;
     ensure();
   });
-  return { installed: true, version: "1.8.0", adaptive: true, cultivation: true };
-})(__DREAM_CSS_JSON__, __DREAM_ART_JSON__, __CULTIVATION_ARTS_JSON__, __DREAM_THEME_JSON__)
+  return { installed: true, version: "1.10.0", adaptive: true, cultivation: true };
+})(__DREAM_CSS_JSON__, __CULTIVATION_HOME_CSS_JSON__, __DREAM_ART_JSON__, __CULTIVATION_ARTS_JSON__, __DREAM_THEME_JSON__)

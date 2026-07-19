@@ -155,11 +155,11 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\scripts\restore-co
 - 任一已结束的目标日未达标即渡劫失败：扣除当前大境界跨度的 12% 修为，并清空天劫期间的溢出修为。
 - 化神圆满后完成最终三日天劫，即标记为飞升。
 
-累计 Token 可以在「修炼总览 → 设置 → 累计 Token 校准」中手动修正；校准只调整当前修为起点，不补算历史顿悟或天劫。
+累计 Token 可以在「修炼总览 → 设置 → Token 数据校准」中手动修正；安装 CC Switch 后，也可同步累计、最近 60 天和可用的小时统计。校准只调整当前修为起点，不补算历史顿悟或天劫。
 
 ## 数据说明
 
-Codex Desktop 当前没有公开的账号累计 Token 接口。本项目仅按启用后的输入长度进行本地估算，并允许手动校准累计值。界面不会伪造工具调用、任务数量或官方 Token 数据。
+Codex Desktop 当前没有公开的账号累计 Token 接口。本项目默认按启用后的输入长度进行本地估算，并允许手动校准累计值；也可只读接入 CC Switch 从本机会话日志整理出的 Codex Token 统计。该数据仅覆盖本机可用的会话历史，不等同于账号级官方累计值。界面不会伪造工具调用、任务数量或官方 Token 数据。
 
 Windows 状态保存在 `%LOCALAPPDATA%\CodexCultivation`，macOS 状态保存在 `~/Library/Application Support/CodexCultivation`。
 

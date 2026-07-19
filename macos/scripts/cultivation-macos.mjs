@@ -396,8 +396,11 @@ async function waitForIdentity(port, codex, timeoutMs = 45000) {
 }
 
 async function promptRestart(message) {
-  const script = `display dialog ${JSON.stringify(message)} with title "Codex Cultivation" buttons {"取消", "重新启动"} default button "重新启动" cancel button "取消" with icon caution`;
-  const result = run("/usr/bin/osascript", ["-e", script], { allowFailure: true });
+  const script = `tell application "Finder" to display dialog ${JSON.stringify(message)} with title "Codex Cultivation" buttons {"取消", "重新启动"} default button "重新启动" cancel button "取消" with icon caution`;
+  const result = run("/usr/bin/osascript", [
+    "-e", "tell application \"Finder\" to activate",
+    "-e", script,
+  ], { allowFailure: true });
   return result.status === 0;
 }
 

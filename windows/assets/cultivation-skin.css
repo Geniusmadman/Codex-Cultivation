@@ -324,6 +324,7 @@
 
 .cultivation-dialog__header button,
 .cultivation-dialog__enlightenment button,
+.cultivation-setting-guide button,
 .cultivation-setting-calibration button {
   min-height: 36px;
   padding: 0 12px;
@@ -339,8 +340,14 @@
 
 .cultivation-dialog__header button:hover,
 .cultivation-dialog__enlightenment button:hover,
+.cultivation-setting-guide button:hover,
 .cultivation-setting-calibration button:hover {
   background: var(--color-background-button-secondary-hover);
+}
+
+.cultivation-setting-calibration button:disabled {
+  cursor: wait;
+  opacity: .62;
 }
 
 .cultivation-dialog__tabs {
@@ -579,6 +586,7 @@
 .cultivation-setting-row,
 .cultivation-setting-range,
 .cultivation-setting-note,
+.cultivation-setting-guide,
 .cultivation-setting-calibration {
   display: flex;
   align-items: center;
@@ -590,6 +598,7 @@
 
 .cultivation-setting-row > span,
 .cultivation-setting-range > span,
+.cultivation-setting-guide > span,
 .cultivation-setting-calibration > label {
   display: grid;
   min-width: 0;
@@ -673,6 +682,15 @@
   display: block;
 }
 
+.cultivation-setting-guide {
+  display: flex;
+}
+
+.cultivation-setting-guide > span {
+  display: grid;
+  min-width: 0;
+}
+
 .cultivation-setting-calibration {
   display: grid;
 }
@@ -681,6 +699,18 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 8px;
+}
+
+.cultivation-setting-calibration__cc-switch {
+  width: 100%;
+  min-height: 38px;
+  color: var(--cultivation-jade) !important;
+  border-color: color-mix(in oklab, var(--cultivation-jade) 36%, var(--cultivation-line)) !important;
+  background: color-mix(in oklab, var(--cultivation-jade) 9%, var(--color-background-button-secondary)) !important;
+}
+
+.cultivation-setting-calibration__cc-switch:hover:not(:disabled) {
+  background: color-mix(in oklab, var(--cultivation-jade) 15%, var(--color-background-button-secondary-hover)) !important;
 }
 
 .cultivation-dialog__footer {
@@ -715,6 +745,22 @@
   transform: translateY(0);
 }
 
+:root.cultivation-motion-off [class*="cultivation-"],
+:root.cultivation-motion-off [class*="cultivation-"]::before,
+:root.cultivation-motion-off [class*="cultivation-"]::after,
+:root.cultivation-motion-off [id^="codex-cultivation-"],
+:root.cultivation-motion-off [id^="codex-cultivation-"]::before,
+:root.cultivation-motion-off [id^="codex-cultivation-"]::after,
+:root.cultivation-motion-off [data-cultivation-card-label],
+:root.cultivation-motion-off [data-cultivation-card-label]::before,
+:root.cultivation-motion-off [data-cultivation-card-label]::after {
+  transition-duration: .001ms !important;
+  animation-duration: .001ms !important;
+  animation-iteration-count: 1 !important;
+}
+
+/* The home route is a complete cultivation workspace. Native Codex actions stay
+   interactive; the cultivation layer supplies hierarchy, materials and status. */
 html.codex-cultivation .composer-surface-chrome,
 html.codex-cultivation .dream-home-utility {
   color: var(--color-text-foreground) !important;
@@ -736,8 +782,6 @@ html.codex-cultivation main.main-surface > header.app-header-tint {
   backdrop-filter: none !important;
 }
 
-/* The home route is a complete cultivation workspace. Native Codex actions stay
-   interactive; the cultivation layer supplies hierarchy, materials and status. */
 html.codex-cultivation .dream-home {
   display: grid !important;
   grid-template-columns: 232px minmax(620px, 1fr) 236px;
@@ -799,7 +843,7 @@ html.codex-cultivation .dream-home {
     var(--cultivation-home-shadow),
     inset 0 0 0 2px color-mix(in oklab, var(--cultivation-gold) 5%, transparent),
     inset 0 1px rgb(255 255 255 / .06);
-  backdrop-filter: blur(18px) saturate(1.06);
+  backdrop-filter: none;
 }
 
 .cultivation-rail-card::before {
@@ -1299,15 +1343,15 @@ html.codex-cultivation .dream-home {
   line-height: 1.45;
 }
 
-html.codex-cultivation:has(main.main-surface.dream-home-shell) #codex-cultivation-hud {
+html.codex-cultivation.cultivation-home-active #codex-cultivation-hud {
   display: none;
 }
 
-html.codex-cultivation:has(main.main-surface.dream-home-shell) aside.app-shell-left-panel {
+html.codex-cultivation.cultivation-home-active aside.app-shell-left-panel {
   border-right: 1px solid var(--cultivation-home-line) !important;
   background: var(--cultivation-sidebar-material) !important;
   box-shadow: inset -12px 0 32px color-mix(in oklab, var(--cultivation-jade) 4%, transparent);
-  backdrop-filter: blur(18px) saturate(1.04);
+  backdrop-filter: none;
 }
 
 html.codex-cultivation main.main-surface.dream-home-shell > header.cultivation-home-header {
@@ -1315,7 +1359,7 @@ html.codex-cultivation main.main-surface.dream-home-shell > header.cultivation-h
   border-bottom: 1px solid var(--cultivation-home-line) !important;
   background: var(--cultivation-topbar-material) !important;
   box-shadow: 0 8px 24px rgb(0 0 0 / .1);
-  backdrop-filter: blur(16px) saturate(1.05) !important;
+  backdrop-filter: none !important;
 }
 
 html.codex-cultivation main.main-surface.dream-home-shell > header.cultivation-home-header::after {
@@ -1526,7 +1570,7 @@ html.codex-cultivation.dream-safe-right .cultivation-home-hero__event {
   border-radius: 8px !important;
   background: var(--cultivation-home-card) !important;
   box-shadow: var(--cultivation-home-shadow) !important;
-  backdrop-filter: blur(16px) saturate(1.04);
+  backdrop-filter: none;
 }
 
 .dream-home .group\/home-suggestions button[data-cultivation-card-kind="break-array"] {
@@ -1659,7 +1703,7 @@ html.codex-cultivation.dream-safe-right .cultivation-home-hero__event {
   border-radius: 8px 8px 0 0 !important;
   background: var(--cultivation-topbar-material) !important;
   box-shadow: 0 -8px 26px rgb(0 0 0 / .12);
-  backdrop-filter: blur(16px) saturate(1.04);
+  backdrop-filter: none;
 }
 
 .dream-home .cultivation-home-project-bar::after {
@@ -1679,7 +1723,7 @@ html.codex-cultivation .dream-home .composer-surface-chrome {
   border-radius: 0 0 8px 8px !important;
   background: var(--cultivation-home-card) !important;
   box-shadow: 0 16px 44px rgb(0 0 0 / .24) !important;
-  backdrop-filter: blur(18px) saturate(1.04) !important;
+  backdrop-filter: none !important;
 }
 
 :root.dream-theme-light .dream-home .cultivation-home-project-bar,
@@ -2632,14 +2676,6 @@ html.codex-cultivation .dream-home .composer-surface-chrome {
 @keyframes cultivation-hero-sigil-breathe {
   0%, 100% { opacity: .38; filter: brightness(.9); }
   50% { opacity: .56; filter: brightness(1.08); }
-}
-
-:root.cultivation-motion-off *,
-:root.cultivation-motion-off *::before,
-:root.cultivation-motion-off *::after {
-  transition-duration: .001ms !important;
-  animation-duration: .001ms !important;
-  animation-iteration-count: 1 !important;
 }
 
 @media (max-width: 1450px) {

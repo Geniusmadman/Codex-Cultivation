@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.10.0 - 2026-07-19
+
+- Added a Settings link to the GitHub realm progression guide.
+- Added read-only CC Switch calibration for cumulative, daily, and hourly Codex Token usage.
+- Fixed compact GPT-5.4 mini and GPT-5.5 model labels so cultivation methods update correctly.
+- Fixed realm-specific light/dark background selection and restored task-route backgrounds after Codex DOM changes.
+- Reduced Canvas and backdrop rendering cost while preserving the cultivation interface.
+
 ## 1.8.0-macos.1 - 2026-07-19
 
 - Ported the Windows CDP injection architecture to the official signed macOS Codex app.

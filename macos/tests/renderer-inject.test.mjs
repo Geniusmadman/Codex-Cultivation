@@ -10,6 +10,7 @@ const template = await fs.readFile(path.join(platformRoot, "assets", "renderer-i
 const cultivationCss = await fs.readFile(path.join(platformRoot, "assets", "cultivation-skin.css"), "utf8");
 const buildPayload = (config = {}, cultivationArts = {}) => template
   .replace("__DREAM_CSS_JSON__", JSON.stringify(".fixture { color: blue; }"))
+  .replace("__CULTIVATION_HOME_CSS_JSON__", JSON.stringify(".home-fixture { color: green; }"))
   .replace("__DREAM_ART_JSON__", JSON.stringify("data:image/png;base64,AA=="))
   .replace("__CULTIVATION_ARTS_JSON__", JSON.stringify(cultivationArts))
   .replace("__DREAM_THEME_JSON__", JSON.stringify(config));
@@ -307,10 +308,11 @@ assert.match(companionMarkup, /cultivation-realm-dial/);
 assert.match(companionMarkup, /<canvas class="cultivation-realm-dial__flow"/);
 assert.doesNotMatch(companionMarkup, /data-realm-wisp=/);
 assert.match(template, /const drawStream = \(stream, phase, width, height\) =>/);
-assert.match(template, /const samples = 52;/);
+assert.match(template, /const samples = 32;/);
 assert.match(template, /const trailSpan = Math\.PI \* \.78;/);
 assert.match(template, /phase - stream\.direction \* trailSpan \* index/);
 assert.match(template, /globalCompositeOperation = "lighter"/);
+assert.match(template, /time - lastPaintAt < 32/);
 assert.equal((template.match(/direction: 1,/g) || []).length, 2);
 assert.equal((template.match(/direction: -1,/g) || []).length, 2);
 assert.match(cultivationCss, /:root\.dream-theme-light \.cultivation-current-method/);
@@ -324,6 +326,16 @@ assert.match(template, /const seedCultivationPrompt = \(kind\) =>/);
 assert.match(companionMarkup, /cultivation-stone-ledger/);
 assert.match(companionMarkup, /cultivation-current-method/);
 assert.match(template, /cultivation-gender-control/);
+assert.match(template, /data-cultivation-action="calibrate-cc-switch"/);
+assert.match(template, /data-cultivation-action="level-guide"/);
+assert.match(template, /https:\/\/github\.com\/Geniusmadman\/Codex-Cultivation#境界升级规则/);
+assert.match(template, /link\.rel = "noopener noreferrer"/);
+assert.match(template, /const requestCcSwitchUsage = \(\) => new Promise/);
+assert.match(template, /usage\.realTotalTokens/);
+assert.match(template, /daily: timeline\?\.daily/);
+assert.match(template, /hourly: timeline\?\.hourly/);
+assert.match(template, /已同步累计、\$\{dailyCount\} 天与 \$\{hourlyCount\} 小时数据/);
+assert.match(template, /CC Switch 读取服务未连接，请重新启动修仙台/);
 assert.doesNotMatch(template, /仙侍形象|只切换人物身份/);
 assert.match(template, /<h1>今日问道<\/h1>/);
 assert.match(template, /以代码为剑，以逻辑炼心；一问破境，万法归真。/);
@@ -332,6 +344,40 @@ assert.match(
   /const cultivationDialogMarkup = \(state, realm\) => \{[\s\S]*?const maxDay = Math\.max\(1, \.\.\.recent\.map\(\(item\) => item\.tokens\)\);/,
   "The cultivation dialog must compute its own seven-day chart scale before rendering.",
 );
+assert.match(
+  template,
+  /const updateCultivationUi = \(sidebar, root,[\s\S]*?const clearCultivationHome =/,
+);
+const updateCultivationUiSource = template.match(
+  /const updateCultivationUi = \(sidebar, root,[\s\S]*?\n  \};\n  const clearCultivationHome =/,
+)?.[0] || "";
+assert.doesNotMatch(updateCultivationUiSource, /renderCultivationDialog\(\)/,
+  "Routine shell reconciliation must not replace an open settings dialog.");
+assert.match(template, /if \(event\.type === "input" && setting !== "backgroundStrength"\) return;/);
+assert.match(template, /record\.target === document\.documentElement \|\| record\.target === document\.body/);
+assert.match(template, /const shellMutationSelector = \[/);
+assert.match(template, /\.\.\.record\.addedNodes, \.\.\.record\.removedNodes/);
+assert.match(template, /\.some\(nodeTouchesShell\)/);
+assert.match(template, /root\.classList\.toggle\("cultivation-home-active", Boolean\(home\)\)/);
+assert.match(template, /root\.classList\.toggle\("cultivation-home-utility-active", utilityBars\.size > 0\)/);
+assert.match(template, /const timer = setInterval\(ensure, 15000\);/);
+assert.match(template, /const setStyleProperty = \(node, property, value\) =>/);
+assert.match(template, /const HOME_STYLE_ID = "codex-cultivation-home-style"/);
+assert.match(template, /chrome\.style\.pointerEvents = "none"/);
+assert.match(template, /homeStyle\.textContent = homeCssText/);
+assert.match(template, /homeStyle\?\.remove\(\)/);
+assert.match(await fs.readFile(path.join(platformRoot, "scripts", "injector.mjs"), "utf8"),
+  /replace\("__DREAM_CSS_JSON__", JSON\.stringify\(`\$\{css\}\\n\$\{cultivationCommonCss\}`\)\)/);
+assert.match(await fs.readFile(path.join(platformRoot, "scripts", "injector.mjs"), "utf8"),
+  /replace\("__CULTIVATION_HOME_CSS_JSON__", JSON\.stringify\(cultivationHomeCss\)\)/);
+assert.match(await fs.readFile(path.join(platformRoot, "scripts", "injector.mjs"), "utf8"),
+  /revision: `\$\{loadedTheme\.fingerprint\}:\$\{SKIN_VERSION\}`/);
+assert.match(template, /const fallbackRoute = shellMain\.querySelector\?\.\("\.app-shell-main-content-frame"\)/);
+assert.match(template, /homeCandidate\?\.querySelector\?\.\("\.thread-scroll-container"\) \? null : homeCandidate/);
+assert.doesNotMatch(cultivationCss, /:root\.cultivation-motion-off \*/);
+assert.doesNotMatch(cultivationCss, /:has\(/);
+assert.doesNotMatch(await fs.readFile(path.join(platformRoot, "assets", "cultivation-base.css"), "utf8"), /:has\(/);
+assert.match(cultivationCss, /\.cultivation-rail-card \{[\s\S]*?backdrop-filter: none;/);
 assert.equal(configured.context.window.__CODEX_CULTIVATION_STATE__.cleanup(), true);
 assert.equal(configured.utilityClasses.has("dream-home-utility"), false);
 
@@ -419,8 +465,16 @@ assert.ok(cultivationDebug, "Cultivation debug API should expose the pure state 
 
 const modelMethods = [
   ["GPT 5.4 mini", "灵犀轻云诀"],
+  ["5.4 mini 中", "灵犀轻云诀"],
+  ["GPT-5.4-mini", "灵犀轻云诀"],
+  ["GPT_5.4_mini", "灵犀轻云诀"],
   ["GPT-5.5", "紫府通玄经"],
+  ["5.5 中", "紫府通玄经"],
+  ["GPT-5.5-Codex", "紫府通玄经"],
+  ["GPT 5.5 Codex\n中", "紫府通玄经"],
   ["GPT 5.6 Luna", "月华流光诀"],
+  ["5.6 Luna 高", "月华流光诀"],
+  ["GPT-5.6-Luna", "月华流光诀"],
   ["GPT-5.6 Terra", "地脉归元经"],
   ["GPT 5.6 Sol\n中", "大日天衍经"],
 ];
@@ -428,11 +482,34 @@ for (const [model, method] of modelMethods) {
   assert.equal(cultivationDebug.methodForModel(model).method, method, `${model} should select ${method}.`);
 }
 assert.equal(cultivationDebug.methodForModel("Unknown Model").method, "清心诀");
+assert.equal(cultivationDebug.methodForModel("版本 15.5").method, "清心诀");
 assert.equal(cultivationDebug.stoneDetails(12_480_000_000).grade, "supreme");
 assert.equal(cultivationDebug.stoneDetails(125_430_000).grade, "upper");
 assert.equal(cultivationDebug.stoneDetails(48_672_000).grade, "middle");
 assert.equal(cultivationDebug.stoneDetails(1_248_000).grade, "middle");
 assert.equal(cultivationDebug.stoneDetails(12_480).grade, "lower");
+
+const realmBackgroundArts = Object.fromEntries([
+  "qi", "qiLight", "foundation", "foundationLight", "goldenCore", "goldenCoreLight",
+  "nascentSoul", "nascentSoulLight", "transformation", "transformationLight",
+].map((key) => [key, "data:image/png;base64,AA=="]));
+const realmCases = [
+  [0, 100_000_000, "qi"],
+  [1, 1_000_000_000, "foundation"],
+  [2, 4_000_000_000, "goldenCore"],
+  [3, 10_000_000_000, "nascentSoul"],
+  [4, 40_000_000_000, "transformation"],
+];
+for (const [appearance, suffix] of [["dark", ""], ["light", "Light"]]) {
+  const fixture = createFixture({ shellPresent: true, shellAppearance: appearance });
+  vm.runInNewContext(buildPayload({}, realmBackgroundArts), fixture.context);
+  const debug = fixture.context.window.__CODEX_CULTIVATION_DEBUG__;
+  for (const [realmIndex, tokens, artKey] of realmCases) {
+    debug.setState({ schemaVersion: 4, totalTokens: tokens, cultivationTokens: tokens, realmIndex });
+    assert.equal(debug.artKey(), `${artKey}${suffix}`,
+      `${appearance} ${artKey} should select its own realm background.`);
+  }
+}
 
 let cultivation = cultivationDebug.setState({
   schemaVersion: 2,
