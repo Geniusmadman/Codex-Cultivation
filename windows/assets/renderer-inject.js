@@ -845,17 +845,9 @@
     else renderFrame(0);
   };
 
-  const resolveSidebarColumn = (sidebar) => {
-    const preferred = sidebar?.querySelector?.(":scope > .max-w-full.overflow-hidden");
-    if (preferred?.prepend) return preferred;
-    return Array.from(sidebar?.children || []).find((candidate) => {
-      const width = candidate.getBoundingClientRect?.().width || 0;
-      return candidate.prepend && width >= 180;
-    }) || null;
-  };
-  const ensureCultivationHud = (sidebar) => {
-    const host = resolveSidebarColumn(sidebar);
-    if (!host) return null;
+  const ensureCultivationHud = () => {
+    const host = document.body;
+    if (!host?.appendChild) return null;
     let hud = document.getElementById(CULTIVATION_HUD_ID);
     if (!hud || hud.parentElement !== host) {
       hud?.remove();
@@ -893,7 +885,7 @@
             <span>查看总览</span>
           </span>
         </button>`;
-      host.prepend(hud);
+      host.appendChild(hud);
     }
     return hud;
   };
@@ -1094,14 +1086,14 @@
     if (nextProfile) profile = nextProfile;
     return realm;
   };
-  const updateCultivationUi = (sidebar, root, realm = selectCultivationProfile()) => {
+  const updateCultivationUi = (root, realm = selectCultivationProfile()) => {
     const today = localDay();
     if (today !== lastCultivationRollDay) {
       cultivationState = rollCultivationState(cultivationState, today);
       lastCultivationRollDay = today;
       writeCultivationState(cultivationState);
     }
-    const hud = ensureCultivationHud(sidebar);
+    const hud = ensureCultivationHud();
     const activeRealmArt = cultivationArtUrls[activeArtKey] || artUrl;
     const activeCompanionKey = companionArtKey(cultivationState, realm);
     const activeCompanionArt = activeCompanionKey ? cultivationArtUrls[activeCompanionKey] : null;
@@ -1837,7 +1829,7 @@
     }
     chrome.style.pointerEvents = "none";
     chrome.classList.toggle("dream-home-shell", Boolean(home));
-    updateCultivationUi(shellSidebar, root, realm);
+    updateCultivationUi(root, realm);
   };
 
   const cleanup = () => {

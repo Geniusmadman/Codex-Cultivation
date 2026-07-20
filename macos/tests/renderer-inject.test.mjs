@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 const here = path.dirname(fileURLToPath(import.meta.url));
 const platformRoot = path.resolve(here, "..");
 const template = await fs.readFile(path.join(platformRoot, "assets", "renderer-inject.js"), "utf8");
+const baseCss = await fs.readFile(path.join(platformRoot, "assets", "cultivation-base.css"), "utf8");
 const cultivationCss = await fs.readFile(path.join(platformRoot, "assets", "cultivation-skin.css"), "utf8");
 const buildPayload = (config = {}, cultivationArts = {}) => template
   .replace("__DREAM_CSS_JSON__", JSON.stringify(".fixture { color: blue; }"))
@@ -133,6 +134,13 @@ function createFixture({
       textContent: "",
       innerHTML: "",
       setAttribute() {},
+      querySelector(selector) {
+        this.queryNodes ??= new Map();
+        if (!this.queryNodes.has(selector)) {
+          this.queryNodes.set(selector, { textContent: "", title: "", hidden: false, style: {} });
+        }
+        return this.queryNodes.get(selector);
+      },
       remove() { nodes.delete(this.id); },
     };
   };
@@ -228,6 +236,7 @@ function createFixture({
     revokedUrls,
     routeClasses,
     utilityClasses,
+    body,
     setShellPresent(value) { hasShell = value; },
   };
 }
@@ -239,6 +248,8 @@ assert.equal(main.rootClasses.has("codex-cultivation"), true);
 assert.equal(main.rootStyles.get("--dream-art"), 'url("blob:fixture-1")');
 assert.equal(main.nodes.has("codex-cultivation-style"), true);
 assert.equal(main.nodes.has("codex-cultivation-chrome"), true);
+assert.equal(main.nodes.get("codex-cultivation-hud").parentElement, main.body,
+  "The cultivation HUD should float from the document body instead of occupying the official sidebar.");
 assert.equal(main.rootClasses.has("dream-theme-dark"), true);
 assert.equal(main.rootClasses.has("dream-art-standard"), true);
 assert.equal(main.rootClasses.has("dream-task-ambient"), true);
@@ -346,13 +357,27 @@ assert.match(
 );
 assert.match(
   template,
-  /const updateCultivationUi = \(sidebar, root,[\s\S]*?const clearCultivationHome =/,
+  /const updateCultivationUi = \(root,[\s\S]*?const clearCultivationHome =/,
 );
 const updateCultivationUiSource = template.match(
-  /const updateCultivationUi = \(sidebar, root,[\s\S]*?\n  \};\n  const clearCultivationHome =/,
+  /const updateCultivationUi = \(root,[\s\S]*?\n  \};\n  const clearCultivationHome =/,
 )?.[0] || "";
 assert.doesNotMatch(updateCultivationUiSource, /renderCultivationDialog\(\)/,
   "Routine shell reconciliation must not replace an open settings dialog.");
+assert.match(template, /const host = document\.body;/,
+  "The cultivation HUD must use an overlay host outside the official sidebar layout.");
+assert.doesNotMatch(template, /resolveSidebarColumn/,
+  "The renderer must not reserve sidebar space for the cultivation HUD.");
+assert.match(cultivationCss, /#codex-cultivation-hud \{[\s\S]*?position: fixed;[\s\S]*?right: clamp/,
+  "The cultivation HUD must be anchored as a bottom-right floating card.");
+const appHeaderRule = baseCss.match(
+  /main\.main-surface\s*>\s*header\.app-header-tint\s*\{([\s\S]*?)\}/,
+)?.[1] || "";
+assert.ok(appHeaderRule, "The themed app header rule must remain present.");
+assert.doesNotMatch(appHeaderRule, /(?:^|\n)\s*(?:position|z-index)\s*:/,
+  "Theme styling must preserve the official fixed header geometry so the composer stays in the viewport.");
+assert.match(baseCss, /\.app-shell-main-content-frame\.dream-task\s*\{\s*min-height:\s*0;/,
+  "The task fallback must remain shrinkable below the official fixed header.");
 assert.match(template, /if \(event\.type === "input" && setting !== "backgroundStrength"\) return;/);
 assert.match(template, /record\.target === document\.documentElement \|\| record\.target === document\.body/);
 assert.match(template, /const shellMutationSelector = \[/);
