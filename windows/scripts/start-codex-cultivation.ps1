@@ -4,12 +4,14 @@ param(
   [switch]$RestartExisting,
   [switch]$PromptRestart,
   [string]$ProfilePath,
-  [switch]$ForegroundInjector
+  [switch]$ForegroundInjector,
+  [switch]$RestartForSpiritPet
 )
 
 $ErrorActionPreference = 'Stop'
 $PortExplicit = $PSBoundParameters.ContainsKey('Port')
 $Injector = Join-Path $PSScriptRoot 'injector.mjs'
+$PetFamily = Join-Path (Split-Path -Parent $PSScriptRoot) 'pets\yinyue\pet-family.json'
 . (Join-Path $PSScriptRoot 'common-windows.ps1')
 . (Join-Path $PSScriptRoot 'theme-windows.ps1')
 
@@ -24,6 +26,12 @@ try {
   $themePaths = Get-CultivationThemePaths -StateRoot $StateRoot
   Ensure-CultivationManagedDirectory -Path $themePaths.Root -Root $themePaths.Root
   $StatePath = Join-Path $StateRoot 'state.json'
+  $PetDisableFile = Join-Path $StateRoot 'spirit-pet-disabled'
+  $CodexHome = if ($env:CODEX_HOME) {
+    [System.IO.Path]::GetFullPath($env:CODEX_HOME)
+  } else {
+    [System.IO.Path]::GetFullPath((Join-Path $HOME '.codex'))
+  }
   $StdoutPath = Join-Path $StateRoot 'injector.log'
   $StderrPath = Join-Path $StateRoot 'injector-error.log'
   $VerifyPath = Join-Path $StateRoot 'verify.log'
@@ -83,6 +91,26 @@ try {
     Get-CultivationCodexProcesses -Codex $codexToStop
   }
   $closedExistingCodex = $false
+  if ($RestartForSpiritPet -and $debugReady -and $codexProcesses.Count -gt 0) {
+    $restartAuthorized = [bool]$RestartExisting
+    if (-not $restartAuthorized -and $PromptRestart) {
+      $restartAuthorized = Confirm-CultivationRestart -Message `
+        'Codex must restart to load the evolved Silver Moon spritesheet. Unsaved input may be lost. Restart now?'
+      if (-not $restartAuthorized) {
+        Write-Host 'Silver Moon restart was cancelled; Codex was not changed.'
+        exit 0
+      }
+    }
+    if (-not $restartAuthorized) {
+      throw 'Silver Moon restart requires -PromptRestart consent or explicit -RestartExisting authorization.'
+    }
+    Stop-CultivationCodex -Codex $codexToStop -AllowForce
+    $closedExistingCodex = $true
+    $codex = $currentCodex
+    $debugReady = $false
+    $cdpIdentity = $null
+    $codexProcesses = @()
+  }
   if (-not $debugReady -and $codexProcesses.Count -gt 0) {
     $restartAuthorized = [bool]$RestartExisting
     if (-not $restartAuthorized -and $PromptRestart) {
@@ -173,7 +201,9 @@ try {
       Exit-CultivationOperationLock -Mutex $operationLock
       $operationLock = $null
       & $node.Path $Injector --watch --port $Port --browser-id $cdpIdentity.BrowserId `
-        --theme-dir $themePaths.Active --pause-file $themePaths.PauseFile
+        --theme-dir $themePaths.Active --pause-file $themePaths.PauseFile `
+        --pet-family $PetFamily --pet-state-root $StateRoot --codex-home $CodexHome `
+        --pet-disable-file $PetDisableFile
       $foregroundExitCode = $LASTEXITCODE
       if ($foregroundExitCode -ne 0 -and $pauseWasSet) {
         Set-CultivationPaused -Paused $true -StateRoot $StateRoot | Out-Null
@@ -195,7 +225,11 @@ try {
     $injectorArgs = @((ConvertTo-CultivationProcessArgument -Value $Injector), '--watch', '--port', "$Port",
       '--browser-id', $cdpIdentity.BrowserId, '--theme-dir',
       (ConvertTo-CultivationProcessArgument -Value $themePaths.Active), '--pause-file',
-      (ConvertTo-CultivationProcessArgument -Value $themePaths.PauseFile))
+      (ConvertTo-CultivationProcessArgument -Value $themePaths.PauseFile), '--pet-family',
+      (ConvertTo-CultivationProcessArgument -Value $PetFamily), '--pet-state-root',
+      (ConvertTo-CultivationProcessArgument -Value $StateRoot), '--codex-home',
+      (ConvertTo-CultivationProcessArgument -Value $CodexHome), '--pet-disable-file',
+      (ConvertTo-CultivationProcessArgument -Value $PetDisableFile))
     $daemon = Start-Process -FilePath $node.Path -ArgumentList $injectorArgs -WindowStyle Hidden -PassThru `
       -RedirectStandardOutput $StdoutPath -RedirectStandardError $StderrPath
     Start-Sleep -Milliseconds 500

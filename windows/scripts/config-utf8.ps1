@@ -195,6 +195,41 @@ function Get-CultivationDesktopSectionPattern {
   return "(?ms)^[\t ]*\[[\t ]*$desktopToken[\t ]*\][\t ]*(?:#[^\r\n]*)?(?:\r?\n|(?=\z))(?<body>.*?)(?=^[\t ]*\[\[?|\z)"
 }
 
+function Get-CultivationLightChromeThemeSectionPattern {
+  $desktopToken = Get-CultivationTomlKeyTokenPattern -Key 'desktop'
+  $chromeToken = Get-CultivationTomlKeyTokenPattern -Key 'appearanceLightChromeTheme'
+  return "(?ms)^[\t ]*\[[\t ]*$desktopToken[\t ]*\.[\t ]*$chromeToken(?:[\t ]*\.[^\]\r\n]+)?[\t ]*\][\t ]*(?:#[^\r\n]*)?(?:\r?\n|(?=\z)).*?(?=^[\t ]*\[\[?|\z)"
+}
+
+function Get-CultivationLightChromeThemeSectionText {
+  param([Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content)
+
+  $matches = @([regex]::Matches($Content, (Get-CultivationLightChromeThemeSectionPattern)))
+  if ($matches.Count -eq 0) { return $null }
+  $desktop = Get-CultivationDesktopSection -Content $Content
+  if ($null -eq $desktop -or $matches[0].Index -ne ($desktop.SectionStart + $desktop.SectionLength)) {
+    throw 'Refusing to rewrite a detached light Chrome theme table; keep it directly after [desktop].'
+  }
+  for ($index = 1; $index -lt $matches.Count; $index++) {
+    if ($matches[$index].Index -ne ($matches[$index - 1].Index + $matches[$index - 1].Length)) {
+      throw 'Refusing to rewrite non-contiguous light Chrome theme tables.'
+    }
+  }
+  $start = $matches[0].Index
+  $end = $matches[-1].Index + $matches[-1].Length
+  return $Content.Substring($start, $end - $start)
+}
+
+function Remove-CultivationLightChromeThemeSections {
+  param([Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content)
+
+  $matches = @([regex]::Matches($Content, (Get-CultivationLightChromeThemeSectionPattern)))
+  for ($index = $matches.Count - 1; $index -ge 0; $index--) {
+    $Content = $Content.Remove($matches[$index].Index, $matches[$index].Length)
+  }
+  return $Content
+}
+
 function Assert-CultivationDesktopShapeSupported {
   param([Parameter(Mandatory = $true)][AllowEmptyString()][string]$Content)
 
@@ -205,12 +240,18 @@ function Assert-CultivationDesktopShapeSupported {
   }
 
   $desktopToken = Get-CultivationTomlKeyTokenPattern -Key 'desktop'
-  if ([regex]::IsMatch($Content, "(?m)^[\t ]*\[\[[\t ]*$desktopToken[\t ]*\]\]")) {
+  if ([regex]::IsMatch($Content, "(?m)^[\t ]*\[\[[\t ]*$desktopToken[\t ]*(?:\]|\.)")) {
     throw 'Refusing to rewrite a config that represents desktop as an array of tables.'
   }
-  if ([regex]::IsMatch($Content, "(?m)^[\t ]*\[\[?[\t ]*$desktopToken[\t ]*\.")) {
-    throw 'Refusing to rewrite nested desktop tables; normalize them to a single [desktop] table first.'
+  $chromeToken = Get-CultivationTomlKeyTokenPattern -Key 'appearanceLightChromeTheme'
+  $nestedDesktopPattern = "(?m)^[\t ]*\[[\t ]*$desktopToken[\t ]*\.[^\]\r\n]+\][\t ]*(?:#[^\r\n]*)?$"
+  $supportedChromePattern = "(?m)^[\t ]*\[[\t ]*$desktopToken[\t ]*\.[\t ]*$chromeToken(?:[\t ]*\.[^\]\r\n]+)?[\t ]*\][\t ]*(?:#[^\r\n]*)?$"
+  foreach ($nestedDesktop in [regex]::Matches($Content, $nestedDesktopPattern)) {
+    if (-not [regex]::IsMatch($nestedDesktop.Value, $supportedChromePattern)) {
+      throw 'Refusing to rewrite unsupported nested desktop tables.'
+    }
   }
+  $chromeSections = Get-CultivationLightChromeThemeSectionText -Content $Content
 
   $firstTable = [regex]::Match($Content, '(?m)^[\t ]*\[\[?')
   $rootContent = if ($firstTable.Success) { $Content.Substring(0, $firstTable.Index) } else { $Content }
@@ -231,6 +272,10 @@ function Assert-CultivationDesktopShapeSupported {
       if ([regex]::IsMatch($desktop.Body, "(?m)^[\t ]*$keyToken[\t ]*\.")) {
         throw "Refusing to replace dotted '$key' keys in the [desktop] table."
       }
+    }
+    if ($null -ne $chromeSections -and
+      $null -ne (Get-CultivationSectionSettingLine -Body $desktop.Body -Key 'appearanceLightChromeTheme')) {
+      throw 'Refusing to rewrite duplicate inline and table light Chrome themes.'
     }
   }
 }
@@ -372,6 +417,7 @@ function Install-CultivationBaseTheme {
   $writeCompleted = $false
   try {
     Assert-CultivationDesktopShapeSupported -Content $content
+    $content = Remove-CultivationLightChromeThemeSections -Content $content
     $newLine = Get-CultivationNewLine -Content $content
     $desktop = Get-CultivationDesktopSection -Content $content
     if ($null -eq $desktop) {
@@ -434,6 +480,8 @@ function Restore-CultivationBaseTheme {
   $currentContent = ConvertFrom-CultivationUtf8Bytes -Bytes $currentBytes -Path $ConfigPath
   Assert-CultivationDesktopShapeSupported -Content $backupContent
   Assert-CultivationDesktopShapeSupported -Content $currentContent
+  $backupChromeSections = Get-CultivationLightChromeThemeSectionText -Content $backupContent
+  $currentContent = Remove-CultivationLightChromeThemeSections -Content $currentContent
   $newLine = Get-CultivationNewLine -Content $currentContent
   $backupDesktop = Get-CultivationDesktopSection -Content $backupContent
   $currentDesktop = Get-CultivationDesktopSection -Content $currentContent
@@ -451,7 +499,9 @@ function Restore-CultivationBaseTheme {
   foreach ($key in $restoreKeys) {
     $keyToken = Get-CultivationTomlKeyTokenPattern -Key $key
     $pattern = "(?m)^[\t ]*$keyToken[\t ]*=.*(?:\r?\n)?"
-    $saved = if ($null -ne $backupDesktop) { [regex]::Match($backupDesktop.Body, $pattern) } else { $null }
+    $saved = if ($key -ceq 'appearanceLightChromeTheme' -and $null -ne $backupChromeSections) {
+      $null
+    } elseif ($null -ne $backupDesktop) { [regex]::Match($backupDesktop.Body, $pattern) } else { $null }
     $line = if ($null -ne $saved -and $saved.Success) { $saved.Value } else { $null }
     $body = Set-CultivationSectionSetting -Body $body -Key $key -Line $line -NewLine $newLine
   }
@@ -467,6 +517,11 @@ function Restore-CultivationBaseTheme {
   } else {
     $currentContent = $currentContent.Substring(0, $currentDesktop.BodyStart) + $body +
       $currentContent.Substring($currentDesktop.BodyStart + $currentDesktop.BodyLength)
+  }
+  if ($null -ne $backupChromeSections) {
+    $currentDesktop = Get-CultivationDesktopSection -Content $currentContent
+    $insertAt = $currentDesktop.SectionStart + $currentDesktop.SectionLength
+    $currentContent = $currentContent.Insert($insertAt, $backupChromeSections)
   }
   Write-CultivationUtf8FileAtomically -Path $ConfigPath -Content $currentContent -ExpectedBytes $currentBytes
 }

@@ -6,7 +6,8 @@ param(
   [switch]$RecoverConfigBackup,
   [switch]$PromptRestart,
   [switch]$ForceRestart,
-  [switch]$NoRelaunch
+  [switch]$NoRelaunch,
+  [switch]$KeepSpiritPet
 )
 
 $ErrorActionPreference = 'Stop'
@@ -30,6 +31,61 @@ function Stop-CultivationTrayProcess {
   }
 }
 
+function Remove-CultivationSpiritPetFallback {
+  param(
+    [Parameter(Mandatory = $true)][string]$StateRoot,
+    [Parameter(Mandatory = $true)][string]$CodexHome
+  )
+  $petStatePath = Join-Path $StateRoot 'pet-state.json'
+  if (-not (Test-Path -LiteralPath $petStatePath -PathType Leaf)) { return }
+  $petState = (Read-CultivationUtf8File -Path $petStatePath) | ConvertFrom-Json
+  if ($petState.schemaVersion -ne 1 -or $petState.managedBy -cne 'CodexCultivation' -or
+    $petState.petId -cne 'yinyue' -or $petState.activeSpritesheet -notmatch
+      '^spritesheet-(qi|foundation|golden-core|nascent-soul|transformation)-[a-f0-9]{12}\.webp$') {
+    throw 'Silver Moon pet state is invalid; pet files were preserved.'
+  }
+  $petDirectory = Join-Path $CodexHome 'pets\yinyue'
+  if (Test-Path -LiteralPath $petDirectory) {
+    $petDirectoryItem = Get-Item -LiteralPath $petDirectory -Force
+    if (($petDirectoryItem.Attributes -band [System.IO.FileAttributes]::ReparsePoint) -ne 0) {
+      throw 'Silver Moon pet directory is a link or junction; pet files were preserved.'
+    }
+    foreach ($file in @($petState.managedFiles)) {
+      $name = "$($file.name)"
+      $expectedHash = "$($file.sha256)".ToLowerInvariant()
+      if ($name -notmatch '^spritesheet-(qi|foundation|golden-core|nascent-soul|transformation)-[a-f0-9]{12}\.webp$' -or
+        $expectedHash -notmatch '^[a-f0-9]{64}$') {
+        throw 'Silver Moon pet state contains an unsafe managed file; pet files were preserved.'
+      }
+      $managedPath = Join-Path $petDirectory $name
+      if (-not (Test-Path -LiteralPath $managedPath -PathType Leaf)) { continue }
+      $actualHash = (Get-FileHash -LiteralPath $managedPath -Algorithm SHA256).Hash.ToLowerInvariant()
+      if ($actualHash -ceq $expectedHash) {
+        Remove-Item -LiteralPath $managedPath -Force
+      } else {
+        Write-Warning "Preserved modified Silver Moon file: $name"
+      }
+    }
+    $petJsonPath = Join-Path $petDirectory 'pet.json'
+    if (Test-Path -LiteralPath $petJsonPath -PathType Leaf) {
+      $expectedPetJsonHash = "$($petState.petJsonSha256)".ToLowerInvariant()
+      if ($expectedPetJsonHash -notmatch '^[a-f0-9]{64}$') {
+        throw 'Silver Moon pet manifest hash is invalid; pet files were preserved.'
+      }
+      $actualPetJsonHash = (Get-FileHash -LiteralPath $petJsonPath -Algorithm SHA256).Hash.ToLowerInvariant()
+      if ($actualPetJsonHash -ceq $expectedPetJsonHash) {
+        Remove-Item -LiteralPath $petJsonPath -Force
+      } else {
+        Write-Warning 'Preserved modified Silver Moon pet.json.'
+      }
+    }
+    if (@(Get-ChildItem -LiteralPath $petDirectory -Force).Count -eq 0) {
+      Remove-Item -LiteralPath $petDirectory -Force
+    }
+  }
+  Remove-Item -LiteralPath $petStatePath -Force
+}
+
 $operationLock = Enter-CultivationOperationLock
 try {
   if ($RestoreBaseTheme -and $RecoverConfigBackup) {
@@ -41,6 +97,13 @@ try {
   $themePaths = Get-CultivationThemePaths -StateRoot $StateRoot
   Ensure-CultivationManagedDirectory -Path $themePaths.Root -Root $themePaths.Root
   $StatePath = Join-Path $StateRoot 'state.json'
+  $PetManager = Join-Path $PSScriptRoot 'pet-manager.mjs'
+  $PetDisableFile = Join-Path $StateRoot 'spirit-pet-disabled'
+  $CodexHome = if ($env:CODEX_HOME) {
+    [System.IO.Path]::GetFullPath($env:CODEX_HOME)
+  } else {
+    [System.IO.Path]::GetFullPath((Join-Path $HOME '.codex'))
+  }
   $state = Read-CultivationState -Path $StatePath
   if (-not $PortExplicit -and $null -ne $state -and $state.port) {
     $Port = [int]$state.port
@@ -148,6 +211,20 @@ try {
 
     Remove-Item -LiteralPath $StatePath -Force -ErrorAction SilentlyContinue
     Remove-Item -LiteralPath (Join-Path $StateRoot 'paused') -Force -ErrorAction SilentlyContinue
+    if (-not $KeepSpiritPet) {
+      $node = $null
+      try { $node = Get-CultivationNodeRuntime } catch {}
+      if ($null -ne $node) {
+        $petRemoval = @(& $node.Path $PetManager remove --state-root $StateRoot `
+          --codex-home $CodexHome 2>&1)
+        if ($LASTEXITCODE -ne 0) {
+          throw "Silver Moon pet removal failed: $($petRemoval -join ' ')"
+        }
+      } else {
+        Remove-CultivationSpiritPetFallback -StateRoot $StateRoot -CodexHome $CodexHome
+      }
+      Remove-Item -LiteralPath $PetDisableFile -Force -ErrorAction SilentlyContinue
+    }
     if ($Uninstall) {
       $desktop = [Environment]::GetFolderPath('Desktop')
       $startMenu = Join-Path $env:APPDATA 'Microsoft\Windows\Start Menu\Programs'

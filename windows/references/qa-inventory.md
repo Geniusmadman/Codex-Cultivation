@@ -24,6 +24,7 @@
 - Config safety: Chinese project names, LF/CRLF choice, quoted target keys, table-header comments, and unrelated TOML sections survive install/selective restore; ambiguous target shapes fail unchanged, exact recovery keeps a copy of the replaced current file, and install refuses both registered and state-recorded old Codex processes.
 - Theme safety: empty/over-16 MB images, over-16384px/50MP dimensions, path escapes, symlinks/junctions, malformed JSON, and unsupported formats are rejected before payload construction.
 - Tray lifecycle: pause/resume reflects the clicked state, bundled Cultivation Qi Terrace theme is present on first install, and complete restore terminates any separately launched tray before it can reapply the cultivation layer.
+- Spirit pet lifecycle: default install adds Silver Moon at Qi, realm changes use hashed filenames, failed hot reload remains pending, default restore removes only proven Silver Moon files, `-NoSpiritPet` leaves existing pets untouched, and `-KeepSpiritPet` preserves Silver Moon.
 
 ## Visual checks
 
@@ -45,6 +46,6 @@
 
 ## Automated checks
 
-- `tests/run-tests.ps1`: strict UTF-8/no-BOM writes, UTF-16 rejection, LF/CRLF preservation, concurrent-write detection, exact backup/recovery, `[desktop]`-scoped restore, ambiguous TOML rejection, non-ASCII paths, Appx/state identity, argument quoting, theme seeding/import/save/switch/pause, byte/dimension limits, junction rejection, payload construction, Browser ID, loopback URL rejection, and renderer isolation for transparent auxiliary windows.
+- `tests/run-tests.ps1`: strict UTF-8/no-BOM writes, UTF-16 rejection, LF/CRLF preservation, concurrent-write detection, exact backup/recovery, `[desktop]`-scoped restore, ambiguous TOML rejection, non-ASCII paths, Appx/state identity, argument quoting, theme seeding/import/save/switch/pause, byte/dimension limits, junction rejection, payload construction, Browser ID, loopback URL rejection, renderer isolation for transparent auxiliary windows, and Silver Moon asset/state/CDP/wiring guards.
 - `node --check` for the injector and renderer payload.
 - Live Windows signoff remains required for Store process ownership, restart consent, screenshot, and CDP closure.

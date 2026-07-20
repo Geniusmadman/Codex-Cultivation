@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
   [int]$Port = 9335,
-  [switch]$NoShortcuts
+  [switch]$NoShortcuts,
+  [switch]$NoSpiritPet
 )
 
 $ErrorActionPreference = 'Stop'
@@ -13,7 +14,7 @@ $SkillRoot = Split-Path -Parent $PSScriptRoot
 $operationLock = Enter-CultivationOperationLock
 try {
   Assert-CultivationPort -Port $Port
-  $null = Get-CultivationNodeRuntime
+  $node = Get-CultivationNodeRuntime
   $registeredInstalls = @(Get-CultivationRegisteredCodexInstalls)
   if ($registeredInstalls.Count -eq 0) {
     throw 'The official OpenAI.Codex Store package is not installed or its identity cannot be validated.'
@@ -28,6 +29,14 @@ try {
   $themePaths = Get-CultivationThemePaths -StateRoot $StateRoot
   Ensure-CultivationManagedDirectory -Path $themePaths.Root -Root $themePaths.Root
   $StatePath = Join-Path $StateRoot 'state.json'
+  $PetManager = Join-Path $PSScriptRoot 'pet-manager.mjs'
+  $PetFamily = Join-Path $SkillRoot 'pets\yinyue\pet-family.json'
+  $PetDisableFile = Join-Path $StateRoot 'spirit-pet-disabled'
+  $CodexHome = if ($env:CODEX_HOME) {
+    [System.IO.Path]::GetFullPath($env:CODEX_HOME)
+  } else {
+    [System.IO.Path]::GetFullPath((Join-Path $HOME '.codex'))
+  }
   $existingState = Read-CultivationState -Path $StatePath
   $savedPathCandidate = Get-CultivationCodexStatePathCandidate -State $existingState
   $savedCodex = Resolve-CultivationCodexInstallFromState -State $existingState -RegisteredInstalls $registeredInstalls
@@ -38,7 +47,24 @@ try {
   $null = Initialize-CultivationThemeStore -SkillRoot $SkillRoot -StateRoot $StateRoot
   $ConfigPath = Join-Path $HOME '.codex\config.toml'
   $BackupPath = Join-Path $StateRoot 'config.before-cultivation.toml'
+  if (-not $NoSpiritPet) {
+    $petVerification = @(& $node.Path $PetManager verify --family $PetFamily `
+      --state-root $StateRoot --codex-home $CodexHome 2>&1)
+    if ($LASTEXITCODE -ne 0) {
+      throw "Silver Moon pet preflight failed: $($petVerification -join ' ')"
+    }
+  }
   Install-CultivationBaseTheme -ConfigPath $ConfigPath -BackupPath $BackupPath
+  if ($NoSpiritPet) {
+    Write-CultivationUtf8FileAtomically -Path $PetDisableFile -Content "disabled`r`n"
+  } else {
+    $petInstall = @(& $node.Path $PetManager install --family $PetFamily `
+      --state-root $StateRoot --codex-home $CodexHome 2>&1)
+    if ($LASTEXITCODE -ne 0) {
+      throw "Silver Moon pet installation failed: $($petInstall -join ' ')"
+    }
+    Remove-Item -LiteralPath $PetDisableFile -Force -ErrorAction SilentlyContinue
+  }
 
   if (-not $NoShortcuts) {
     $shell = New-Object -ComObject WScript.Shell
@@ -80,9 +106,11 @@ try {
   }
 
   if ($NoShortcuts) {
-    Write-Host 'Codex Cultivation base theme installed. Run start-codex-cultivation.ps1 to launch it.'
+    $petMessage = if ($NoSpiritPet) { ' Spirit pet management is disabled.' } else { ' Silver Moon was installed.' }
+    Write-Host "Codex Cultivation base theme installed.$petMessage Run start-codex-cultivation.ps1 to launch it."
   } else {
-    Write-Host 'Codex Cultivation installed. The launch shortcut asks before restarting an open Codex window.'
+    $petMessage = if ($NoSpiritPet) { ' Spirit pet management is disabled.' } else { ' Silver Moon was installed.' }
+    Write-Host "Codex Cultivation installed.$petMessage The launch shortcut asks before restarting an open Codex window."
   }
 } finally {
   Exit-CultivationOperationLock -Mutex $operationLock

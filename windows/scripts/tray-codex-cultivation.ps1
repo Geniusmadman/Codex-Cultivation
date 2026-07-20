@@ -15,6 +15,9 @@ $paths = Initialize-CultivationThemeStore -SkillRoot $SkillRoot -StateRoot $Stat
 $powershell = (Get-Command powershell.exe -ErrorAction Stop).Source
 $startScript = Join-Path $PSScriptRoot 'start-codex-cultivation.ps1'
 $restoreScript = Join-Path $PSScriptRoot 'restore-codex-cultivation.ps1'
+$syncPetScript = Join-Path $PSScriptRoot 'sync-codex-spirit-pet.ps1'
+$petStatePath = Join-Path $StateRoot 'pet-state.json'
+$petDisableFile = Join-Path $StateRoot 'spirit-pet-disabled'
 
 $sid = [System.Security.Principal.WindowsIdentity]::GetCurrent().User.Value
 $mutex = [System.Threading.Mutex]::new($false, "Local\CodexCultivation.$sid.Tray")
@@ -78,6 +81,29 @@ try {
       $status += " · $($active.Theme.name)"
     }
     $null = Add-CultivationTrayItem -Items $menu.Items -Text $status -Action $null -Enabled $false
+    $petState = $null
+    try {
+      if (Test-Path -LiteralPath $petStatePath -PathType Leaf) {
+        $petState = (Read-CultivationUtf8File -Path $petStatePath) | ConvertFrom-Json
+      }
+    } catch {}
+    $realmNames = @{
+      'qi' = '炼气'
+      'foundation' = '筑基'
+      'golden-core' = '金丹'
+      'nascent-soul' = '元婴'
+      'transformation' = '化神'
+    }
+    $petStatus = if (Test-Path -LiteralPath $petDisableFile -PathType Leaf) {
+      '灵宠：已禁用'
+    } elseif ($null -ne $petState -and $petState.petId -ceq 'yinyue') {
+      $realmName = $realmNames["$($petState.activeRealm)"]
+      if (-not $realmName) { $realmName = "$($petState.activeRealm)" }
+      "灵宠：银月 · $realmName"
+    } else {
+      '灵宠：银月未安装'
+    }
+    $null = Add-CultivationTrayItem -Items $menu.Items -Text $petStatus -Action $null -Enabled $false
     [void]$menu.Items.Add([System.Windows.Forms.ToolStripSeparator]::new())
 
     $null = Add-CultivationTrayItem -Items $menu.Items -Text '应用或重新应用' -Action {
@@ -90,6 +116,17 @@ try {
       Set-CultivationPaused -Paused $nextPaused -StateRoot $StateRoot | Out-Null
     }.GetNewClosure()
     $null = Add-CultivationTrayItem -Items $menu.Items -Text $pauseText -Action $pauseAction
+    $petSyncEnabled = -not (Test-Path -LiteralPath $petDisableFile -PathType Leaf)
+    $null = Add-CultivationTrayItem -Items $menu.Items -Text '同步银月境界' -Enabled $petSyncEnabled -Action {
+      Start-CultivationPowerShell -Script $syncPetScript -Arguments @('-Port', "$Port")
+    }
+    if ($null -ne $petState -and $petState.pendingReload -eq $true) {
+      $null = Add-CultivationTrayItem -Items $menu.Items -Text '重启 Codex 应用灵宠进阶' -Action {
+        Start-CultivationPowerShell -Script $startScript -Arguments @(
+          '-Port', "$Port", '-RestartForSpiritPet', '-PromptRestart'
+        )
+      }
+    }
     $null = Add-CultivationTrayItem -Items $menu.Items -Text '更换背景图' -Action {
       $dialog = [System.Windows.Forms.OpenFileDialog]::new()
       $dialog.Title = '选择 Codex Cultivation 背景图'

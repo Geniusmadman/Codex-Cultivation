@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "id": "yinyue",
+  "displayName": "银月",
+  "description": "随修炼境界共同成长的银白月狐灵宠。",
+  "spriteVersionNumber": 2,
+  "defaultRealm": "qi",
+  "forms": {
+    "qi": {
+      "displayName": "银月·炼气",
+      "description": "幼态单尾的银白月狐，额心带有淡蓝月纹。",
+      "tailCount": 1,
+      "spritesheet": "forms/qi/spritesheet.webp",
+      "validation": "forms/qi/validation.json"
+    },
+    "foundation": {
+      "displayName": "银月·筑基",
+      "description": "道基初成的双尾银月，体态沉稳并显现青玉毛纹。",
+      "tailCount": 2,
+      "placeholderSourceRealm": "qi",
+      "spritesheet": "forms/foundation/spritesheet.webp",
+      "validation": "forms/foundation/validation.json"
+    },
+    "golden-core": {
+      "displayName": "银月·金丹",
+      "description": "三尾银月，胸前凝成一体化金丹月印并带有克制暖金点缀。",
+      "tailCount": 3,
+      "placeholderSourceRealm": "qi",
+      "spritesheet": "forms/golden-core/spritesheet.webp",
+      "validation": "forms/golden-core/validation.json"
+    },
+    "nascent-soul": {
+      "displayName": "银月·元婴",
+      "description": "五尾银月，银蓝紫月脉纹与更丰盈的灵狐轮廓清晰可见。",
+      "tailCount": 5,
+      "placeholderSourceRealm": "qi",
+      "spritesheet": "forms/nascent-soul/spritesheet.webp",
+      "validation": "forms/nascent-soul/validation.json"
+    },
+    "transformation": {
+      "displayName": "银月·化神",
+      "description": "九尾化神银月，紧凑层叠尾羽与银月冠形额纹显现通玄气象。",
+      "tailCount": 9,
+      "placeholderSourceRealm": "qi",
+      "spritesheet": "forms/transformation/spritesheet.webp",
+      "validation": "forms/transformation/validation.json"
+    }
+  }
+}

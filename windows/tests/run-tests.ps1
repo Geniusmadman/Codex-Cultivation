@@ -101,6 +101,27 @@ try {
     throw 'Quoted desktop keys or a table-header comment were not restored exactly.'
   }
 
+  $nestedChromePath = Join-Path $temporaryRoot 'config-nested-chrome.toml'
+  $nestedChromeBackup = Join-Path $temporaryRoot 'config-nested-chrome.before.toml'
+  $nestedChromeTables = "[desktop.appearanceLightChromeTheme]`r`naccent = `"#123456`"`r`nsurface = `"#ffffff`"`r`n`r`n[desktop.appearanceLightChromeTheme.fonts]`r`n`r`n[desktop.appearanceLightChromeTheme.semanticColors]`r`ndiffAdded = `"#abcdef`"`r`n`r`n"
+  $nestedChromeOriginal = "[desktop]`r`nappearanceTheme = `"system`"`r`nselected-avatar-id = `"before`"`r`nappearanceLightCodeThemeId = `"native`"`r`n`r`n$nestedChromeTables[sandbox_workspace_write]`r`nnetwork_access = true`r`n"
+  [System.IO.File]::WriteAllText($nestedChromePath, $nestedChromeOriginal, $utf8NoBom)
+  Install-CultivationBaseTheme -ConfigPath $nestedChromePath -BackupPath $nestedChromeBackup
+  $nestedChromeInstalled = Read-CultivationUtf8File -Path $nestedChromePath
+  if ($nestedChromeInstalled -match '(?m)^\s*\[\s*desktop\s*\.\s*appearanceLightChromeTheme' -or
+    $nestedChromeInstalled -notmatch '(?m)^appearanceLightChromeTheme\s*=\s*\{') {
+    throw 'Install did not replace the native nested light Chrome theme with the managed inline theme.'
+  }
+  $nestedChromeInstalled = $nestedChromeInstalled -replace 'selected-avatar-id = "before"', 'selected-avatar-id = "after"'
+  Write-CultivationUtf8FileAtomically -Path $nestedChromePath -Content $nestedChromeInstalled
+  Restore-CultivationBaseTheme -ConfigPath $nestedChromePath -BackupPath $nestedChromeBackup
+  $nestedChromeRestored = Read-CultivationUtf8File -Path $nestedChromePath
+  if (-not $nestedChromeRestored.Contains('selected-avatar-id = "after"') -or
+    -not $nestedChromeRestored.Contains($nestedChromeTables) -or
+    $nestedChromeRestored -match '(?m)^appearanceLightChromeTheme\s*=') {
+    throw 'Restore did not preserve unrelated desktop changes and restore the native nested light Chrome theme.'
+  }
+
   $singleLineArrayPath = Join-Path $temporaryRoot 'config-single-line-array.toml'
   $singleLineArrayBackup = Join-Path $temporaryRoot 'config-single-line-array.before.toml'
   $singleLineArray = "labels = [`"name[1]`", `"#tag]`"]`r`n"
@@ -539,6 +560,10 @@ try {
   if ($LASTEXITCODE -ne 0) { throw 'Injector one-shot Browser ID regression test failed.' }
   & $node.Path (Join-Path $PSScriptRoot 'image-metadata.test.mjs')
   if ($LASTEXITCODE -ne 0) { throw 'Image metadata regression test failed.' }
+  & $node.Path (Join-Path $PSScriptRoot 'pet-manager.test.mjs')
+  if ($LASTEXITCODE -ne 0) { throw 'Silver Moon pet manager regression test failed.' }
+  & $node.Path (Join-Path $PSScriptRoot 'spirit-pet-integration.test.mjs')
+  if ($LASTEXITCODE -ne 0) { throw 'Silver Moon integration regression test failed.' }
 
   Write-Host 'PASS: config transactions, restore scoping, state safety, argument quoting, and loopback CDP validation.'
 } finally {
