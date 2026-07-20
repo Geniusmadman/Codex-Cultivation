@@ -441,10 +441,18 @@ try {
     '--dream-immersive-composer',
     'background-position: var(--dream-art-position)',
     '.dream-home-utility',
-    ':has(.dream-home-utility) .composer-surface-chrome',
-    ':is(.dream-task-ambient, .dream-task-banner):has(main.main-surface:not(.dream-home-shell))'
+    '.app-shell-main-content-frame.dream-task',
+    '.cultivation-home-utility-active .dream-home .composer-surface-chrome',
+    ':is(.dream-task-ambient, .dream-task-banner):not(.cultivation-home-active)'
   )) {
     if (-not $css.Contains($requiredCss)) { throw "Windows immersive CSS is missing: $requiredCss" }
+  }
+  $headerBlock = [regex]::Match(
+    $css,
+    '(?s)main\.main-surface\s*>\s*header\.app-header-tint\s*\{(?<body>.*?)\}'
+  )
+  if (-not $headerBlock.Success -or $headerBlock.Groups['body'].Value -match '(?m)^\s*(?:position|z-index)\s*:') {
+    throw 'Cultivation CSS overrides the official fixed header layout and can clip the composer below the viewport.'
   }
   $traySource = Read-CultivationUtf8File -Path (Join-Path $Root 'scripts\tray-codex-cultivation.ps1')
   foreach ($requiredTrayAction in @('System.Windows.Forms.NotifyIcon', '暂停皮肤', '更换背景图', '已保存主题', '完全恢复 Codex')) {

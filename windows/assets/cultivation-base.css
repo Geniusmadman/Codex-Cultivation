@@ -105,8 +105,6 @@ html.codex-cultivation main.main-surface {
 }
 
 html.codex-cultivation main.main-surface > header.app-header-tint {
-  position: relative;
-  z-index: 20;
   color: var(--dream-text) !important;
   background: color-mix(in oklab, var(--dream-surface) 94%, transparent) !important;
   border-color: var(--dream-line-soft) !important;
@@ -129,6 +127,10 @@ html.codex-cultivation .dream-task {
   isolation: isolate;
   min-height: 100%;
   background: var(--dream-surface) !important;
+}
+
+html.codex-cultivation .app-shell-main-content-frame.dream-task {
+  min-height: 0;
 }
 
 html.codex-cultivation .dream-task::before {
