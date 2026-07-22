@@ -17,63 +17,63 @@
       "row": 0,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 22198,
+      "nontransparent_pixels": 17458,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 79
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "idle",
       "row": 0,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 22183,
+      "nontransparent_pixels": 16861,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 109
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "idle",
       "row": 0,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 22104,
+      "nontransparent_pixels": 16882,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 88
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "idle",
       "row": 0,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 22187,
+      "nontransparent_pixels": 15783,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 86
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "idle",
       "row": 0,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 22376,
+      "nontransparent_pixels": 16962,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 120
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "idle",
       "row": 0,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 22213,
+      "nontransparent_pixels": 16472,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 111
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "idle",
       "row": 0,
       "column": 6,
       "used": true,
-      "nontransparent_pixels": 22214,
+      "nontransparent_pixels": 17354,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 91
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "idle",
@@ -89,180 +89,180 @@
       "row": 1,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 20403,
+      "nontransparent_pixels": 17969,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 73
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-right",
       "row": 1,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 19406,
+      "nontransparent_pixels": 19468,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 62
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-right",
       "row": 1,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 18668,
+      "nontransparent_pixels": 17690,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 74
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-right",
       "row": 1,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 19353,
+      "nontransparent_pixels": 16515,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 78
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-right",
       "row": 1,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 19119,
+      "nontransparent_pixels": 16812,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 77
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-right",
       "row": 1,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 18801,
+      "nontransparent_pixels": 21334,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 63
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-right",
       "row": 1,
       "column": 6,
       "used": true,
-      "nontransparent_pixels": 18952,
+      "nontransparent_pixels": 17922,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 83
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-right",
       "row": 1,
       "column": 7,
       "used": true,
-      "nontransparent_pixels": 18821,
+      "nontransparent_pixels": 17371,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 63
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-left",
       "row": 2,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 20806,
+      "nontransparent_pixels": 12354,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 69
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-left",
       "row": 2,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 21153,
+      "nontransparent_pixels": 16512,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 60
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-left",
       "row": 2,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 21421,
+      "nontransparent_pixels": 16873,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 71
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-left",
       "row": 2,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 21581,
+      "nontransparent_pixels": 15886,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 72
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-left",
       "row": 2,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 21023,
+      "nontransparent_pixels": 16583,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 66
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-left",
       "row": 2,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 21072,
+      "nontransparent_pixels": 13087,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 74
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-left",
       "row": 2,
       "column": 6,
       "used": true,
-      "nontransparent_pixels": 20983,
+      "nontransparent_pixels": 18436,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 70
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running-left",
       "row": 2,
       "column": 7,
       "used": true,
-      "nontransparent_pixels": 21220,
+      "nontransparent_pixels": 20387,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 78
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waving",
       "row": 3,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 22139,
+      "nontransparent_pixels": 18459,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 91
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waving",
       "row": 3,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 22396,
+      "nontransparent_pixels": 14590,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 85
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waving",
       "row": 3,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 22335,
+      "nontransparent_pixels": 17718,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 74
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waving",
       "row": 3,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 22453,
+      "nontransparent_pixels": 17665,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 92
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waving",
@@ -305,45 +305,45 @@
       "row": 4,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 21821,
+      "nontransparent_pixels": 18379,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 145
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "jumping",
       "row": 4,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 21309,
+      "nontransparent_pixels": 20385,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 105
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "jumping",
       "row": 4,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 21399,
+      "nontransparent_pixels": 23976,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 104
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "jumping",
       "row": 4,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 21292,
+      "nontransparent_pixels": 21028,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 118
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "jumping",
       "row": 4,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 22326,
+      "nontransparent_pixels": 20981,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 122
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "jumping",
@@ -377,126 +377,126 @@
       "row": 5,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 18779,
+      "nontransparent_pixels": 22795,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 62
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "failed",
       "row": 5,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 18151,
+      "nontransparent_pixels": 19606,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 62
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "failed",
       "row": 5,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 14989,
+      "nontransparent_pixels": 14103,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 49
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "failed",
       "row": 5,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 12646,
+      "nontransparent_pixels": 17895,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 36
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "failed",
       "row": 5,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 10344,
+      "nontransparent_pixels": 23170,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 23
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "failed",
       "row": 5,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 10521,
+      "nontransparent_pixels": 13951,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 30
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "failed",
       "row": 5,
       "column": 6,
       "used": true,
-      "nontransparent_pixels": 9665,
+      "nontransparent_pixels": 16401,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 20
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "failed",
       "row": 5,
       "column": 7,
       "used": true,
-      "nontransparent_pixels": 10897,
+      "nontransparent_pixels": 22018,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 30
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waiting",
       "row": 6,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 26254,
+      "nontransparent_pixels": 15121,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 130
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waiting",
       "row": 6,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 26059,
+      "nontransparent_pixels": 15901,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 138
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waiting",
       "row": 6,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 25901,
+      "nontransparent_pixels": 14508,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 123
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waiting",
       "row": 6,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 25784,
+      "nontransparent_pixels": 14503,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 107
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waiting",
       "row": 6,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 25480,
+      "nontransparent_pixels": 14890,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 120
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waiting",
       "row": 6,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 25398,
+      "nontransparent_pixels": 14164,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 83
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "waiting",
@@ -521,54 +521,54 @@
       "row": 7,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 18063,
+      "nontransparent_pixels": 20374,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 44
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running",
       "row": 7,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 17902,
+      "nontransparent_pixels": 20839,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 44
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running",
       "row": 7,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 17792,
+      "nontransparent_pixels": 18825,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 45
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running",
       "row": 7,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 17893,
+      "nontransparent_pixels": 21143,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 54
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running",
       "row": 7,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 17874,
+      "nontransparent_pixels": 18883,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 45
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running",
       "row": 7,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 18004,
+      "nontransparent_pixels": 21501,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 33
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "running",
@@ -593,54 +593,54 @@
       "row": 8,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 25879,
+      "nontransparent_pixels": 18630,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 87
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "review",
       "row": 8,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 25800,
+      "nontransparent_pixels": 16686,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 116
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "review",
       "row": 8,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 25730,
+      "nontransparent_pixels": 16687,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 90
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "review",
       "row": 8,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 25556,
+      "nontransparent_pixels": 17803,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 98
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "review",
       "row": 8,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 25374,
+      "nontransparent_pixels": 14902,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 95
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "review",
       "row": 8,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 25484,
+      "nontransparent_pixels": 19988,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 99
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "review",
@@ -665,144 +665,144 @@
       "row": 9,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 21802,
+      "nontransparent_pixels": 17897,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 43
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-000-to-157.5",
       "row": 9,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 20592,
-      "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 62
+      "nontransparent_pixels": 16569,
+      "opaque_chroma_key_pixels": 1,
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-000-to-157.5",
       "row": 9,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 19815,
-      "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 60
+      "nontransparent_pixels": 15922,
+      "opaque_chroma_key_pixels": 1,
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-000-to-157.5",
       "row": 9,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 15601,
+      "nontransparent_pixels": 15784,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 48
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-000-to-157.5",
       "row": 9,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 19814,
+      "nontransparent_pixels": 14868,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 49
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-000-to-157.5",
       "row": 9,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 19234,
+      "nontransparent_pixels": 13530,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 53
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-000-to-157.5",
       "row": 9,
       "column": 6,
       "used": true,
-      "nontransparent_pixels": 20209,
+      "nontransparent_pixels": 11964,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 51
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-000-to-157.5",
       "row": 9,
       "column": 7,
       "used": true,
-      "nontransparent_pixels": 18008,
+      "nontransparent_pixels": 10573,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 79
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-180-to-337.5",
       "row": 10,
       "column": 0,
       "used": true,
-      "nontransparent_pixels": 21175,
+      "nontransparent_pixels": 13793,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 46
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-180-to-337.5",
       "row": 10,
       "column": 1,
       "used": true,
-      "nontransparent_pixels": 19002,
+      "nontransparent_pixels": 13249,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 48
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-180-to-337.5",
       "row": 10,
       "column": 2,
       "used": true,
-      "nontransparent_pixels": 16883,
+      "nontransparent_pixels": 12542,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 54
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-180-to-337.5",
       "row": 10,
       "column": 3,
       "used": true,
-      "nontransparent_pixels": 17900,
+      "nontransparent_pixels": 11915,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 41
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-180-to-337.5",
       "row": 10,
       "column": 4,
       "used": true,
-      "nontransparent_pixels": 21674,
+      "nontransparent_pixels": 11680,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 44
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-180-to-337.5",
       "row": 10,
       "column": 5,
       "used": true,
-      "nontransparent_pixels": 16414,
+      "nontransparent_pixels": 12062,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 45
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-180-to-337.5",
       "row": 10,
       "column": 6,
       "used": true,
-      "nontransparent_pixels": 18083,
+      "nontransparent_pixels": 12313,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 53
+      "chroma_fringe_pixels": 0
     },
     {
       "state": "look-180-to-337.5",
       "row": 10,
       "column": 7,
       "used": true,
-      "nontransparent_pixels": 20743,
+      "nontransparent_pixels": 11705,
       "opaque_chroma_key_pixels": 0,
-      "chroma_fringe_pixels": 52
+      "chroma_fringe_pixels": 0
     }
   ]
 }

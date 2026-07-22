@@ -1,6 +1,6 @@
 # Notice
 
-Codex Cultivation is an independent cross-platform customization project for Codex Desktop. The current implementation is Windows-first; macOS support is planned.
+Codex Cultivation is an independent cross-platform customization project for Codex Desktop with supported Windows and macOS implementations.
 
 Parts of the reversible CDP injection, Windows process validation, configuration backup, theme-store, and restoration implementation were derived from the publicly available `Fei-Away/Codex-Dream-Skin` repository and were substantially reorganized for this project.
 

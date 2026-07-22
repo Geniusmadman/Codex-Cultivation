@@ -7,6 +7,12 @@ import process from "node:process";
 import { spawn, spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import { readImageMetadata } from "./image-metadata.mjs";
+import {
+  defaultPetFamilyPath,
+  installSpiritPet,
+  removeSpiritPet,
+  verifySpiritPet,
+} from "./pet-manager.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const scriptsRoot = path.dirname(scriptPath);
@@ -16,6 +22,9 @@ const defaultAppPath = "/Applications/ChatGPT.app";
 const expectedBundleId = "com.openai.codex";
 const expectedTeamId = "2DC432GLL2";
 const defaultStateRoot = path.join(os.homedir(), "Library", "Application Support", "CodexCultivation");
+const defaultCodexHome = process.env.CODEX_HOME
+  ? path.resolve(process.env.CODEX_HOME)
+  : path.join(os.homedir(), ".codex");
 const maxImageBytes = 16 * 1024 * 1024;
 
 function parseArgs(argv) {
@@ -29,11 +38,15 @@ function parseArgs(argv) {
     profilePath: null,
     screenshot: null,
     restartExisting: false,
+    restartForSpiritPet: false,
     promptRestart: false,
     force: false,
     noRelaunch: false,
     foreground: false,
     imagePath: null,
+    noSpiritPet: false,
+    keepSpiritPet: false,
+    codexHome: defaultCodexHome,
   };
   for (let index = 0; index < rest.length; index += 1) {
     const arg = rest[index];
@@ -45,11 +58,15 @@ function parseArgs(argv) {
     else if (arg === "--profile") options.profilePath = path.resolve(rest[++index]);
     else if (arg === "--screenshot") options.screenshot = path.resolve(rest[++index]);
     else if (arg === "--restart-existing") options.restartExisting = true;
+    else if (arg === "--restart-for-spirit-pet") options.restartForSpiritPet = true;
     else if (arg === "--prompt-restart") options.promptRestart = true;
     else if (arg === "--force") options.force = true;
     else if (arg === "--no-relaunch") options.noRelaunch = true;
     else if (arg === "--foreground") options.foreground = true;
     else if (arg === "--image") options.imagePath = path.resolve(rest[++index]);
+    else if (arg === "--no-spirit-pet") options.noSpiritPet = true;
+    else if (arg === "--keep-spirit-pet") options.keepSpiritPet = true;
+    else if (arg === "--codex-home") options.codexHome = path.resolve(rest[++index]);
     else throw new Error(`Unknown argument: ${arg}`);
   }
   if (!Number.isInteger(options.port) || options.port < 1024 || options.port > 65535) {
@@ -142,6 +159,8 @@ function statePaths(stateRoot) {
     stdout: path.join(stateRoot, "injector.log"),
     stderr: path.join(stateRoot, "injector-error.log"),
     verify: path.join(stateRoot, "verify.log"),
+    petState: path.join(stateRoot, "pet-state.json"),
+    petDisable: path.join(stateRoot, "spirit-pet-disabled"),
   };
 }
 
@@ -487,7 +506,19 @@ async function start(options, paths) {
   const previousState = await readJson(paths.state);
   if (!options.portExplicit && previousState?.port) options.port = Number(previousState.port);
   let identity = await cdpIdentity(options.port, codex);
-  const running = codexMainProcesses(codex);
+  let running = codexMainProcesses(codex);
+  if (options.restartForSpiritPet && identity && running.length) {
+    let authorized = options.restartExisting;
+    if (!authorized && options.promptRestart) {
+      authorized = await promptRestart("Codex 需要重新启动以载入银月进阶后的灵宠图集。未发送的输入可能丢失，是否继续？");
+    }
+    if (!authorized) {
+      throw new Error("Silver Moon reload needs restart permission. Use --prompt-restart or --restart-existing.");
+    }
+    await stopCodex(codex, options.force);
+    identity = null;
+    running = [];
+  }
   if (!identity && running.length && !options.profilePath) {
     let authorized = options.restartExisting;
     if (!authorized && options.promptRestart) {
@@ -510,7 +541,9 @@ async function start(options, paths) {
   if (previousState) await stopRecordedInjector(previousState);
   await fs.rm(paths.pause, { force: true });
   const injectorArgs = ["--watch", "--port", String(options.port), "--browser-id", identity.browserId,
-    "--theme-dir", paths.activeTheme, "--pause-file", paths.pause];
+    "--theme-dir", paths.activeTheme, "--pause-file", paths.pause,
+    "--pet-family", defaultPetFamilyPath(), "--pet-state-root", paths.root,
+    "--codex-home", options.codexHome, "--pet-disable-file", paths.petDisable];
   if (options.foreground) {
     const result = await runInjector(injectorArgs, { stdio: "inherit" });
     process.exitCode = result.code;
@@ -542,6 +575,10 @@ async function start(options, paths) {
     profilePath: options.profilePath,
     themeDir: paths.activeTheme,
     pauseFile: paths.pause,
+    petFamily: defaultPetFamilyPath(),
+    petStateRoot: paths.root,
+    codexHome: options.codexHome,
+    petDisableFile: paths.petDisable,
     createdAt: new Date().toISOString(),
   };
   try {
@@ -579,6 +616,35 @@ async function verify(options, paths) {
     "--theme-dir", paths.activeTheme, "--timeout-ms", "30000"];
   if (options.screenshot) args.push("--screenshot", options.screenshot);
   const result = await runInjector(args, { stdio: "inherit" });
+  if (await pathExists(paths.petDisable)) {
+    console.log("Silver Moon spirit-pet management is disabled.");
+  } else {
+    const pet = await verifySpiritPet({
+      familyPath: defaultPetFamilyPath(),
+      stateRoot: paths.root,
+      codexHome: options.codexHome,
+    });
+    if (!pet.installed) throw new Error("Silver Moon is not installed. Run install first.");
+    console.log(`Silver Moon verified at realm ${pet.realm}; pending reload: ${pet.pendingReload}.`);
+  }
+  process.exitCode = result.code;
+}
+
+async function syncSpiritPet(options, paths) {
+  const codex = validateCodexApp(options.appPath);
+  const state = await readJson(paths.state);
+  if (!state) throw new Error("Codex Cultivation has no active state. Run start first.");
+  if (!options.portExplicit) options.port = Number(state.port);
+  const identity = await cdpIdentity(options.port, codex);
+  if (!identity || identity.browserId !== state.browserId) {
+    throw new Error(`No matching verified Codex CDP endpoint is active on port ${options.port}.`);
+  }
+  const result = await runInjector([
+    "--sync-pet", "--port", String(options.port), "--browser-id", identity.browserId,
+    "--timeout-ms", "30000", "--pet-family", defaultPetFamilyPath(),
+    "--pet-state-root", paths.root, "--codex-home", options.codexHome,
+    "--pet-disable-file", paths.petDisable,
+  ], { stdio: "inherit" });
   process.exitCode = result.code;
 }
 
@@ -586,7 +652,16 @@ async function restore(options, paths) {
   const codex = validateCodexApp(options.appPath);
   const state = await readJson(paths.state);
   if (!state) {
-    console.log("Codex Cultivation is not active.");
+    if (!options.keepSpiritPet) {
+      const petRemoval = await removeSpiritPet({ stateRoot: paths.root, codexHome: options.codexHome });
+      if (petRemoval.preservedFiles.length) {
+        console.warn(`Preserved modified Silver Moon files: ${petRemoval.preservedFiles.join(", ")}`);
+      }
+    }
+    await fs.rm(paths.petDisable, { force: true });
+    console.log(options.keepSpiritPet
+      ? "Codex Cultivation is not active; Silver Moon was preserved."
+      : "Codex Cultivation is not active; managed Silver Moon files were removed.");
     return;
   }
   if (!options.portExplicit) options.port = Number(state.port);
@@ -605,23 +680,52 @@ async function restore(options, paths) {
   }
   try {
     await stopRecordedInjector(state);
+    if (!options.keepSpiritPet) {
+      const petRemoval = await removeSpiritPet({ stateRoot: paths.root, codexHome: options.codexHome });
+      if (petRemoval.preservedFiles.length) {
+        console.warn(`Preserved modified Silver Moon files: ${petRemoval.preservedFiles.join(", ")}`);
+      }
+    }
     await fs.rm(paths.state, { force: true });
     await fs.rm(paths.pause, { force: true });
+    await fs.rm(paths.petDisable, { force: true });
   } catch (error) {
     if (closedCodex && !options.noRelaunch) launchCodex(codex);
     throw error;
   }
   if (closedCodex && !options.noRelaunch) launchCodex(codex);
-  console.log("Codex Cultivation restore completed; the saved CDP session is closed.");
+  console.log(options.keepSpiritPet
+    ? "Codex Cultivation restore completed; the saved CDP session is closed and Silver Moon was preserved."
+    : "Codex Cultivation restore completed; the saved CDP session and managed Silver Moon files were removed.");
 }
 
 async function install(options, paths) {
   const codex = validateCodexApp(options.appPath);
+  if (codexMainProcesses(codex).length) {
+    throw new Error("Close Codex before installing Cultivation and the Silver Moon spirit pet.");
+  }
   await initializeThemeStore(paths);
   const nodeMajor = Number(process.versions.node.split(".")[0]);
   if (nodeMajor < 22) throw new Error(`Node.js 22 or newer is required; found ${process.versions.node}.`);
+  if (options.noSpiritPet) {
+    await fs.writeFile(paths.petDisable, "disabled\n", { mode: 0o600 });
+  } else {
+    await verifySpiritPet({
+      familyPath: defaultPetFamilyPath(),
+      stateRoot: paths.root,
+      codexHome: options.codexHome,
+    });
+    const pet = await installSpiritPet({
+      familyPath: defaultPetFamilyPath(),
+      stateRoot: paths.root,
+      codexHome: options.codexHome,
+    });
+    await fs.rm(paths.petDisable, { force: true });
+    console.log(`Silver Moon installed at realm ${pet.realm}.`);
+  }
   console.log(`Codex Cultivation for macOS is ready for Codex ${codex.version}.`);
   console.log(`State directory: ${paths.root}`);
+  if (options.noSpiritPet) console.log("Spirit-pet management is disabled; existing pets were preserved.");
 }
 
 async function setPaused(paths, paused) {
@@ -632,7 +736,7 @@ async function setPaused(paths, paused) {
 }
 
 function printHelp() {
-  console.log(`Usage: cultivation-macos.mjs <command> [options]\n\nCommands:\n  install\n  start\n  verify\n  pause\n  resume\n  set-image --image <path>\n  restore\n\nCommon options:\n  --port <1024-65535>\n  --restart-existing\n  --prompt-restart\n  --force\n  --screenshot <path>\n  --profile <path>\n  --state-root <path>`);
+  console.log(`Usage: cultivation-macos.mjs <command> [options]\n\nCommands:\n  install [--no-spirit-pet]\n  start\n  sync-pet\n  verify\n  pause\n  resume\n  set-image --image <path>\n  restore [--keep-spirit-pet]\n\nCommon options:\n  --port <1024-65535>\n  --restart-existing\n  --restart-for-spirit-pet\n  --prompt-restart\n  --force\n  --screenshot <path>\n  --profile <path>\n  --state-root <path>\n  --codex-home <path>`);
 }
 
 export { parseArgs, validateLoopbackWebSocket };
@@ -649,6 +753,7 @@ if (path.resolve(process.argv[1] || "") === path.resolve(scriptPath)) {
       if (options.command === "install") await install(options, paths);
       else if (options.command === "start") await start(options, paths);
       else if (options.command === "verify") await verify(options, paths);
+      else if (options.command === "sync-pet") await syncSpiritPet(options, paths);
       else if (options.command === "restore") await restore(options, paths);
       else if (options.command === "pause") await setPaused(paths, true);
       else if (options.command === "resume") await setPaused(paths, false);

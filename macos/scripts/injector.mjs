@@ -1,9 +1,17 @@
 import fs from "node:fs/promises";
 import { createHash } from "node:crypto";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { readImageMetadata } from "./image-metadata.mjs";
 import { readCcSwitchCodexUsage } from "./cc-switch-usage.mjs";
+import {
+  PET_ID,
+  REALM_IDS,
+  defaultPetFamilyPath,
+  recordSpiritPetReload,
+  setSpiritPetRealm,
+} from "./pet-manager.mjs";
 
 const scriptPath = fileURLToPath(import.meta.url);
 const here = path.dirname(scriptPath);
@@ -12,12 +20,17 @@ const SKIN_VERSION = "1.10.0";
 const MAX_ART_BYTES = 16 * 1024 * 1024;
 const STRONG_THEME_AUDIT_MS = 30000;
 const CC_SWITCH_BINDING = "__codexCultivationCcSwitch";
+const PET_REALM_POLL_MS = 2000;
+const PET_RELOAD_RETRY_MS = 30000;
 const LOOPBACK_HOSTS = new Set(["127.0.0.1", "localhost", "[::1]", "::1"]);
 const BROWSER_ID_PATTERN = /^[A-Za-z0-9._-]{1,200}$/;
 
 class CdpIdentityMismatchError extends Error {}
 
 function parseArgs(argv) {
+  const home = process.env.HOME || os.homedir();
+  const defaultPetStateRoot = home
+    ? path.resolve(home, "Library", "Application Support", "CodexCultivation") : null;
   const options = {
     port: 9335,
     mode: "watch",
@@ -27,6 +40,13 @@ function parseArgs(argv) {
     browserId: null,
     themeDir: path.join(root, "assets"),
     pauseFile: null,
+    petFamily: defaultPetFamilyPath(),
+    petStateRoot: defaultPetStateRoot,
+    codexHome: process.env.CODEX_HOME
+      ? path.resolve(process.env.CODEX_HOME)
+      : home ? path.resolve(home, ".codex") : null,
+    petDisableFile: defaultPetStateRoot
+      ? path.join(defaultPetStateRoot, "spirit-pet-disabled") : null,
   };
   for (let i = 0; i < argv.length; i += 1) {
     const arg = argv[i];
@@ -41,6 +61,11 @@ function parseArgs(argv) {
     else if (arg === "--pause-file") options.pauseFile = path.resolve(argv[++i]);
     else if (arg === "--screenshot") options.screenshot = path.resolve(argv[++i]);
     else if (arg === "--reload") options.reload = true;
+    else if (arg === "--sync-pet") options.mode = "sync-pet";
+    else if (arg === "--pet-family") options.petFamily = path.resolve(argv[++i]);
+    else if (arg === "--pet-state-root") options.petStateRoot = path.resolve(argv[++i]);
+    else if (arg === "--codex-home") options.codexHome = path.resolve(argv[++i]);
+    else if (arg === "--pet-disable-file") options.petDisableFile = path.resolve(argv[++i]);
     else if (arg === "--self-test") options.mode = "self-test";
     else if (arg === "--check-payload") options.mode = "check-payload";
     else throw new Error(`Unknown argument: ${arg}`);
@@ -54,8 +79,12 @@ function parseArgs(argv) {
   if (options.browserId !== null && !BROWSER_ID_PATTERN.test(options.browserId)) {
     throw new Error(`Invalid browser ID: ${options.browserId}`);
   }
-  if (["watch", "once", "verify", "remove"].includes(options.mode) && !options.browserId) {
+  if (["watch", "once", "verify", "remove", "sync-pet"].includes(options.mode) && !options.browserId) {
     throw new Error(`--browser-id is required in ${options.mode} mode`);
+  }
+  if (["watch", "sync-pet"].includes(options.mode) &&
+      (!options.petStateRoot || !options.codexHome || !options.petDisableFile)) {
+    throw new Error(`Silver Moon paths are required in ${options.mode} mode`);
   }
   return options;
 }
@@ -577,6 +606,173 @@ async function connectCodexTargets(port, timeoutMs, expectedBrowserId) {
   throw new Error(`No verified Codex renderer on 127.0.0.1:${port}: ${lastError?.message ?? "timed out"}`);
 }
 
+export function isYinyuePetProbe(probe) {
+  return probe?.app === true && probe.avatar === true && probe.shell !== true;
+}
+
+export function isExpectedYinyueResourceProbe(probe) {
+  return probe?.avatar === true && probe.loaded === true;
+}
+
+async function probeYinyuePetSession(session) {
+  return session.evaluate(`(() => {
+    const shell = Boolean(
+      document.querySelector('main.main-surface') ||
+      document.querySelector('aside.app-shell-left-panel') ||
+      document.querySelector('.composer-surface-chrome')
+    );
+    const avatar = Boolean(
+      document.querySelector('[data-avatar-id="${PET_ID}"]') ||
+      document.documentElement?.getAttribute?.('data-avatar-id') === '${PET_ID}' ||
+      document.body?.getAttribute?.('data-avatar-id') === '${PET_ID}'
+    );
+    return { app: location.protocol === 'app:', avatar, shell };
+  })()`);
+}
+
+async function waitForYinyuePetProbe(session, timeoutMs = 2000) {
+  const deadline = Date.now() + timeoutMs;
+  let probe = null;
+  while (Date.now() < deadline) {
+    try {
+      probe = await probeYinyuePetSession(session);
+      if (isYinyuePetProbe(probe)) return probe;
+    } catch {
+      // The pet overlay may be between documents while it reloads.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+  return probe;
+}
+
+async function waitForPetResource(session, expectedFilename, timeoutMs = 5000) {
+  const deadline = Date.now() + timeoutMs;
+  const expected = JSON.stringify(expectedFilename);
+  while (Date.now() < deadline) {
+    try {
+      const result = await session.evaluate(`(() => {
+        const expected = ${expected};
+        const values = [];
+        for (const entry of performance.getEntriesByType?.('resource') || []) values.push(entry.name);
+        for (const element of document.querySelectorAll?.('[src], [style]') || []) {
+          values.push(element.getAttribute?.('src') || '');
+          values.push(element.getAttribute?.('style') || '');
+        }
+        const avatar = Boolean(
+          document.querySelector('[data-avatar-id="${PET_ID}"]') ||
+          document.documentElement?.getAttribute?.('data-avatar-id') === '${PET_ID}' ||
+          document.body?.getAttribute?.('data-avatar-id') === '${PET_ID}'
+        );
+        return { avatar, loaded: values.some((value) => String(value).includes(expected)) };
+      })()`);
+      if (isExpectedYinyueResourceProbe(result)) return true;
+    } catch {
+      // Runtime contexts are expected to disappear briefly during Page.reload.
+    }
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  return false;
+}
+
+async function refreshYinyuePetTargets({ port, targets, mainTargetIds, expectedFilename }) {
+  let overlays = 0;
+  const failures = [];
+  for (const target of targets) {
+    if (mainTargetIds.has(target.id)) continue;
+    let session;
+    try {
+      session = await connectTarget(target, port);
+      const probe = await waitForYinyuePetProbe(session, 800);
+      if (!isYinyuePetProbe(probe)) continue;
+      overlays += 1;
+      await session.send("Page.reload", { ignoreCache: true });
+      const reloadedProbe = await waitForYinyuePetProbe(session, 3000);
+      if (!isYinyuePetProbe(reloadedProbe) ||
+          !await waitForPetResource(session, expectedFilename, 5000)) {
+        failures.push(target.id);
+      }
+    } catch {
+      if (session) failures.push(target.id);
+    } finally {
+      session?.close();
+    }
+  }
+  return { overlays, verified: failures.length === 0, failedTargets: failures.length };
+}
+
+async function resolveCultivationRealm(session) {
+  const realm = await session.evaluate(
+    "window.__CODEX_CULTIVATION_DEBUG__?.resolve?.()?.id ?? null",
+  ).catch(() => null);
+  return REALM_IDS.includes(realm) ? realm : null;
+}
+
+async function synchronizeSpiritPet({
+  options,
+  mainSession,
+  mainTargetIds,
+  targets,
+  realm = null,
+  forceRefresh = false,
+}) {
+  if (await fileExists(options.petDisableFile)) {
+    return { ok: true, disabled: true, realm: null, pendingReload: false };
+  }
+  const selectedRealm = realm ?? await resolveCultivationRealm(mainSession);
+  if (!selectedRealm) return { ok: true, ready: false, realm: null, pendingReload: false };
+  const result = await setSpiritPetRealm({
+    realm: selectedRealm,
+    familyPath: options.petFamily,
+    stateRoot: options.petStateRoot,
+    codexHome: options.codexHome,
+  });
+  if (!result.changed && !result.pendingReload && !forceRefresh) {
+    return { ...result, ready: true, refreshVerified: true };
+  }
+  const refresh = await refreshYinyuePetTargets({
+    port: options.port,
+    targets,
+    mainTargetIds,
+    expectedFilename: result.spritesheetName,
+  });
+  const reload = await recordSpiritPetReload({
+    verified: refresh.verified,
+    reason: refresh.verified ? null : "pet-overlay-refresh-unverified",
+    stateRoot: options.petStateRoot,
+    codexHome: options.codexHome,
+  });
+  return {
+    ...result,
+    ready: true,
+    overlays: refresh.overlays,
+    refreshVerified: refresh.verified,
+    failedTargets: refresh.failedTargets,
+    pendingReload: reload.pendingReload,
+  };
+}
+
+async function runPetSyncOnce(options) {
+  const connected = await connectCodexTargets(options.port, options.timeoutMs, options.browserId);
+  try {
+    const mainSession = connected[0].session;
+    const realm = await resolveCultivationRealm(mainSession);
+    if (!realm) throw new Error("Cultivation realm is not available in the verified Codex renderer");
+    const targets = await listAppTargets(options.port, options.browserId);
+    const result = await synchronizeSpiritPet({
+      options,
+      mainSession,
+      mainTargetIds: new Set(connected.map((entry) => entry.target.id)),
+      targets,
+      realm,
+      forceRefresh: true,
+    });
+    console.log(JSON.stringify({ mode: "sync-pet", port: options.port, ...result }, null, 2));
+    if (!result.refreshVerified && !result.disabled) process.exitCode = 2;
+  } finally {
+    for (const { session } of connected) session.close();
+  }
+}
+
 async function applyToSession(session, payload) {
   return session.evaluate(payload);
 }
@@ -798,6 +994,11 @@ async function runWatch(options) {
   let lastListErrorLogAt = 0;
   let lastThemeErrorLogAt = 0;
   let lastStrongThemeAuditAt = 0;
+  let lastPetErrorLogAt = 0;
+  let lastPetRealm = null;
+  let petPendingReload = false;
+  let nextPetRealmPollAt = 0;
+  let nextPetReloadRetryAt = 0;
   let loadedPayload = null;
   let paused = false;
   const stop = () => { stopping = true; };
@@ -890,6 +1091,7 @@ async function runWatch(options) {
       const payloadChanged = !nextPaused && nextPayload !== loadedPayload;
       loadedPayload = nextPayload;
       paused = nextPaused;
+      if (paused) lastPetRealm = null;
 
       if (pauseChanged || payloadChanged) {
         for (const [id, session] of sessions) {
@@ -1008,6 +1210,39 @@ async function runWatch(options) {
           rejectTarget(target, 2500, error);
         }
       }
+
+      const now = Date.now();
+      if (!paused && sessions.size > 0 && now >= nextPetRealmPollAt) {
+        nextPetRealmPollAt = now + PET_REALM_POLL_MS;
+        const mainSession = sessions.values().next().value;
+        try {
+          const realm = await resolveCultivationRealm(mainSession);
+          const shouldRetryReload = petPendingReload && now >= nextPetReloadRetryAt;
+          if (realm && (realm !== lastPetRealm || shouldRetryReload)) {
+            const result = await synchronizeSpiritPet({
+              options,
+              mainSession,
+              mainTargetIds: new Set(sessions.keys()),
+              targets,
+              realm,
+              forceRefresh: shouldRetryReload,
+            });
+            lastPetRealm = realm;
+            petPendingReload = Boolean(result.pendingReload);
+            nextPetReloadRetryAt = petPendingReload ? now + PET_RELOAD_RETRY_MS : 0;
+            if (result.changed) {
+              console.log(`[dream-skin] Silver Moon evolved to ${realm}; pet overlays=${result.overlays ?? 0}`);
+            } else if (result.refreshVerified && shouldRetryReload) {
+              console.log(`[dream-skin] Silver Moon refresh verified for ${realm}`);
+            }
+          }
+        } catch (error) {
+          if (Date.now() - lastPetErrorLogAt >= 30000) {
+            console.error(`[dream-skin] Silver Moon sync failed: ${error.message}`);
+            lastPetErrorLogAt = Date.now();
+          }
+        }
+      }
       await new Promise((resolve) => setTimeout(resolve, 1200));
     }
   } finally {
@@ -1086,5 +1321,6 @@ if (path.resolve(process.argv[1] || "") === path.resolve(scriptPath)) {
       artMetadata: loaded.theme.artMetadata ?? null,
     }));
   } else if (options.mode === "watch") await runWatch(options);
+  else if (options.mode === "sync-pet") await runPetSyncOnce(options);
   else await runOneShot(options);
 }
