@@ -1,5 +1,13 @@
 # Changelog
 
+## Unreleased
+
+- Added the native Pet v2 spirit pet “Silver Moon” with independent Qi, Foundation, Golden Core, Nascent Soul, and Transformation atlases.
+- Added realm polling, targeted auxiliary pet-window hot reload, loaded-resource verification, and a pending-restart fallback that keeps the main Codex window untouched.
+- Added managed pet installation, separate state, versioned atlas filenames, hash validation, collision protection, and safe removal without changing other pets.
+- Added `--no-spirit-pet`, `--keep-spirit-pet`, manual `sync-pet`, menu bar pet status, and explicit confirmation before a pet-related Codex restart.
+- Added macOS regression coverage for pet management, five-realm evolution, CDP target classification, controller wiring, and restore safety.
+
 ## 1.10.0 - 2026-07-19
 
 - Added a Settings link to the GitHub realm progression guide.

@@ -7,6 +7,22 @@ assert.equal(parsed.port, 9444);
 assert.equal(parsed.portExplicit, true);
 assert.equal(parsed.restartExisting, true);
 
+const petOptions = parseArgs([
+  "install",
+  "--no-spirit-pet",
+  "--keep-spirit-pet",
+  "--restart-for-spirit-pet",
+  "--codex-home",
+  "/tmp/codex-home",
+]);
+assert.equal(petOptions.noSpiritPet, true);
+assert.equal(petOptions.keepSpiritPet, true);
+assert.equal(petOptions.restartForSpiritPet, true);
+assert.equal(petOptions.codexHome, "/tmp/codex-home");
+
+const syncPet = parseArgs(["sync-pet"]);
+assert.equal(syncPet.command, "sync-pet");
+
 const valid = validateLoopbackWebSocket(
   "ws://127.0.0.1:9444/devtools/browser/test-browser",
   9444,
